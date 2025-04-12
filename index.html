@@ -2,12 +2,31 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>조원님의 플레이리스트</title>
+  <title>조원님의 순차 재생 플레이어</title>
 </head>
 <body>
-  <h2>🎵 조원님의 음악 🎶</h2>
-    <iframe src="https://drive.google.com/file/d/16_Frx1oo3HSgsWFl3I4PEwsnljwDY2Dw/preview" 
-      width="400" height="100" allow="autoplay">
-    </iframe>
+  <h2>🎶 조원님의 음악 플레이리스트</h2>
+  <audio id="player" controls autoplay></audio>
+
+  <script>
+    const playlist = [
+      "https://drive.google.com/uc?export=download&id=18p27WjMKLt_gTOR6V3Z2v9YY5WkTB8p-",
+      "https://drive.google.com/uc?export=download&id=1AZ8D3YB4KNchQSzEgFsFQfD5G9lZO7rA",
+      "https://drive.google.com/uc?export=download&id=18j6ADqWylxuH1XvOEPBQQcBi49Wn3Rah"
+    ];
+
+    let index = 0;
+    const player = document.getElementById("player");
+
+    function playNext() {
+      if (index < playlist.length) {
+        player.src = playlist[index++];
+        player.play();
+      }
+    }
+
+    player.addEventListener("ended", playNext);
+    playNext(); // 첫 곡 재생
+  </script>
 </body>
 </html>
