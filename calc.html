@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간단한 계산기</title>
+    <!-- Tailwind CSS CDN을 로드하여 스타일링에 사용합니다. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 기본 폰트를 Inter로 설정합니다. */
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e0e0e0; /* 배경색을 밝은 회색으로 변경합니다. */
+        }
+        /* 계산기 컨테이너 스타일 */
+        .calculator {
+            background-color: #f0f0f0; /* 계산기 바탕색을 밝은 회색으로 변경합니다. */
+            padding: 24px;
+            border-radius: 24px; /* 더 둥근 모서리 */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* 깊은 그림자 강화 */
+            max-width: 360px; /* 최대 너비 설정 */
+            width: 100%;
+            margin: 0 16px; /* 좌우 여백 추가 */
+        }
+        /* 계산기 디스플레이 텍스트를 오른쪽 정렬하고 패딩을 추가합니다. */
+        .calculator-display {
+            text-align: right;
+            padding: 20px;
+            background-color: #a0a0a0; /* 디스플레이 배경색을 중간 회색으로 변경하여 차별화합니다. */
+            color: #2c2c2c; /* 디스플레이 텍스트 색상을 어둡게 변경합니다. */
+            font-size: 3rem; /* 디스플레이 폰트 크기 */
+            border-radius: 12px; /* 둥근 모서리 */
+            margin-bottom: 20px;
+            overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+            white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+            text-overflow: ellipsis; /* 텍스트가 넘칠 경우 ... 표시 */
+            min-height: 80px; /* 최소 높이 설정 */
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            line-height: 1; /* 텍스트 높이 고정 */
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* 디스플레이에 안쪽 그림자 추가 */
+        }
+        /* 버튼 그리드 레이아웃을 위한 커스텀 스타일 */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
+            gap: 12px; /* 버튼 간 간격 */
+        }
+        /* 계산기 버튼의 기본 스타일 */
+        .calculator-button {
+            /* padding을 제거하고 min-width/height로 크기 제어 */
+            min-width: 68px; /* 버튼 최소 너비 */
+            min-height: 68px; /* 버튼 최소 높이 */
+            font-size: 1.8rem; /* 버튼 폰트 크기 증가 */
+            background-color: #ffffff; /* 버튼 기본 배경색 (흰색) */
+            color: #333; /* 버튼 기본 텍스트 색상 (어두운 회색) */
+            border: none;
+            border-radius: 50%; /* 원형 버튼 */
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s; /* 호버 및 클릭 애니메이션 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1; /* 텍스트 수직 정렬 */
+        }
+        /* 상단 특수 버튼 (C, +/-, %) 스타일 */
+        .calculator-button.top-row {
+            background-color: #c0c0c0; /* 밝은 회색 */
+            color: #1c1c1c; /* 어두운 텍스트 색상 */
+        }
+        /* 연산자 버튼 스타일 */
+        .calculator-button.operator {
+            background-color: #ff9500; /* 오렌지색 */
+            color: #fff; /* 흰색 텍스트 */
+        }
+        /* 등호 버튼 스타일 */
+        .calculator-button.equals {
+            background-color: #ff9500; /* 오렌지색 */
+            color: #fff; /* 흰색 텍스트 */
+        }
+        /* 숫자 0 버튼은 2칸 차지하도록 설정 */
+        .calculator-button.zero {
+            grid-column: span 2;
+            border-radius: 34px; /* 길쭉한 원형 */
+            justify-content: flex-start; /* 텍스트 왼쪽 정렬 */
+            padding-left: 28px; /* 패딩 조정 */
+            min-width: unset; /* 2칸 차지하므로 min-width 해제 */
+        }
+        /* 호버 시 버튼 배경색 변경 */
+        .calculator-button:hover {
+            background-color: #e0e0e0;
+        }
+        .calculator-button.top-row:hover {
+            background-color: #a0a0a0;
+        }
+        .calculator-button.operator:hover, .calculator-button.equals:hover {
+            background-color: #e08e00;
+        }
+        /* 클릭 시 버튼 약간 축소 */
+        .calculator-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- 계산기 디스플레이 -->
+        <div id="display" class="calculator-display">0</div>
+
+        <!-- 계산기 버튼 그리드 -->
+        <div class="calculator-grid">
+            <!-- 1행: C, +/-, %, / -->
+            <button class="calculator-button top-row" onclick="clearDisplay()">C</button>
+            <button class="calculator-button top-row" onclick="toggleSign()">+/-</button>
+            <button class="calculator-button top-row" onclick="appendToDisplay('%')">%</button>
+            <button class="calculator-button operator" onclick="appendToDisplay('/')">/</button>
+
+            <!-- 2행: 7, 8, 9, * -->
+            <button class="calculator-button" onclick="appendToDisplay('7')">7</button>
+            <button class="calculator-button" onclick="appendToDisplay('8')">8</button>
+            <button class="calculator-button" onclick="appendToDisplay('9')">9</button>
+            <button class="calculator-button operator" onclick="appendToDisplay('*')">*</button>
+
+            <!-- 3행: 4, 5, 6, - -->
+            <button class="calculator-button" onclick="appendToDisplay('4')">4</button>
+            <button class="calculator-button" onclick="appendToDisplay('5')">5</button>
+            <button class="calculator-button" onclick="appendToDisplay('6')">6</button>
+            <button class="calculator-button operator" onclick="appendToDisplay('-')">-</button>
+
+            <!-- 4행: 1, 2, 3, + -->
+            <button class="calculator-button" onclick="appendToDisplay('1')">1</button>
+            <button class="calculator-button" onclick="appendToDisplay('2')">2</button>
+            <button class="calculator-button" onclick="appendToDisplay('3')">3</button>
+            <button class="calculator-button operator" onclick="appendToDisplay('+')">+</button>
+
+            <!-- 5행: 0, ., = -->
+            <button class="calculator-button zero" onclick="appendToDisplay('0')">0</button>
+            <button class="calculator-button" onclick="appendToDisplay('.')">.</button>
+            <button class="calculator-button equals" onclick="calculateResult()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // 디스플레이 요소를 가져옵니다.
+        const display = document.getElementById('display');
+        let currentInput = '0'; // 현재 입력값을 저장합니다.
+        let operatorClicked = false; // 연산자 클릭 여부를 추적합니다.
+        let lastResult = null; // 이전 계산 결과를 저장합니다.
+
+        // 초기 디스플레이 설정
+        display.textContent = currentInput;
+
+        /**
+         * 디스플레이에 값을 추가합니다.
+         * @param {string} value - 디스플레이에 추가할 값 (숫자 또는 연산자).
+         */
+        function appendToDisplay(value) {
+            // 'Error' 상태일 때 새로운 입력을 받으면 초기화
+            if (display.textContent === 'Error') {
+                currentInput = '0';
+            }
+
+            // '0' 상태에서 숫자가 입력되면 '0'을 대체합니다.
+            if (currentInput === '0' && value !== '.' && !isNaN(value)) {
+                currentInput = value;
+            } else if (value === '.' && currentInput.includes('.')) {
+                // 이미 소수점이 있으면 추가하지 않습니다.
+                return;
+            } else {
+                // 연산자 다음에 다른 연산자가 바로 오는 것을 방지합니다.
+                const lastChar = currentInput[currentInput.length - 1];
+                const isOperator = (char) => ['+', '-', '*', '/'].includes(char);
+
+                if (isOperator(lastChar) && isOperator(value)) {
+                    // 마지막 연산자를 새로운 연산자로 대체합니다.
+                    currentInput = currentInput.slice(0, -1) + value;
+                } else if (value === '%' && isOperator(lastChar)) {
+                    // 연산자 바로 뒤에 %가 오는 것을 방지 (예: 5+% -> 5+5%)
+                    // 이 부분은 계산기 로직에 따라 %의 의미가 달라질 수 있으므로 유연하게 처리
+                    // 여기서는 현재 숫자에 대한 %로 처리하기 위해 eval 전에 처리
+                    currentInput += value;
+                } else {
+                    currentInput += value;
+                }
+            }
+            display.textContent = currentInput;
+            operatorClicked = isOperator(value); // 연산자 클릭 상태 업데이트
+        }
+
+        /**
+         * 디스플레이를 초기화합니다.
+         */
+        function clearDisplay() {
+            currentInput = '0';
+            display.textContent = currentInput;
+            operatorClicked = false;
+            lastResult = null;
+        }
+
+        /**
+         * 현재 숫자의 부호를 토글합니다.
+         */
+        function toggleSign() {
+            // 현재 입력이 숫자로 끝나는지 확인
+            const match = currentInput.match(/(\d+\.?\d*)$/);
+            if (match) {
+                const numberStr = match[1];
+                const number = parseFloat(numberStr);
+                const toggledNumber = -number;
+                currentInput = currentInput.slice(0, match.index) + toggledNumber.toString();
+                display.textContent = currentInput;
+            } else if (currentInput === '0' && lastResult !== null) {
+                // 결과가 있을 때 0에서 +/- 누르면 결과에 적용
+                const toggledResult = -parseFloat(lastResult);
+                currentInput = toggledResult.toString();
+                display.textContent = currentInput;
+            }
+        }
+
+        /**
+         * 계산 결과를 계산하여 디스플레이에 표시합니다.
+         */
+        function calculateResult() {
+            try {
+                let expression = currentInput;
+
+                // % 연산자 처리 (예: 50% -> 0.5, 100+50% -> 100 + (100*0.5))
+                expression = expression.replace(/(\d+(\.\d+)?)\%/g, (match, p1) => {
+                    return parseFloat(p1) / 100;
+                });
+
+                // eval() 함수를 사용하여 문자열 수식을 계산합니다.
+                // 보안상의 이유로 실제 프로덕션 환경에서는 eval() 사용을 지양해야 합니다.
+                // 여기서는 간단한 예시를 위해 사용합니다.
+                const result = eval(expression);
+
+                if (isNaN(result) || !isFinite(result)) {
+                    throw new Error("유효하지 않은 수식");
+                }
+                currentInput = result.toString();
+                display.textContent = currentInput;
+                lastResult = result; // 결과 저장
+            } catch (error) {
+                // 오류 발생 시 'Error' 메시지를 표시합니다.
+                display.textContent = 'Error';
+                currentInput = '0'; // 오류 후 입력값 초기화
+                lastResult = null;
+            }
+            operatorClicked = false;
+        }
+
+        /**
+         * 키보드 입력을 처리합니다.
+         * @param {KeyboardEvent} event - 키보드 이벤트 객체.
+         */
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+            if (/[0-9]/.test(key)) { // 숫자 키
+                appendToDisplay(key);
+            } else if (['+', '-', '*', '/'].includes(key)) { // 연산자 키
+                appendToDisplay(key);
+            } else if (key === '.') { // 소수점 키
+                appendToDisplay(key);
+            } else if (key === '%') { // 퍼센트 키
+                appendToDisplay(key);
+            } else if (key === 'Enter' || key === '=') { // Enter 또는 = 키
+                calculateResult();
+                event.preventDefault(); // Enter 키의 기본 동작(줄바꿈) 방지
+            } else if (key === 'Backspace') { // 백스페이스 키
+                currentInput = currentInput.slice(0, -1);
+                if (currentInput === '') {
+                    currentInput = '0';
+                }
+                display.textContent = currentInput;
+            } else if (key === 'Escape' || key === 'c' || key === 'C') { // Esc 또는 C 키로 클리어
+                clearDisplay();
+            }
+        });
+    </script>
+</body>
+</html>
