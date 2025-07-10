@@ -11,6 +11,7 @@
         body {
             font-family: "Inter", sans-serif;
             display: flex;
+            flex-direction: column; /* 버튼을 아래에 배치하기 위해 column으로 변경 */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -24,7 +25,7 @@
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* 깊은 그림자 강화 */
             max-width: 360px; /* 최대 너비 설정 */
             width: 100%;
-            margin: 0 16px; /* 좌우 여백 추가 */
+            margin: 0 16px 20px; /* 좌우 여백 추가 및 하단 여백 추가 */
         }
         /* 계산기 디스플레이 텍스트를 오른쪽 정렬하고 패딩을 추가합니다. */
         .calculator-display {
@@ -32,7 +33,7 @@
             padding: 20px;
             background-color: #a0a0a0; /* 디스플레이 배경색을 중간 회색으로 변경하여 차별화합니다. */
             color: #2c2c2c; /* 디스플레이 텍스트 색상을 어둡게 변경합니다. */
-            font-size: 3rem; /* 디스플레이 폰트 크기 */
+            font-size: 2.0rem; /* 디스플레이 폰트 크기를 더 줄여서 긴 숫자도 보이도록 합니다. */
             border-radius: 12px; /* 둥근 모서리 */
             margin-bottom: 20px;
             overflow: hidden; /* 내용이 넘칠 경우 숨김 */
@@ -106,6 +107,28 @@
         .calculator-button:active {
             transform: scale(0.95);
         }
+
+        /* 홈으로 돌아가기 버튼 스타일 */
+        .back-button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            background-color: #6c757d; /* 회색 */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            margin-top: 20px; /* 계산기와의 간격 */
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        .back-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -145,6 +168,9 @@
             <button class="calculator-button equals" onclick="calculateResult()">=</button>
         </div>
     </div>
+
+    <!-- 홈으로 돌아가기 버튼 추가 -->
+    <button class="back-button" onclick="goBackToHome()">홈으로 돌아가기</button>
 
     <script>
         // 디스플레이 요소를 가져옵니다.
@@ -238,12 +264,26 @@
                 // eval() 함수를 사용하여 문자열 수식을 계산합니다.
                 // 보안상의 이유로 실제 프로덕션 환경에서는 eval() 사용을 지양해야 합니다.
                 // 여기서는 간단한 예시를 위해 사용합니다.
-                const result = eval(expression);
+                let result = eval(expression);
 
                 if (isNaN(result) || !isFinite(result)) {
                     throw new Error("유효하지 않은 수식");
                 }
-                currentInput = result.toString();
+
+                // 결과를 10자리 유효숫자로 표현합니다.
+                // 매우 크거나 작은 숫자는 자동으로 과학적 표기법으로 변환됩니다.
+                let formattedResult = result.toPrecision(10);
+
+                // toPrecision이 불필요한 소수점 뒤 0을 포함할 수 있으므로 제거
+                if (formattedResult.includes('.')) {
+                    formattedResult = formattedResult.replace(/\.0+$/, ''); // .000 제거
+                    formattedResult = formattedResult.replace(/(\.\d*?)0+$/, '$1'); // 뒤에 붙는 0 제거
+                    if (formattedResult.endsWith('.')) { // 소수점만 남으면 제거
+                        formattedResult = formattedResult.slice(0, -1);
+                    }
+                }
+
+                currentInput = formattedResult;
                 display.textContent = currentInput;
                 lastResult = result; // 결과 저장
             } catch (error) {
@@ -282,6 +322,13 @@
                 clearDisplay();
             }
         });
+
+        /**
+         * 홈 페이지로 돌아갑니다.
+         */
+        function goBackToHome() {
+            window.location.href = 'index.html'; // index.html로 이동
+        }
     </script>
 </body>
 </html>
