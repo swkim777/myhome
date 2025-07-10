@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 - Jowon Home</title>
+    <!-- Tailwind CSS CDN 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter 폰트 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Inter 폰트 적용 */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* 커스텀 체크박스 스타일 (Tailwind CSS 기본 스타일을 보완) */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 1.25rem; /* w-5 */
+            height: 1.25rem; /* h-5 */
+            border: 2px solid #D1D5DB; /* gray-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0; /* 체크박스가 줄어들지 않도록 */
+        }
+        input[type="checkbox"]:checked {
+            background-color: #2563EB; /* blue-600 */
+            border-color: #2563EB; /* blue-600 */
+        }
+        input[type="checkbox"]:checked::after {
+            content: '✔';
+            display: block;
+            color: white;
+            font-size: 0.75rem; /* text-xs */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        input[type="checkbox"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* blue-500 with opacity */
+        }
+        /* 모달 오버레이 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        /* 모달 콘텐츠 */
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 flex flex-col items-center p-4 overflow-y-auto">
+
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-8 mt-8 mb-8">
+        <!-- 헤더 및 뒤로가기 버튼 -->
+        <header class="flex items-center justify-between pb-4 border-b border-gray-100">
+            <a href="index.html" class="text-blue-600 hover:text-blue-800 transition-colors duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-sm font-medium">뒤로가기</span>
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900">블로그</h1>
+            <div></div> <!-- 정렬을 위한 빈 div -->
+        </header>
+
+        <!-- 수정, 삭제, 추가 버튼 -->
+        <div class="flex justify-around mt-4 space-x-2">
+            <button id="editButton" class="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-200 text-sm font-medium">수정</button>
+            <button id="deleteButton" class="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-200 text-sm font-medium">삭제</button>
+            <button id="addButton" class="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition-colors duration-200 text-sm font-medium">추가</button>
+        </div>
+
+        <!-- 메시지 박스 -->
+        <div id="messageBox" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg relative mt-4" role="alert">
+            <span class="block sm:inline" id="messageText"></span>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="document.getElementById('messageBox').classList.add('hidden')">
+                <svg class="fill-current h-6 w-6 text-yellow-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+            </span>
+        </div>
+
+        <!-- 블로그 게시물 목록 -->
+        <section id="blogPosts" class="space-y-4">
+            <p class="text-center text-gray-500" id="loadingMessage">블로그 게시물을 불러오는 중...</p>
+            <!-- 블로그 게시물은 JavaScript로 동적으로 추가됩니다. -->
+        </section>
+
+        <!-- 푸터 -->
+        <footer class="text-center text-gray-500 text-xs pt-4 border-t border-gray-100 mt-8">
+            <p>&copy; 2025 Jowon Home. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 추가/수정 모달 -->
+    <div id="blogModal" class="modal-overlay hidden">
+        <div class="modal-content space-y-4">
+            <h2 id="modalTitle" class="text-2xl font-bold text-gray-800">새 게시물 추가</h2>
+            <div>
+                <label for="postTitle" class="block text-sm font-medium text-gray-700">제목</label>
+                <input type="text" id="postTitle" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2">
+            </div>
+            <div>
+                <label for="postDate" class="block text-sm font-medium text-gray-700">날짜</label>
+                <input type="date" id="postDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2">
+            </div>
+            <div>
+                <label for="postCategory" class="block text-sm font-medium text-gray-700">카테고리</label>
+                <input type="text" id="postCategory" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2">
+            </div>
+            <div>
+                <label for="postContent" class="block text-sm font-medium text-gray-700">내용</label>
+                <textarea id="postContent" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"></textarea>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button id="cancelModalButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors duration-200 text-sm font-medium">취소</button>
+                <button id="confirmModalButton" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-200 text-sm font-medium">확인</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const blogPostsContainer = document.getElementById('blogPosts');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const editButton = document.getElementById('editButton');
+            const deleteButton = document.getElementById('deleteButton');
+            const addButton = document.getElementById('addButton');
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+
+            const blogModal = document.getElementById('blogModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const postTitleInput = document.getElementById('postTitle');
+            const postDateInput = document.getElementById('postDate');
+            const postCategoryInput = document.getElementById('postCategory');
+            const postContentInput = document.getElementById('postContent');
+            const cancelModalButton = document.getElementById('cancelModalButton');
+            const confirmModalButton = document.getElementById('confirmModalButton');
+
+            let selectedBlogBlock = null; // 현재 선택된 블로그 블록을 추적
+            let selectedRowIndex = -1; // 선택된 블록의 스프레드시트 데이터 인덱스 (0부터 시작)
+
+            // 메시지 박스를 표시하는 함수
+            function showMessage(message, type = 'info') {
+                messageText.textContent = message;
+                messageBox.classList.remove('hidden');
+                // 기존 색상 클래스 제거
+                messageBox.classList.remove('bg-yellow-100', 'border-yellow-400', 'text-yellow-700', 'bg-red-100', 'border-red-400', 'text-red-700', 'bg-green-100', 'border-green-400', 'text-green-700', 'bg-blue-100', 'border-blue-400', 'text-blue-700');
+                // 새 색상 클래스 추가
+                if (type === 'info') {
+                    messageBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                } else if (type === 'warning') {
+                    messageBox.classList.add('bg-yellow-100', 'border-yellow-400', 'text-yellow-700');
+                } else if (type === 'error') {
+                    messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+                } else if (type === 'success') {
+                    messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+                }
+            }
+
+            // Google Apps Script 웹 앱 URL을 여기에 입력하세요.
+            // 중요: 이 부분은 Google Apps Script 프로젝트를 웹 앱으로 배포한 후 얻은 실제 URL로 변경해야 합니다.
+            let appsScriptApiUrl = "https://script.google.com/macros/s/AKfycbzNrc2XQPqwMG-63ulXVzenHSGV6ZEJtIznfmv8tmuc0lko_v5W3uXzCLzXyr2wcSJAEg/exec"; // 제공된 최신 URL로 업데이트되었습니다.
+
+            // 블로그 게시물 로드 함수
+            async function loadBlogPosts() {
+                loadingMessage.style.display = 'block';
+                blogPostsContainer.innerHTML = ''; // 기존 게시물 지우기
+                selectedBlogBlock = null; // 선택 초기화
+                selectedRowIndex = -1;
+
+                // Apps Script URL이 설정되지 않았다면 오류 메시지 표시
+                if (!appsScriptApiUrl || !appsScriptApiUrl.startsWith("https://script.google.com/macros/")) {
+                    loadingMessage.textContent = '오류: Google Apps Script 웹 앱 URL이 올바르게 설정되지 않았습니다. `blog.html` 파일의 JavaScript 코드에서 `appsScriptApiUrl` 변수를 실제 배포 URL로 변경해주세요.';
+                    loadingMessage.className = 'text-center text-red-500 text-sm';
+                    return;
+                }
+
+                console.log("Fetching data from:", appsScriptApiUrl); // 디버깅을 위해 URL 로깅
+
+                try {
+                    const response = await fetch(appsScriptApiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    // 응답이 OK가 아니면, 오류 메시지를 더 상세하게 파싱
+                    if (!response.ok) {
+                        let errorDetails = `HTTP error! status: ${response.status}.`;
+                        try {
+                            const errorJson = await response.json();
+                            errorDetails += ` 서버 응답: ${JSON.stringify(errorJson)}.`;
+                        } catch (e) {
+                            const errorText = await response.text();
+                            errorDetails += ` 서버 응답 (텍스트): ${errorText}.`;
+                        }
+                        // CORS 오류는 fetch 자체에서 발생하며 HTTP 상태 코드를 반환하지 않을 수 있습니다.
+                        // 이 경우 response.status는 0이거나 정의되지 않을 수 있습니다.
+                        if (response.status === 0) {
+                            throw new Error(`네트워크 오류 또는 CORS 문제일 수 있습니다. Google Apps Script 웹 앱의 배포 설정(특히 '모든 사용자' 접근 권한)과 브라우저 콘솔의 CORS 오류 메시지를 확인해주세요.`);
+                        } else {
+                            throw new Error(errorDetails + ` Google Apps Script 웹 앱 배포 설정을 확인해주세요.`);
+                        }
+                    }
+                    
+                    const data = await response.json();
+
+                    loadingMessage.style.display = 'none';
+
+                    if (data.length === 0) {
+                        blogPostsContainer.innerHTML = '<p class="text-center text-gray-500">게시물이 없습니다.</p>';
+                        return;
+                    }
+
+                    data.forEach((post, index) => {
+                        const blogBlock = document.createElement('div');
+                        blogBlock.className = "flex items-center bg-white rounded-xl shadow-md p-4 space-x-3 cursor-pointer hover:bg-gray-100 transition-colors duration-200 border border-gray-100";
+                        blogBlock.dataset.rowIndex = index; // 데이터 행 인덱스 저장
+
+                        const checkboxId = `blog-select-${index}`;
+                        const checkboxHtml = `
+                            <input type="checkbox" id="${checkboxId}" class="form-checkbox text-blue-600 rounded-md">
+                        `;
+
+                        blogBlock.innerHTML = `
+                            ${checkboxHtml}
+                            <label for="${checkboxId}" class="flex-1 block cursor-pointer">
+                                <p class="text-xs text-gray-500 mb-1">${post['날짜'] || '날짜 없음'}</p>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-1">${post['제목'] || '제목 없음'}</h3>
+                                <p class="text-sm text-blue-600 font-medium">${post['카테고리'] || '카테고리 없음'}</p>
+                            </label>
+                        `;
+                        
+                        blogBlock.addEventListener('click', (event) => {
+                            const checkbox = blogBlock.querySelector(`#${checkboxId}`);
+                            if (event.target !== checkbox) {
+                                checkbox.checked = !checkbox.checked;
+                            }
+                            handleBlockSelection(blogBlock, checkbox.checked);
+                        });
+
+                        blogBlock.querySelector(`#${checkboxId}`).addEventListener('change', (event) => {
+                            handleBlockSelection(blogBlock, event.target.checked);
+                        });
+
+                        blogPostsContainer.appendChild(blogBlock);
+                    });
+                } catch (error) {
+                    console.error('블로그 게시물을 불러오는 데 실패했습니다:', error);
+                    loadingMessage.textContent = `블로그 게시물을 불러오는 데 실패했습니다: ${error.message}. Google Apps Script 웹 앱 URL과 배포 설정을 다시 확인해주세요 (특히 '모든 사용자' 접근 권한).`;
+                    loadingMessage.className = 'text-center text-red-500 text-sm'; // 에러 메시지 스타일 및 크기 변경
+                }
+            }
+
+            // 블록 선택 처리 함수
+            function handleBlockSelection(clickedBlock, isChecked) {
+                if (selectedBlogBlock && selectedBlogBlock !== clickedBlock) {
+                    const prevCheckbox = selectedBlogBlock.querySelector('input[type="checkbox"]');
+                    if (prevCheckbox) {
+                        prevCheckbox.checked = false;
+                        selectedBlogBlock.classList.remove('bg-blue-50', 'border-blue-200');
+                        selectedBlogBlock.classList.add('bg-white', 'border-gray-100');
+                    }
+                }
+
+                if (isChecked) {
+                    clickedBlock.classList.add('bg-blue-50', 'border-blue-200');
+                    clickedBlock.classList.remove('bg-white', 'border-gray-100');
+                    selectedBlogBlock = clickedBlock;
+                    selectedRowIndex = parseInt(clickedBlock.dataset.rowIndex);
+                } else {
+                    clickedBlock.classList.add('bg-white', 'border-gray-100');
+                    clickedBlock.classList.remove('bg-blue-50', 'border-blue-200');
+                    selectedBlogBlock = null;
+                    selectedRowIndex = -1;
+                }
+            }
+
+            // 모달 열기 함수
+            function openModal(mode, data = {}) {
+                blogModal.classList.remove('hidden');
+                if (mode === 'add') {
+                    modalTitle.textContent = '새 게시물 추가';
+                    postTitleInput.value = '';
+                    postDateInput.value = new Date().toISOString().slice(0, 10); // 오늘 날짜 기본값
+                    postCategoryInput.value = '';
+                    postContentInput.value = '';
+                } else if (mode === 'edit') {
+                    modalTitle.textContent = '게시물 수정';
+                    postTitleInput.value = data['제목'] || '';
+                    postDateInput.value = data['날짜'] || '';
+                    postCategoryInput.value = data['카테고리'] || '';
+                    postContentInput.value = data['내용'] || '';
+                }
+                blogModal.dataset.mode = mode; // 모달 모드 저장
+            }
+
+            // 모달 닫기 함수
+            function closeModal() {
+                blogModal.classList.add('hidden');
+                showMessage(''); // 메시지 박스 숨기기
+            }
+
+            // 모달 확인 버튼 클릭 이벤트
+            confirmModalButton.addEventListener('click', async () => {
+                const mode = blogModal.dataset.mode;
+                const title = postTitleInput.value;
+                const date = postDateInput.value;
+                const category = postCategoryInput.value;
+                const content = postContentInput.value;
+
+                if (!title || !date || !category || !content) {
+                    showMessage('모든 필드를 입력해주세요.', 'warning');
+                    return;
+                }
+
+                const postData = {
+                    '제목': title,
+                    '날짜': date,
+                    '카테고리': category,
+                    '내용': content
+                };
+
+                try {
+                    let response;
+                    if (mode === 'add') {
+                        response = await fetch(appsScriptApiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(postData),
+                        });
+                    } else if (mode === 'edit') {
+                        if (selectedRowIndex === -1) {
+                            showMessage('수정할 게시물이 선택되지 않았습니다.', 'error');
+                            return;
+                        }
+                        response = await fetch(appsScriptApiUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ rowIndex: selectedRowIndex, data: postData }),
+                        });
+                    }
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`HTTP error! status: ${response.status}, ${errorData.details || errorData.error}`);
+                    }
+
+                    const result = await response.json();
+                    showMessage(result.message || '작업이 성공적으로 완료되었습니다.', 'success');
+                    closeModal();
+                    loadBlogPosts(); // 데이터 새로고침
+                } catch (error) {
+                    console.error('데이터 처리 실패:', error);
+                    showMessage(`데이터 처리 실패: ${error.message}. Google Apps Script 웹 앱 배포 설정을 다시 확인해주세요.`, 'error');
+                }
+            });
+
+            // 모달 취소 버튼 클릭 이벤트
+            cancelModalButton.addEventListener('click', closeModal);
+
+            // === 버튼 이벤트 리스너 ===
+            editButton.addEventListener('click', async () => {
+                if (selectedBlogBlock && selectedRowIndex !== -1) {
+                    // 현재 선택된 블록의 데이터 가져오기 (Apps Script GET 요청을 다시 사용)
+                    try {
+                        const response = await fetch(appsScriptApiUrl, { method: 'GET' });
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            throw new Error(`HTTP error! status: ${response.status}. 서버 응답: ${errorText}.`);
+                        }
+                        const allPosts = await response.json();
+                        const postToEdit = allPosts[selectedRowIndex];
+
+                        if (postToEdit) {
+                            openModal('edit', postToEdit);
+                        } else {
+                            showMessage('선택된 게시물 데이터를 찾을 수 없습니다.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('게시물 데이터 로드 실패:', error);
+                        showMessage(`게시물 데이터 로드 실패: ${error.message}. Google Apps Script 웹 앱 배포 설정을 다시 확인해주세요.`, 'error');
+                    }
+                } else {
+                    showMessage('수정할 블로그 게시물을 선택해주세요.', 'warning');
+                }
+            });
+
+            deleteButton.addEventListener('click', async () => {
+                if (selectedBlogBlock && selectedRowIndex !== -1) {
+                    if (confirm('정말로 이 게시물을 삭제하시겠습니까?')) { // 사용자 확인
+                        try {
+                            const response = await fetch(appsScriptApiUrl, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ rowIndex: selectedRowIndex }),
+                            });
+
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                throw new Error(`HTTP error! status: ${response.status}, ${errorData.details || errorData.error}`);
+                            }
+
+                            const result = await response.json();
+                            showMessage(result.message || '게시물이 성공적으로 삭제되었습니다.', 'success');
+                            loadBlogPosts(); // 데이터 새로고침
+                        } catch (error) {
+                            console.error('게시물 삭제 실패:', error);
+                            showMessage(`게시물 삭제 실패: ${error.message}. Google Apps Script 웹 앱 배포 설정을 다시 확인해주세요.`, 'error');
+                        }
+                    }
+                } else {
+                    showMessage('삭제할 블로그 게시물을 선택해주세요.', 'warning');
+                }
+            });
+
+            addButton.addEventListener('click', () => {
+                openModal('add');
+            });
+
+            // 페이지 로드 시 블로그 게시물 불러오기
+            loadBlogPosts();
+        });
+    </script>
+</body>
+</html>
