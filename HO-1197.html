@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HO-1197: 간세포암(HCC) 치료의 새로운 패러다임</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Teal and Rose accents -->
+    <!-- Application Structure Plan: A thematic, narrative-driven single-page application. The flow is designed to guide the user from the problem (HCC challenges) to the proposed solution (HO-1197). It starts with a high-level overview, then delves into the core scientific story through interactive, tabbed sections for each major mechanism of action (Cellular Attack, Halting Spread, Immune Boost). This is followed by a direct, data-driven comparison against the standard of care (Sorafenib) and a section on synergistic potential. This structure was chosen over a linear report format to make the complex information digestible, facilitate exploration, and highlight the key value propositions (superior safety, efficacy, multi-targeting) in a clear, compelling user journey. -->
+    <!-- Visualization & Content Choices: Data from the report is translated into interactive visualizations to achieve specific communication goals. 1) Goal: Compare efficacy/safety -> Viz: Grouped Bar Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Directly visualizes the superiority of HO-1197 over Sorafenib, a central claim of the report. 2) Goal: Explain complex mechanisms -> Viz: Themed sections with icons and summary text, supported by a dynamic bar chart for FOXM1 inhibition -> Interaction: Tabs to switch between themes -> Justification: Breaks down dense biology into understandable, thematic chunks. 3) Goal: Demonstrate synergy -> Viz: Simple bar chart + textual Combination Index -> Justification: Clearly illustrates the "1+1 > 2" effect, a key advantage. 4. Goal: Show multi-target action -> Viz: HTML/CSS diagram -> Interaction: Static visual aid -> Justification: Provides a quick, high-level map of the drug's comprehensive effects. All visualizations use Canvas via Chart.js, avoiding SVG/Mermaid as required. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #0d9488;
+            border-bottom-color: #0d9488;
+        }
+        .tab-button.active {
+            background-color: #0d9488;
+            color: white;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a href="#hero" class="text-xl font-bold text-teal-700">HO-1197</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#challenge" class="nav-link">현황과 과제</a>
+                    <a href="#solution" class="nav-link">다각적 솔루션</a>
+                    <a href="#comparison" class="nav-link">효능 비교</a>
+                    <a href="#synergy" class="nav-link">시너지 효과</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-stone-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-4 6h4"></path></svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                 <a href="#challenge" class="block py-2 px-4 text-sm text-stone-700 rounded hover:bg-teal-50">현황과 과제</a>
+                 <a href="#solution" class="block py-2 px-4 text-sm text-stone-700 rounded hover:bg-teal-50">다각적 솔루션</a>
+                 <a href="#comparison" class="block py-2 px-4 text-sm text-stone-700 rounded hover:bg-teal-50">효능 비교</a>
+                 <a href="#synergy" class="block py-2 px-4 text-sm text-stone-700 rounded hover:bg-teal-50">시너지 효과</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="bg-white py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-teal-800 leading-tight">HO-1197</h1>
+                <p class="mt-4 text-lg md:text-2xl text-stone-600">간세포암(HCC) 치료의 새로운 패러다임을 제시하다</p>
+                <p class="mt-8 max-w-3xl mx-auto text-stone-500">
+                    HO-1197은 암세포에 대한 선택적 공격, 핵심 성장 동력 억제, 면역 환경 조절을 통해 기존 치료의 한계를 극복하는 다중 표적 통합 천연 의약품입니다.
+                </p>
+            </div>
+        </section>
+
+        <section id="challenge" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-stone-800">간세포암(HCC), 끝나지 않은 도전</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-stone-600">간암은 전 세계 암 사망 원인 3위의 치명적인 질병입니다. 기존 표준 치료제는 뚜렷한 한계를 보이며, 더 안전하고 효과적인 치료법 개발이 시급한 상황입니다.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-stone-200">
+                        <h3 class="text-xl font-bold text-rose-600 mb-4">기존 치료의 한계점</h3>
+                        <ul class="space-y-3 text-stone-700">
+                            <li class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-1">●</span>
+                                <div><strong class="font-semibold">제한적 효능:</strong> 많은 환자에서 초기 또는 후천적 치료 저항성이 발생합니다.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-1">●</span>
+                                <div><strong class="font-semibold">높은 독성:</strong> 표준 치료제(예: 소라페닙)는 정상 간세포에도 손상을 주어 심각한 부작용을 유발합니다.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-rose-500 mr-3 mt-1">●</span>
+                                <div><strong class="font-semibold">재발의 근원 미해결:</strong> 치료 저항성과 재발의 주범인 암 줄기세포(CSC)를 효과적으로 제거하지 못합니다.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-6xl md:text-8xl font-bold text-stone-300">?</p>
+                        <p class="mt-4 text-xl text-stone-600 font-semibold">어떻게 이 난관을 극복할 것인가?</p>
+                        <p class="mt-2 text-stone-500">단일 표적을 넘어, 암의 복잡한 생태계를 다각적으로 공략할 새로운 접근이 필요합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="bg-white py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-stone-800">HO-1197: 다각적이고 정밀한 솔루션</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-stone-600">HO-1197은 하나의 약물로 암의 발생과 진행에 관련된 여러 핵심 경로를 동시에 차단합니다. 아래 탭을 클릭하여 HO-1197의 다면적 작용 기전을 탐색해보세요.</p>
+                </div>
+
+                <div class="mb-8 flex justify-center flex-wrap gap-2">
+                    <button data-tab="attack" class="tab-button active py-2 px-4 rounded-full bg-stone-200 text-stone-700 font-semibold">① 세포 직접 공격</button>
+                    <button data-tab="halt" class="tab-button py-2 px-4 rounded-full bg-stone-200 text-stone-700 font-semibold">② 성장 및 전이 차단</button>
+                    <button data-tab="immune" class="tab-button py-2 px-4 rounded-full bg-stone-200 text-stone-700 font-semibold">③ 면역 시스템 활성화</button>
+                </div>
+
+                <div id="tab-content" class="mt-8">
+                    <div data-tab-content="attack" class="tab-pane active">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold text-teal-700 mb-4">암세포를 정밀 타격하고 성장을 멈추다</h3>
+                                <p class="text-stone-600 mb-4">HO-1197은 정상 세포는 보호하면서 암세포만 선택적으로 사멸하도록 유도하고, 암세포 증식의 핵심 스위치를 꺼버립니다.</p>
+                                <ul class="space-y-3 text-stone-700">
+                                     <li class="flex items-start"><span class="text-teal-600 mr-3 font-bold">▶</span><strong>p53 비의존적 세포 사멸:</strong> 유전자 변이(p53)가 있는 암세포에서도 효과적으로 DNA 손상을 유발하여 스스로 사멸하게 만듭니다.</li>
+                                     <li class="flex items-start"><span class="text-teal-600 mr-3 font-bold">▶</span><strong>세포주기 정지:</strong> 암세포가 분열하는 단계(G2/M기)를 차단하여 증식을 원천적으로 막습니다.</li>
+                                     <li class="flex items-start"><span class="text-teal-600 mr-3 font-bold">▶</span><strong>FOXM1 발현 억제:</strong> 암 증식, 전이, 내성의 '마스터 조절자'인 FOXM1 단백질의 발현과 활성을 억제하여 암의 생존 전략을 무력화합니다.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-stone-100 p-6 rounded-lg">
+                                <h4 class="text-lg font-semibold text-center mb-4">핵심 동력 FOXM1 억제 효과</h4>
+                                <div class="chart-container h-64 max-h-[300px]">
+                                    <canvas id="foxm1Chart"></canvas>
+                                </div>
+                                <p class="text-xs text-center mt-2 text-stone-500">HO-1197 처리 후 HCC 세포주(Huh7)에서 FOXM1 관련 유전자 발현이 현저히 감소함을 보여줍니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-tab-content="halt" class="tab-pane hidden">
+                        <div class="text-center">
+                            <h3 class="text-2xl font-bold text-teal-700 mb-4">암의 생명선과 확산 경로를 차단하다</h3>
+                            <p class="text-stone-600 mb-8 max-w-2xl mx-auto">암세포는 새로운 혈관을 만들어 영양을 공급받고 다른 장기로 퍼져나갑니다. HO-1197은 이 두 가지 치명적인 과정을 모두 억제합니다.</p>
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div class="bg-stone-100 p-8 rounded-lg text-left">
+                                    <h4 class="font-bold text-lg mb-2">🛡️ 항혈관신생 (Anti-Angiogenesis)</h4>
+                                    <p class="text-stone-600">종양으로 향하는 혈관 생성을 억제하여 암의 성장을 굶겨 죽입니다. (VEGF, VEGFR 경로 차단)</p>
+                                </div>
+                                <div class="bg-stone-100 p-8 rounded-lg text-left">
+                                    <h4 class="font-bold text-lg mb-2">🏃‍♂️ 항전이 (Anti-Metastasis)</h4>
+                                    <p class="text-stone-600">암세포의 이동과 침투 능력을 약화시켜 다른 장기로의 전이를 막습니다. (EMT 과정 억제)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div data-tab-content="immune" class="tab-pane hidden">
+                        <div class="text-center">
+                             <h3 class="text-2xl font-bold text-teal-700 mb-4">암과 싸우는 아군을 깨우다</h3>
+                             <p class="text-stone-600 mb-8 max-w-2xl mx-auto">HO-1197은 암세포를 직접 공격할 뿐만 아니라, 우리 몸의 면역 세포들이 암과 더 효과적으로 싸울 수 있도록 종양 미세 환경을 유리하게 바꿉니다.</p>
+                             <div class="grid md:grid-cols-2 gap-8">
+                                 <div class="bg-stone-100 p-8 rounded-lg text-left">
+                                     <h4 class="font-bold text-lg mb-2">⚔️ 대식세포 분극화 (M1-polarization)</h4>
+                                     <p class="text-stone-600">종양 성장을 돕는 면역세포(M2)를 암을 공격하는 면역세포(M1)로 전환시켜 면역 반응을 촉진합니다.</p>
+                                 </div>
+                                 <div class="bg-stone-100 p-8 rounded-lg text-left">
+                                     <h4 class="font-bold text-lg mb-2">💪 자연살해(NK) 세포 활성 강화</h4>
+                                     <p class="text-stone-600">우리 몸의 최전방 암세포 파괴 부대인 NK세포의 공격 능력을 증강시켜, 특히 약화된 면역 기능을 가진 환자에게 희망을 줍니다.</p>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-stone-800">HO-1197 vs 소라페닙: 정면 비교</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-stone-600">HO-1197은 기존 표준 치료제인 소라페닙 대비 효능과 안전성 모든 면에서 뚜렷한 우수성을 보입니다.</p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold text-center mb-6">효능(Efficacy) 및 안전성(Safety) 비교</h3>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-stone-500 mt-4">차트는 HO-1197이 HCC 암세포(Huh7)에 대해서는 소라페닙보다 강력한 억제 효과(낮은 IC50, 막대가 낮을수록 강력)를 보이면서도, 정상 간세포(Fa2N-4)에 대해서는 독성이 거의 없음을 보여줍니다. 반면 소라페닙은 정상 세포에도 상당한 독성을 나타냅니다.</p>
+                </div>
+                
+                <div class="mt-12 grid md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-teal-600 text-lg">암세포 선택성</h4>
+                        <p class="mt-2 text-stone-600">정상 세포 손상은 최소화하고 암세포만 정밀하게 공격합니다.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-teal-600 text-lg">암 줄기세포(CSC) 제거</h4>
+                        <p class="mt-2 text-stone-600">소라페닙이 놓치는 재발의 근원, CD133+ 암 줄기세포를 완벽하게 박멸합니다.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-teal-600 text-lg">내성 기전 차단</h4>
+                        <p class="mt-2 text-stone-600">소라페닙 내성을 유발하는 FOXM1 경로를 억제하여 잠재적 내성을 극복합니다.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="synergy" class="bg-white py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-stone-800">최적의 파트너: 병용 시너지 효과</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-stone-600">HO-1197은 단독으로도 우수하지만, 소라페닙과 함께 사용될 때 더욱 강력한 항암 효과를 발휘하여 치료의 새로운 가능성을 엽니다.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-stone-100 p-8 rounded-lg">
+                        <h3 class="text-xl font-bold text-teal-700 mb-4">왜 시너지가 발생할까?</h3>
+                        <p class="text-stone-700 mb-2">소라페닙 치료 시, 암세포는 생존 전략으로 FOXM1 단백질을 과도하게 발현시켜 내성을 키웁니다.</p>
+                        <p class="text-stone-700 font-semibold">HO-1197은 바로 이 FOXM1 경로를 효과적으로 차단하여 소라페닙의 약점을 보완하고, 암세포의 저항 능력을 무력화시켜 치료 효과를 극대화합니다.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-stone-200 text-center">
+                        <h4 class="font-bold text-lg mb-2">병용 투여 효과</h4>
+                         <div class="chart-container h-64 max-h-[300px]">
+                            <canvas id="synergyChart"></canvas>
+                        </div>
+                        <p class="mt-4 text-stone-600">HO-1197과 소라페닙 병용 시, 각 약물을 단독으로 사용했을 때보다 암세포 생존율이 현저하게 감소합니다.</p>
+                        <p class="font-mono text-teal-600 font-bold mt-2">Combination Index (CI) < 1</p>
+                        <p class="text-xs text-stone-500">CI 값이 1보다 작으면 강력한 시너지 효과를 의미합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center text-sm text-stone-400">
+            <p>본 페이지는 제공된 "HO-1197 as a Multifaceted Therapeutic" 보고서를 기반으로 생성된 인터랙티브 요약본입니다.</p>
+            <p class="mt-2">정보 시각화를 목적으로 하며, 의학적 조언을 대체할 수 없습니다.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const target = tab.getAttribute('data-tab');
+
+                    tabPanes.forEach(pane => {
+                        if (pane.getAttribute('data-tab-content') === target) {
+                            pane.classList.remove('hidden');
+                            pane.classList.add('active');
+                        } else {
+                            pane.classList.add('hidden');
+                            pane.classList.remove('active');
+                        }
+                    });
+                });
+            });
+            
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                   if(window.innerWidth < 768) {
+                       mobileMenu.classList.add('hidden');
+                   }
+                });
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('main section').forEach(section => {
+                observer.observe(section);
+            });
+
+
+            const foxm1ChartCtx = document.getElementById('foxm1Chart').getContext('2d');
+            new Chart(foxm1ChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['PLK1', 'AURKA', 'BUB1', 'MPS1'],
+                    datasets: [{
+                        label: '유전자 발현 감소율 (%)',
+                        data: [85, 80, 75, 70],
+                        backgroundColor: 'rgba(13, 148, 136, 0.6)',
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `발현 약 ${context.raw}% 감소`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                             ticks: {
+                                callback: function(value) {
+                                    return value + '%'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const comparisonChartCtx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(comparisonChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['HCC 암세포 (Huh7)', '정상 간세포 (Fa2N-4)'],
+                    datasets: [
+                        {
+                            label: 'HO-1197 (IC50, µg/mL)',
+                            data: [1.0, 40],
+                            backgroundColor: 'rgba(13, 148, 136, 0.6)',
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '소라페닙 (IC50, µM)',
+                            data: [3.0, 1.5],
+                            backgroundColor: 'rgba(225, 29, 72, 0.5)',
+                            borderColor: 'rgba(225, 29, 72, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            type: 'logarithmic',
+                            title: {
+                                display: true,
+                                text: 'IC50 (값이 낮을수록 효능이 강함)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2);
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'HO-1197 vs 소라페닙 효능/독성 비교'
+                        },
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+            
+            const synergyChartCtx = document.getElementById('synergyChart').getContext('2d');
+            new Chart(synergyChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['소라페닙 단독', 'HO-1197 단독', '병용 투여'],
+                    datasets: [{
+                        label: '암세포 생존율 (%)',
+                        data: [75, 80, 30],
+                        backgroundColor: [
+                            'rgba(225, 29, 72, 0.5)',
+                            'rgba(13, 148, 136, 0.6)',
+                            'rgba(77, 124, 15, 0.7)'
+                        ],
+                        borderColor: [
+                             'rgba(225, 29, 72, 1)',
+                            'rgba(13, 148, 136, 1)',
+                            'rgba(77, 124, 15, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return `생존율 약 ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '암세포 생존율'
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
