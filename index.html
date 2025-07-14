@@ -1,12 +1,8 @@
-
-<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나의 홈페이지</title>
-    <!-- Tailwind CSS CDN 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter 폰트 로드 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Inter 폰트 적용 */
@@ -18,7 +14,6 @@
 <body class="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
 
     <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-8">
-        <!-- 환영 메시지 및 이름 -->
         <header class="text-center">
             <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
                 <span id="userName" class="text-blue-600"></span>
@@ -26,19 +21,15 @@
             <p id="userTitle" class="text-md sm:text-lg text-gray-600"></p>
         </header>
 
-        <!-- 핵심 기능 바로가기 -->
         <section class="grid grid-cols-2 gap-4" id="featureButtons">
-            <!-- 버튼들은 JavaScript로 동적으로 추가됩니다. -->
-        </section>
+            </section>
 
-        <!-- 간단한 자기소개 또는 슬로건 -->
         <section class="text-center bg-blue-50 p-4 rounded-xl">
             <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
                 AI 기술로 더 좋은 세상이 열리길 바랍니다. swkim777@gmail.com
             </p>
         </section>
 
-        <!-- 최신 업데이트/활동 -->
         <section class="space-y-4">
             <h2 class="text-xl font-semibold text-gray-800">최신 활동</h2>
             <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
@@ -51,12 +42,10 @@
             </div>
         </section>
 
-        <!-- 소셜 미디어/연락처 링크 -->
         <footer class="text-center pt-4 border-t border-gray-100">
             <h2 class="text-lg font-semibold text-gray-800 mb-3">저를 만나보세요</h2>
             <div class="flex justify-center space-x-6" id="socialLinks">
-                <!-- 소셜 링크들은 JavaScript로 동적으로 추가됩니다. -->
-            </div>
+                </div>
         </footer>
     </div>
 
@@ -85,7 +74,8 @@
                 { icon: "📚", text: "포트폴리오", link: "port.html" },
                 { icon: "💡", text: "프로젝트", link: "calc.html" },
                 { icon: "📝", text: "블로그", link: "blog.html" },
-                { icon: "🤖", text: "AI 강의", link: "https://bit.ly/4ep80p9" } // AI 강의 링크를 변경
+                { icon: "🤖", text: "AI 강의", link: "https://bit.ly/4ep80p9" }, // AI 강의 링크를 변경
+                { icon: "🔬", text: "HO-1197 정보", link: "HO-1197.html" } // HO-1197 정보 버튼 추가
             ];
 
             // 핵심 기능 버튼 생성 함수
