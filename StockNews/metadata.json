@@ -1,0 +1,6 @@
+{
+  "name": "실시간 주식 뉴스",
+  "description": "Gemini와 Google Search를 사용하여 최신 주식 시장 뉴스를 받아보세요.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
