@@ -1,1 +1,54 @@
-Stock News
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 주식 뉴스</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@^0.14.0"
+        }
+      }
+    </script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <header>
+        <h1>실시간 주식 뉴스</h1>
+    </header>
+    <main>
+        <div id="api-key-section">
+            <h2>API 키 설정</h2>
+            <p>시작하려면 Google Gemini API 키를 입력하세요. 키는 브라우저 세션에만 저장됩니다.</p>
+            <div class="api-key-form-container">
+                 <input type="password" id="api-key-input" placeholder="여기에 API 키를 붙여넣으세요" aria-label="Google Gemini API Key">
+                 <button id="save-api-key-button">키 저장</button>
+            </div>
+             <p class="api-key-warning"><strong>경고:</strong> 이 방법은 데모용입니다. 공개된 웹사이트에서는 API 키를 클라이언트 측에 노출해서는 안 됩니다.</p>
+        </div>
+
+        <div id="app-content" class="hidden">
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="궁금한 주식 뉴스를 검색하세요..." aria-label="주식 뉴스 검색">
+                <button type="submit" id="search-button">뉴스 검색</button>
+            </form>
+            <div id="result-container">
+                <div class="loader" id="loader"></div>
+                <div id="response-text"></div>
+                <div id="sources-container"></div>
+            </div>
+            <button id="change-key-button">API 키 변경</button>
+        </div>
+    </main>
+    <footer>
+        <p>Powered by Google Gemini</p>
+    </footer>
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
