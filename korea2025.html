@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 한국 경제 현황 인포그래픽 (AI 기능 추가)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-card h3 {
+            color: #FF6B6B;
+        }
+        .kpi-card .stat {
+            color: #1A535C;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: #FF6B6B;
+            line-height: 1;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4ECDC4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#1A535C] mb-2">2025 한국 경제: 기로에 선 성장 엔진</h1>
+            <p class="text-lg md:text-xl text-[#4ECDC4]">첨단 수출과 내수 침체의 이중 구조 심층 분석</p>
+        </header>
+
+        <section id="summary" class="mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">요약: 두 개의 속도로 움직이는 경제</h2>
+                <p class="text-md md:text-lg mb-6 text-center max-w-3xl mx-auto">
+                    2025년 한국 경제는 근본적인 불균형 상태에 놓여있습니다. 세계 최고 수준의 첨단 기술 수출은 경제의 외형을 지탱하고 있으나, 그 이면에는 부채와 소비 위축으로 침체된 내수 시장이 존재합니다. 이는 소수 수출 주도 산업에 대한 편중된 의존이며, 상당한 시스템 리스크를 내포합니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                    <div class="bg-[#F7FFF7] p-6 rounded-lg border-l-4 border-[#4ECDC4]">
+                        <h3 class="text-2xl font-bold text-[#1A535C] mb-2">🚀 뜨거운 성장 엔진: 수출</h3>
+                        <p class="text-lg">HBM 반도체, 하이브리드 자동차 등 첨단 기술이 이끄는 기록적 실적</p>
+                    </div>
+                    <div class="bg-[#F7F7F7] p-6 rounded-lg border-l-4 border-[#FF6B6B]">
+                        <h3 class="text-2xl font-bold text-[#1A535C] mb-2">  차가운 내수 엔진</h3>
+                        <p class="text-lg">과도한 부채, 소비 심리 위축으로 인한 깊은 침체 국면</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gdp" class="mb-12">
+             <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">거시경제 현황: 기술적 경기 침체 진입</h2>
+                 <p class="text-md md:text-lg mb-6 text-center max-w-3xl mx-auto">
+                    2025년 1분기 실질 GDP는 전기 대비 0.2% 감소하며 역성장으로 전환, 공식적인 기술적 경기 침체에 진입했습니다. 이는 민간소비와 투자의 급격한 붕괴가 주요 원인이며, 수입이 수출보다 더 크게 감소하여 순수출이 착시 효과를 낸 결과입니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="kpi-card text-center">
+                        <h3 class="text-2xl font-bold">1분기 GDP 성장률 (전기 대비)</h3>
+                        <p class="stat text-7xl font-extrabold">-0.2%</p>
+                        <p class="text-gray-600 mt-2">2분기 연속 성장 둔화 후 역성장 전환</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="gdpComponentsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="debt" class="mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">내수 부진의 족쇄: 부채의 딜레마</h2>
+                <p class="text-md md:text-lg mb-6 text-center max-w-3xl mx-auto">
+                    GDP 대비 90%를 초과하는 막대한 가계부채는 소비 여력을 심각하게 잠식하고 있습니다. 과거의 빚(부채 상환)과 미래의 불안(연금 고갈)이 현재의 소비를 억누르는 '부채 과잉' 현상이 내수 침체를 장기화시키고 있습니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="kpi-card bg-yellow-50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold">GDP 대비 가계부채</h3>
+                        <p class="stat text-5xl font-extrabold">90.1%</p>
+                        <p class="text-gray-600 mt-2">(2024년 말 기준)</p>
+                    </div>
+                    <div class="kpi-card bg-yellow-50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold">처분가능소득 대비 가계신용</h3>
+                        <p class="stat text-5xl font-extrabold">145%</p>
+                         <p class="text-gray-600 mt-2">(2024년 말 기준)</p>
+                    </div>
+                    <div class="kpi-card bg-yellow-50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold">주택담보대출 증가</h3>
+                        <p class="stat text-5xl font-extrabold">+5.0조</p>
+                        <p class="text-gray-600 mt-2">(2025년 2월)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="policy" class="mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">정책 딜레마: 가속과 제동</h2>
+                <p class="text-md md:text-lg mb-6 text-center max-w-3xl mx-auto">
+                    정책 당국은 경기 부양을 위한 금리 인하(가속)와 부채 관리를 위한 대출 규제(제동)라는 상충하는 정책을 동시에 추진하며 어려운 줄타기를 하고 있습니다. 이는 정책 효과를 반감시킬 위험이 큽니다.
+                </p>
+                <div class="chart-container mx-auto">
+                    <canvas id="interestRateChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="exports" class="mb-12">
+            <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">수출 생명선: 빛과 그림자</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-2xl font-bold text-[#1A535C] mb-4">반도체 & 자동차: 양면성</h3>
+                    <p class="mb-6">수출 주력 산업 내에서도 극심한 양극화가 나타납니다. 반도체는 HBM에, 자동차는 하이브리드에 의존하며 단기 성과를 내고 있지만, 장기적인 리스크를 내포하고 있습니다.</p>
+                    <div class="chart-container h-64 md:h-80">
+                         <canvas id="autoSalesChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-2xl font-bold text-[#1A535C] mb-4">조선업: 슈퍼 사이클</h3>
+                    <p class="mb-6">반면 조선업은 고부가가치 선박 수주를 통해 명백한 호황기에 진입했습니다. 3.5년치 일감을 확보하며 가장 확실하고 안정적인 성장 동력으로 자리매김했습니다.</p>
+                    <div class="kpi-card text-center mt-8">
+                        <h4 class="text-xl font-bold text-[#FF6B6B]">수주잔고</h4>
+                        <p class="stat text-6xl font-extrabold">200조+</p>
+                        <p class="text-gray-600 mt-2">(2025년 1분기 기준)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="risks" class="mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">구조적 리스크: 시한폭탄과 위협 요인</h2>
+                <p class="text-md md:text-lg mb-6 text-center max-w-3xl mx-auto">
+                    단기적인 경기 문제를 넘어, 인구 절벽과 내외부적 위협이 한국 경제의 미래를 위협하고 있습니다. 특히 외부 충격이 내부의 높은 부채와 결합될 때 연쇄적인 위기로 번질 수 있습니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-red-50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-red-800 mb-3">💣 2050 인구 절벽</h3>
+                        <p class="text-lg">잠재성장률 <strong class="text-red-600">0%</strong> 수렴</p>
+                        <p class="text-lg">국민연금 <strong class="text-red-600">2057년</strong> 고갈 예상</p>
+                        <p class="mt-4 text-sm text-gray-700">이는 현재의 소비를 억제하는 강력한 요인으로 작용합니다.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">🔗 리스크 연쇄 반응</h3>
+                        <div class="flex flex-col items-center space-y-2 text-center">
+                            <div class="p-2 bg-blue-100 rounded-md w-full">외부 충격 (보호무역주의)</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="p-2 bg-blue-100 rounded-md w-full">수출 감소</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="p-2 bg-yellow-100 rounded-md w-full">가계 소득 감소 (증폭기: 높은 부채)</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="p-2 bg-red-100 rounded-md w-full">금융 시스템 위기</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-advisor" class="mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">✨ AI 경제 전문가에게 질문하기</h2>
+                <p class="text-md md:text-lg mb-6 text-center max-w-3xl mx-auto">
+                    이 보고서의 내용을 바탕으로 한국 경제에 대해 궁금한 점을 질문해보세요. AI가 데이터를 분석하여 답변해 드립니다. (예: "내년 소비자 물가는 어떻게 될까요?")
+                </p>
+                <div class="max-w-2xl mx-auto">
+                    <textarea id="user-query" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4ECDC4] focus:border-transparent" rows="3" placeholder="여기에 질문을 입력하세요..."></textarea>
+                    <button id="ask-ai-btn" class="mt-4 w-full bg-[#FF6B6B] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#ff4f4f] transition duration-300 flex items-center justify-center">
+                        질문하기
+                    </button>
+                    <div id="ai-response-container" class="mt-6">
+                        <div id="ai-loader" class="loader hidden"></div>
+                        <div id="ai-response" class="p-4 bg-gray-50 rounded-lg border border-gray-200 text-gray-700 whitespace-pre-wrap"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-600">본 인포그래픽은 제공된 '2025년 한국 경제 현황 및 전망 분석 보고서'를 기반으로 제작되었습니다.</p>
+            <p class="text-sm text-gray-500 mt-2">최종 업데이트: 2025년 7월 16일</p>
+        </footer>
+
+    </div>
+
+<script>
+    const energeticPlayful = {
+        primary: '#FF6B6B',
+        secondary: '#4ECDC4',
+        accent: '#FFE66D',
+        dark: '#1A535C',
+        light: '#F7FFF7'
+    };
+    
+    const commonChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#1A535C'
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                          return label.join(' ');
+                        } else {
+                          return label;
+                        }
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                ticks: { color: '#1A535C' },
+                grid: { color: '#e0e0e0' }
+            },
+            x: {
+                ticks: { color: '#1A535C' },
+                grid: { color: 'transparent' }
+            }
+        }
+    };
+    
+    function wrapLabel(str, maxWidth) {
+        if (str.length <= maxWidth) {
+            return str;
+        }
+        let wrapped = [];
+        let words = str.split(' ');
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + ' ' + word).trim().length > maxWidth && currentLine.length > 0) {
+                wrapped.push(currentLine);
+                currentLine = '';
+            }
+            currentLine = (currentLine + ' ' + word).trim();
+        });
+        wrapped.push(currentLine);
+        return wrapped;
+    }
+
+    const gdpData = {
+        labels: ['민간소비', '건설투자', '설비투자', '수출', '수입'].map(l => wrapLabel(l, 16)),
+        datasets: [{
+            label: '2025년 1분기 성장 기여도 (%)',
+            data: [-0.1, -3.2, -2.1, -1.1, -2.0],
+            backgroundColor: [
+                energeticPlayful.primary,
+                energeticPlayful.primary,
+                energeticPlayful.primary,
+                energeticPlayful.secondary,
+                energeticPlayful.accent,
+            ],
+            borderColor: energeticPlayful.dark,
+            borderWidth: 1
+        }]
+    };
+    const gdpComponentsChartCtx = document.getElementById('gdpComponentsChart').getContext('2d');
+    new Chart(gdpComponentsChartCtx, {
+        type: 'bar',
+        data: gdpData,
+        options: {
+            ...commonChartOptions,
+            indexAxis: 'y',
+            plugins: { ...commonChartOptions.plugins, legend: { display: false }},
+            scales: {
+                y: { ...commonChartOptions.scales.y, ticks: { ...commonChartOptions.scales.y.ticks, font: { size: 10 } } },
+                x: { ...commonChartOptions.scales.x }
+            }
+        }
+    });
+
+    const interestRateData = {
+        labels: ['2025/2/25', '2025/4/17', '2025/5/29'],
+        datasets: [{
+            label: '한국은행 기준금리 (%)',
+            data: [2.75, 2.75, 2.50],
+            fill: false,
+            borderColor: energeticPlayful.primary,
+            tension: 0.1,
+            pointBackgroundColor: energeticPlayful.dark,
+            pointRadius: 5
+        }]
+    };
+    const interestRateChartCtx = document.getElementById('interestRateChart').getContext('2d');
+    new Chart(interestRateChartCtx, {
+        type: 'line',
+        data: interestRateData,
+        options: commonChartOptions
+    });
+
+    const autoSalesData = {
+        labels: ['전기차 (BEV)', '하이브리드 (HEV)'].map(l => wrapLabel(l, 16)),
+        datasets: [{
+            label: '전년대비 판매 증가율 (%)',
+            data: [1.7, 37.1],
+            backgroundColor: [energeticPlayful.secondary, energeticPlayful.accent],
+            borderColor: energeticPlayful.dark,
+            borderWidth: 1
+        }]
+    };
+    const autoSalesChartCtx = document.getElementById('autoSalesChart').getContext('2d');
+    new Chart(autoSalesChartCtx, {
+        type: 'doughnut',
+        data: autoSalesData,
+        options: {
+            ...commonChartOptions,
+            plugins: { ...commonChartOptions.plugins, legend: { position: 'bottom' }}
+        }
+    });
+
+    // Gemini API Integration
+    const askAiBtn = document.getElementById('ask-ai-btn');
+    const userQueryInput = document.getElementById('user-query');
+    const aiResponseContainer = document.getElementById('ai-response');
+    const loader = document.getElementById('ai-loader');
+
+    askAiBtn.addEventListener('click', getAiAdvice);
+
+    async function getAiAdvice() {
+        const userQuery = userQueryInput.value.trim();
+        if (!userQuery) {
+            aiResponseContainer.textContent = '질문을 입력해주세요.';
+            return;
+        }
+
+        loader.classList.remove('hidden');
+        aiResponseContainer.textContent = '';
+        askAiBtn.disabled = true;
+
+        const context = `당신은 '2025년 한국 경제 현황 보고서'의 데이터를 기반으로 답변하는 경제 전문가 AI입니다. 보고서의 핵심 내용은 다음과 같습니다:
+        1.  **경제 이중 구조**: 첨단 기술(HBM 반도체, 하이브리드차) 중심의 수출은 호황이지만, 높은 가계부채와 소비심리 위축으로 내수는 심각한 침체 상태입니다.
+        2.  **기술적 경기 침체**: 2025년 1분기 GDP가 -0.2% 역성장했습니다.
+        3.  **부채 문제**: GDP 대비 가계부채가 90%를 초과하여 소비를 억제하고 있습니다.
+        4.  **정책 딜레마**: 정부는 경기 부양을 위한 금리 인하와 부채 관리를 위한 대출 규제라는 상충된 정책을 동시에 펴고 있습니다.
+        5.  **구조적 리스크**: 인구 절벽으로 인한 잠재성장률 하락과 연금 고갈 문제가 장기적인 위협입니다.
+        이러한 맥락을 반드시 고려하여 다음 질문에 대해 답변해주세요.`;
+
+        const prompt = `${context}\n\n사용자 질문: ${userQuery}`;
+        
+        try {
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // API key is handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API 요청 실패: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                const text = result.candidates[0].content.parts[0].text;
+                aiResponseContainer.textContent = text;
+            } else {
+                throw new Error('API로부터 유효한 답변을 받지 못했습니다.');
+            }
+
+        } catch (error) {
+            console.error('Gemini API Error:', error);
+            aiResponseContainer.textContent = `오류가 발생했습니다: ${error.message}\n잠시 후 다시 시도해주세요.`;
+        } finally {
+            loader.classList.add('hidden');
+            askAiBtn.disabled = false;
+        }
+    }
+
+</script>
+</body>
+</html>
