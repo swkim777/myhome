@@ -1,1 +1,195 @@
+<!doctype html>
+<html lang="ko" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home · 조원 — 개인 홈페이지</title>
+  <meta name="description" content="AI·프로그래밍 엔지니어 & 작가 조원의 개인 홈페이지">
+  <meta property="og:title" content="Home · 조원 — 개인 홈페이지">
+  <meta property="og:description" content="AI·프로그래밍 엔지니어 & 작가 조원의 개인 홈페이지">
+  <meta property="og:type" content="website">
+  <style>
+:root {
+  --bg: #ffffff; --fg: #0f172a; --muted: #475569; --border: #e2e8f0;
+  --card: #ffffff; --accent: #2563eb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --border:#1f2937; --card:#0f172a; --accent:#3b82f6;
+  }
+}
+html[data-theme="light"] :root { --bg:#ffffff; --fg:#0f172a; --muted:#475569; --border:#e2e8f0; --card:#ffffff; --accent:#2563eb; }
+html[data-theme="dark"] :root { --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --border:#1f2937; --card:#0f172a; --accent:#3b82f6; }
 
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Noto Sans KR,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1080px;margin:0 auto;padding:0 16px}
+.site-header{position:sticky;top:0;background:rgba(255,255,255,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);z-index:10}
+@media (prefers-color-scheme: dark){.site-header{background:rgba(11,18,32,.7)}}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-weight:700;display:flex;gap:8px;align-items:center;color:var(--fg)}
+.logo{display:inline-flex;width:24px;height:24px;align-items:center;justify-content:center;border:2px solid var(--fg);border-radius:6px;font-size:14px}
+.nav-toggle{display:none}
+.nav-menu{display:flex;gap:16px;list-style:none;margin:0;padding:0}
+.nav-menu a{padding:8px 10px;border-radius:8px}
+.nav-menu a[aria-current="page"],.nav-menu a:hover{background:var(--border)}
+.theme-toggle{background:transparent;border:1px solid var(--border);padding:6px 10px;border-radius:8px}
+@media (max-width:840px){
+  .nav-toggle{display:inline-block}
+  .nav-menu{display:none;position:absolute;right:16px;top:64px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;flex-direction:column}
+  .nav-menu.open{display:flex}
+}
+.hero{padding:56px 0 24px}
+.lead{color:var(--muted)}
+.cta{display:flex;gap:12px;margin:16px 0 8px}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:none}
+.btn:hover{opacity:.9;text-decoration:none}
+.btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.keywords{display:flex;gap:8px;list-style:none;padding:0}
+.keywords li{background:var(--border);padding:6px 10px;border-radius:999px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+.tags{display:flex;gap:6px;list-style:none;padding:0}
+.tags li{background:var(--border);padding:3px 8px;border-radius:999px;font-size:12px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border:1px solid var(--border);padding:8px;text-align:left}
+.timeline{padding-left:16px}
+.form{display:grid;gap:12px;max-width:560px}
+.form input,.form textarea,.form select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--fg)}
+.filterbar{display:flex;gap:16px;align-items:center;margin:12px 0 16px}
+.site-footer{border-top:1px solid var(--border);margin-top:32px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;padding:24px 0;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="./"><span class="logo">∴</span> <span>Jowon</span></a>
+    <nav class="nav" aria-label="주 메뉴">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">메뉴</button>
+      <ul id="nav-menu" class="nav-menu">
+        <li><a href="./">Home</a></li>
+        <li><a href="./about/">About</a></li>
+        <li><a href="./portfolio/">Portfolio</a></li>
+        <li><a href="./blog/">Blog</a></li>
+        <li><a href="./ai-tech-columns/">AI 기술 칼럼</a></li>
+        <li><a href="./ai-news/">최신 AI 뉴스</a></li>
+        <li><a href="./lecture/">Lecture</a></li>
+        <li><a href="./contact/">Contact</a></li>
+      </ul>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환">🌓</button>
+  </div>
+</header>
+
+<main id="main" class="container">
+
+<section class="hero">
+  <h1>AI·프로그래밍 엔지니어 & 작가</h1>
+  <p class="lead">연구·개발·강의·창작을 아우르는 실전형 AI 콘텐츠를 만듭니다.</p>
+  <div class="cta">
+    <a class="btn" href="./portfolio/">포트폴리오 보기</a>
+    <a class="btn btn-secondary" href="./lecture/">강의 문의</a>
+  </div>
+  <ul class="keywords" aria-label="핵심 키워드">
+    <li>LLM</li><li>Automation</li><li>Agent</li><li>Creative Tech</li>
+  </ul>
+</section>
+
+<section>
+  <h2>최근 글</h2>
+  <div class="grid">
+    <article class="card">
+      <a href="./ai-tech-columns/#llm-eval"><h3>LLM 평가 자동화 가이드</h3></a>
+      <p>메트릭·프롬프트·샘플링 전략으로 재현 가능한 평가 파이프라인 구성.</p>
+      <time datetime="2025-08-01">2025-08-01</time>
+    </article>
+    <article class="card">
+      <a href="./ai-news/#2025-08-01-weekly"><h3>주간 AI 뉴스 브리핑</h3></a>
+      <p>주요 모델 릴리스, 오픈소스 업데이트, 정책 이슈를 3분 요약.</p>
+      <time datetime="2025-08-01">2025-08-01</time>
+    </article>
+    <article class="card">
+      <a href="./blog/#first-post"><h3>창작 워크플로우 공개</h3></a>
+      <p>동화/장편 집필을 위한 AI 보조 도구 세팅과 템플릿.</p>
+      <time datetime="2025-07-20">2025-07-20</time>
+    </article>
+  </div>
+</section>
+
+<section>
+  <h2>대표 프로젝트</h2>
+  <div class="grid">
+    <article class="card">
+      <h3>조경 설계 어시스턴트</h3>
+      <p>CAD→DXF 자동 변환 및 요소 추출 파이프라인.</p>
+      <ul class="tags"><li>Automation</li><li>Python</li><li>GCP</li></ul>
+    </article>
+    <article class="card">
+      <h3>주식 분석 챗봇</h3>
+      <p>실시간 데이터·리스크 관리 로직 탑재 에이전트.</p>
+      <ul class="tags"><li>Agent</li><li>Finance</li><li>LLM</li></ul>
+    </article>
+    <article class="card">
+      <h3>창작 스토리 엔진</h3>
+      <p>장르별 플롯·등장인물 자동 제안과 일관성 검사.</p>
+      <ul class="tags"><li>NLP</li><li>Tooling</li><li>Web</li></ul>
+    </article>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2025 Jowon. All rights reserved.</p>
+    <p><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> · <a href="#" aria-disabled="true">LinkedIn</a> · <a href="#" aria-disabled="true">X</a></p>
+  </div>
+</footer>
+<script>
+// 현재 메뉴 활성화 표시 (상대 경로 맞춤)
+(function () {
+  const here = window.location.pathname.replace(/index\.html$/, '');
+  document.querySelectorAll('.nav-menu a').forEach(a => {
+    const href = a.getAttribute('href');
+    // href는 상대경로로 작성됨
+    const url = new URL(href, window.location.origin + here).pathname;
+    if (url === here) a.setAttribute('aria-current', 'page');
+  });
+})();
+
+// 모바일 내비 토글
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu = document.getElementById('nav-menu');
+if (navToggle && navMenu) {
+  navToggle.addEventListener('click', () => {
+    const open = navMenu.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', String(open));
+  });
+}
+
+// 테마 토글
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const save = (v) => localStorage.setItem('theme', v);
+  const load = () => localStorage.getItem('theme');
+  const apply = (v) => root.setAttribute('data-theme', v);
+  apply(load() || 'system');
+  btn && btn.addEventListener('click', () => {
+    const c = root.getAttribute('data-theme') || 'system';
+    const n = c === 'system' ? 'light' : c === 'light' ? 'dark' : 'system';
+    apply(n); save(n);
+  });
+})();
+
+// 페이지별 스크립트 훅 (선택)
+// Home: no extra hooks
+</script>
+</body>
+</html>
