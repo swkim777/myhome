@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 기술 칼럼 · 조원 — 개인 홈페이지</title>
+  <meta name="description" content="AI·프로그래밍 엔지니어 & 작가 조원의 개인 홈페이지">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="AI 기술 칼럼 · 조원 — 개인 홈페이지">
+  <meta property="og:description" content="AI·프로그래밍 엔지니어 & 작가 조원의 개인 홈페이지">
+  <meta property="og:type" content="website">
+</head>
+<body>
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/"><span class="logo">∴</span> <span>Jowon</span></a>
+    <nav class="nav" aria-label="주 메뉴">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">메뉴</button>
+      <ul id="nav-menu" class="nav-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/ai-tech-columns.html">AI 기술 칼럼</a></li>
+        <li><a href="/ai-news.html">최신 AI 뉴스</a></li>
+        <li><a href="/lecture.html">Lecture</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환">🌓</button>
+  </div>
+</header>
+<main id="main" class="container">
+
+<h1>AI 기술 칼럼</h1>
+<div class="filterbar">
+  <label>분야
+    <select id="col-topic">
+      <option value="all">전체</option>
+      <option>LLM</option>
+      <option>Vision</option>
+      <option>Agent</option>
+      <option>Tooling</option>
+    </select>
+  </label>
+  <label>난이도
+    <select id="col-diff">
+      <option value="all">전체</option>
+      <option value="beginner">입문</option>
+      <option value="intermediate">중급</option>
+      <option value="advanced">고급</option>
+    </select>
+  </label>
+</div>
+<article id="llm-eval" class="post" data-topic="LLM" data-diff="intermediate">
+  <h2>LLM 평가 자동화 가이드</h2>
+  <p class="meta"><time datetime="2025-08-01">2025-08-01</time> · 난이도: 중급</p>
+  <h3>문제 정의</h3>
+  <p>재현 가능한 평가를 위한 샘플/메트릭/프롬프트 관리.</p>
+  <h3>핵심 알고리즘</h3>
+  <pre><code>// 예시: 체이닝 평가 스크립트 의사코드
+evaluate(tasks)
+  → sample()
+  → prompt()
+  → score()</code></pre>
+  <h3>벤치마크 요약</h3>
+  <table class="table">
+    <thead><tr><th>셋업</th><th>정확도</th></tr></thead>
+    <tbody><tr><td>Base</td><td>73.2%</td></tr><tr><td>CoT</td><td>78.9%</td></tr></tbody>
+  </table>
+  <h3>참고 문헌</h3>
+  <ul><li>논문/문서 링크를 여기에 추가</li></ul>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2025 Jowon. All rights reserved.</p>
+    <p>
+      <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="#" aria-disabled="true">LinkedIn</a> ·
+      <a href="#" aria-disabled="true">X</a> ·
+      <a href="/sitemap.xml">Sitemap</a>
+    </p>
+  </div>
+</footer>
+<script src="/assets/main.js"></script>
+</body>
+</html>
