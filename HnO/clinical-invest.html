@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HO-1197 임상 자금 확보 전략 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-value {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+        .kpi-label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem;
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            height: 1.25rem;
+            width: 1.25rem;
+            border-radius: 9999px;
+            border-width: 3px;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 0.5rem;
+            top: 1.75rem;
+            bottom: 0;
+            width: 2px;
+        }
+    </style>
+</head>
+<body class="bg-[#EBF5FF]">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-black text-[#00449E] mb-2">HO-1197 임상 자금 확보 전략</h1>
+            <p class="text-xl md:text-2xl font-bold text-[#0867D3]">800억 원 목표 달성을 위한 이중 트랙(Dual-Track) 로드맵</p>
+        </header>
+
+        <section class="mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="kpi-label text-gray-600">목표 조달 금액</p>
+                    <p class="kpi-value text-[#0867D3]">800<span class="text-2xl font-bold ml-1">억 원</span></p>
+                    <p class="text-gray-500 mt-2">임상 1a/1b 단계 수행 (시리즈 A)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="kpi-label text-gray-600">간세포암 5년 생존율</p>
+                    <p class="kpi-value text-[#0867D3]">&lt; 20<span class="text-2xl font-bold ml-1">%</span></p>
+                    <p class="text-gray-500 mt-2">심각한 미충족 의료 수요 존재</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="kpi-label text-gray-600">IND 제출 목표</p>
+                    <p class="kpi-value text-[#0867D3]">2026<span class="text-2xl font-bold ml-1">년 1분기</span></p>
+                    <p class="text-gray-500 mt-2">전임상 독성 및 기전 연구 완료</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 bg-white p-6 md:p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-[#00449E] mb-6">이중 트랙(Dual-Track) 자금 조달 모델</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">
+                공공 R&D 지원을 통해 기술력을 공인받고 초기 자금을 확보하는 동시에, 민간 VC 투자를 유치하여 대규모 임상 자금을 조달하는 상호 보완적 전략입니다. 이 전략은 자금 확보 성공률을 극대화하고 기업가치 희석을 최소화합니다.
+            </p>
+            <div class="chart-container h-80 md:h-96">
+                <canvas id="fundingBreakdownChart"></canvas>
+            </div>
+             <p class="text-center text-gray-600 mt-4">
+                공공 R&D 자금(50억 원)은 기술성 공인의 촉매제 역할을 하며, 이를 바탕으로 750억 원 규모의 대규모 민간 투자를 유치하는 하이브리드 모델입니다.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <section class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center text-[#00449E] mb-2">🛤️ 트랙 1: 공공 R&D 지원 활용</h2>
+                <p class="text-center text-gray-600 mb-8">기술력 공인 및 초기 자금 50억 원 확보</p>
+                <div class="chart-container h-80 md:h-96">
+                    <canvas id="publicFundingChart"></canvas>
+                </div>
+                <p class="text-center text-gray-600 mt-4">
+                    각 정부 지원 사업은 단순 자금 지원을 넘어, HO-1197의 기술적 가치를 공인하고 재무적 리스크를 완화하는 중요한 전략적 가치를 지닙니다.
+                </p>
+            </section>
+
+            <section class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center text-[#00449E] mb-2">🚀 트랙 2: 민간 VC 투자 유치</h2>
+                <p class="text-center text-gray-600 mb-8">대규모 임상 자금 750억 원 및 성장 네트워크 확보</p>
+                 <div class="chart-container h-80 md:h-96">
+                    <canvas id="marketOpportunityChart"></canvas>
+                </div>
+                <p class="text-center text-gray-600 mt-4">
+                    기존 표준 치료제(Sorafenib) 불응/내약 환자군(전체 65%)을 공략, 명확한 시장 기회와 Best-in-class 잠재력을 어필하여 투자 매력도를 극대화합니다.
+                </p>
+            </section>
+        </div>
+
+        <section class="mt-12 bg-white p-6 md:p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-[#00449E] mb-8">주요 VC 파트너 및 전략적 적합성</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="border-2 border-[#AAD5FF] p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold text-[#0867D3] mb-2">한국투자파트너스</h3>
+                    <p class="text-gray-700">초대형 바이오 펀드를 운용하며, 혁신 기술의 글로벌 사업성 평가에 대한 높은 전문성을 보유하고 있습니다.</p>
+                </div>
+                <div class="border-2 border-[#AAD5FF] p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold text-[#0867D3] mb-2">KB인베스트먼트</h3>
+                    <p class="text-gray-700">적극적인 글로벌 펀드 결성을 통해 해외 시장 확대를 추구하며, HO-1197의 아시아 시장 선점 전략과 부합합니다.</p>
+                </div>
+                <div class="border-2 border-[#AAD5FF] p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold text-[#0867D3] mb-2">인터베스트</h3>
+                    <p class="text-gray-700">정부 R&D 연계 투자 성공 사례를 다수 보유하여, H&O Biosis의 이중 트랙 전략에 가장 이상적인 파트너입니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-12 bg-white p-6 md:p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-[#00449E] mb-8">성공을 향한 로드맵</h2>
+            <div class="max-w-3xl mx-auto">
+                <div class="relative">
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-white border-[#0867D3]"></div>
+                        <div class="timeline-line bg-[#AAD5FF]"></div>
+                        <p class="font-bold text-[#0867D3] text-lg">2025년 하반기</p>
+                        <p class="text-gray-700">공공 R&D 과제 신청 및 잠재 투자사 대상 IR 활동 강화</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-white border-[#0867D3]"></div>
+                        <div class="timeline-line bg-[#AAD5FF]"></div>
+                        <p class="font-bold text-[#0867D3] text-lg">2026년 상반기</p>
+                        <p class="text-gray-700">IND 제출 및 공공 과제 선정. 이를 바탕으로 시리즈 A 투자 유치 최종 클로징</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-white border-[#0867D3]"></div>
+                        <div class="timeline-line bg-[#AAD5FF]"></div>
+                        <p class="font-bold text-[#0867D3] text-lg">2028년</p>
+                        <p class="text-gray-700">임상 1/2a 결과 기반 PoC(Proof-of-Concept) 확보</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-white border-[#0867D3]"></div>
+                        <p class="font-bold text-[#0867D3] text-lg">2029년</p>
+                        <p class="text-gray-700">글로벌 제약사 기술이전(L/O) 또는 임상 3상 진입 전 IPO 추진</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const brilliantBlues = {
+            dark: '#00449E',
+            medium: '#0867D3',
+            light: '#66A5F0',
+            lighter: '#AAD5FF',
+            lightest: '#EBF5FF'
+        };
+
+        function wrapLabel(label) {
+            const maxLength = 16;
+            if (typeof label !== 'string' || label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            family: "'Noto Sans KR', sans-serif"
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    bodyFont: {
+                        family: "'Noto Sans KR', sans-serif"
+                    },
+                    titleFont: {
+                        family: "'Noto Sans KR', sans-serif"
+                    }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('fundingBreakdownChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['민간 VC 투자', '공공 R&D 지원'],
+                datasets: [{
+                    label: '자금 조달 구성',
+                    data: [750, 50],
+                    backgroundColor: [brilliantBlues.medium, brilliantBlues.light],
+                    borderColor: brilliantBlues.lightest,
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                plugins: {
+                    ...defaultChartOptions.plugins,
+                    tooltip: {
+                        ...defaultChartOptions.plugins.tooltip,
+                        callbacks: {
+                           ...defaultChartOptions.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '억 원';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('publicFundingChart'), {
+            type: 'bar',
+            data: {
+                labels: ['국가신약개발사업 (KDDF)', '스케일업 TIPS', '국립암센터 연구사업'].map(wrapLabel),
+                datasets: [{
+                    label: '예상 지원 규모 (억 원)',
+                    data: [35, 12, 4],
+                    backgroundColor: [brilliantBlues.medium, brilliantBlues.light, brilliantBlues.lighter],
+                    borderColor: [brilliantBlues.dark, brilliantBlues.medium, brilliantBlues.light],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '지원 규모 (억 원)',
+                            font: { size: 12 }
+                        }
+                    }
+                },
+                plugins: {
+                    ...defaultChartOptions.plugins,
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('marketOpportunityChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Sorafenib 불응/내약 환자군', '기타 환자군'],
+                datasets: [{
+                    label: '간세포암 환자 구성',
+                    data: [65, 35],
+                    backgroundColor: [brilliantBlues.medium, brilliantBlues.lighter],
+                    borderColor: brilliantBlues.lightest,
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                plugins: {
+                    ...defaultChartOptions.plugins,
+                    tooltip: {
+                        ...defaultChartOptions.plugins.tooltip,
+                        callbacks: {
+                            ...defaultChartOptions.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
