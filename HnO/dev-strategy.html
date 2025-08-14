@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HO-1197 간암 치료제 개발 전략 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-line::after {
+            content: '▼';
+            display: block;
+            font-size: 2rem;
+            color: #3A86FF;
+            margin: 1rem 0;
+            animation: bounce 1.5s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-15px);
+            }
+            60% {
+                transform: translateY(-7px);
+            }
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border-left: 5px solid #005CB9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .chapter-section {
+            background-color: #FFFFFF;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .styled-table th, .styled-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .styled-table th {
+            background-color: #E3F2FD;
+            font-weight: bold;
+            color: #005CB9;
+        }
+        .styled-table tr:hover {
+            background-color: #F8F9FA;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-center text-[#00449E]">HO-1197 간암 치료제 개발 전략 인포그래픽</h1>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 space-y-16">
+        
+        <!-- 목차 1. 서론 및 Executive Summary -->
+        <section id="chapter1" class="chapter-section">
+            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 1. 서론 및 Executive Summary</h2>
+            <div class="text-center my-8">
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
+                    H&O Biosis의 간암 치료제 'HO-1197'은 임상 진입 단계에 있으며, '정부 R&D 매칭을 통한 현금 소모 30% 절감' 전략을 제시했습니다. 이 인포그래픽은 해당 전략의 현실성을 분석하고 최적의 지원 방안을 제시합니다.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="kpi-card">
+                    <h3 class="text-xl font-bold text-gray-500 mb-2">HO-1197 개발 단계</h3>
+                    <p class="text-5xl font-extrabold text-[#005CB9]">전임상 완료</p>
+                    <p class="text-gray-600 mt-2">2026년 1분기 IND 제출 목표, 임상 1a/1b 진입 예정</p>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="text-xl font-bold text-gray-500 mb-2">요청 Series A 투자금</h3>
+                    <p class="text-5xl font-extrabold text-[#005CB9]">800억 원</p>
+                    <p class="text-gray-600 mt-2">임상 1a/1b 및 동반진단 구축 자금</p>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="text-xl font-bold text-gray-500 mb-2">정부 지원금 현실적 기여율</h3>
+                    <p class="text-5xl font-extrabold text-[#005CB9]">약 2.2%</p>
+                    <p class="text-gray-600 mt-2">KDDF 임상 1상 지원금(17.5억 원) 기준</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 목차 2. 국내 바이오 신약 개발 지원 공공 프로그램 심층 분석 -->
+        <section id="chapter2" class="chapter-section">
+            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 2. 국내 바이오 신약 개발 지원 공공 프로그램 심층 분석</h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-8">
+                HO-1197 프로젝트의 특성과 개발 단계에 가장 적합한 정부 지원 프로그램들을 분석했습니다.
+            </p>
+
+            <!-- 2.1 국가신약개발사업(KDDF): 신약 임상 개발 지원 -->
+            <div class="my-12 p-6 bg-blue-50 rounded-xl shadow">
+                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.1 KDDF: 신약 임상 개발 지원</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center md:text-left">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            KDDF는 후보물질 발굴부터 임상 2상까지 전주기를 지원합니다. HO-1197의 개발 단계에 맞춰 '신약 임상개발' 과제가 가장 적합하며, 항암제 분야에 대한 KDDF의 높은 지원 비중을 활용할 수 있습니다.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-center font-semibold text-gray-600 mb-2">KDDF 지원 규모 및 매칭 조건 (임상 1상 기준)</p>
+                        <div class="flex items-center justify-center space-x-4">
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <p class="text-xl font-bold text-[#3A86FF]">최대 35억 원</p>
+                                <p class="text-sm text-gray-600">정부 지원금 (24개월 내외)</p>
+                            </div>
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <p class="text-xl font-bold text-[#3A86FF]">50%</p>
+                                <p class="text-sm text-gray-600">민간 부담금 비율 (기업 규모 무관)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.2 동반진단(CDx) 개발 지원 프로그램 -->
+            <div class="my-12 p-6 bg-blue-50 rounded-xl shadow">
+                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.2 동반진단(CDx) 개발 지원</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center md:text-left">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            HO-1197은 PLK1 바이오마커 기반의 동반진단 구축 계획이 있습니다. 별도의 단독 과제보다는 KDDF의 '신약 임상개발' 과제에 동반진단 개발을 통합하여 신청하는 전략이 효과적입니다.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-center font-semibold text-gray-600 mb-2">지원 규모 (과거 사례 기준)</p>
+                        <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                            <p class="text-xl font-bold text-[#3A86FF]">연간 3~15억 원</p>
+                            <p class="text-sm text-gray-600">국가 항암신약개발사업단 지원 사례</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.3 기타 지원 프로그램의 적합성 평가 -->
+            <div class="my-12 p-6 bg-blue-50 rounded-xl shadow">
+                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.3 기타 지원 프로그램 적합성</h3>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 leading-relaxed">
+                    TIPS 프로그램은 초기 스타트업에 적합하며, HO-1197의 임상 개발 단계에는 지원 규모가 미미합니다. 다른 기관의 사업들도 HO-1197의 목표에 직접적으로 부합하지 않아 KDDF에 집중하는 것이 최적입니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 목차 3. HO-1197 개발 단계별 정부 R&D 매칭 포트폴리오 제안 -->
+        <section id="chapter3" class="chapter-section">
+            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 3. HO-1197 개발 단계별 정부 R&D 매칭 포트폴리오 제안</h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-8">
+                HO-1197의 로드맵에 맞춘 최적의 정부 R&D 지원 포트폴리오와 재정적 효과를 표로 정리했습니다.
+            </p>
+            
+            <div class="overflow-x-auto my-8">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>단계</th>
+                            <th>적합 프로그램</th>
+                            <th>정부 지원금 (예상)</th>
+                            <th>매칭 비율 (정부:민간)</th>
+                            <th>총 예산 대비 기여율 (Series A 800억 원 기준)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pre-IND</td>
+                            <td>KDDF 신약 기반 확충 연구</td>
+                            <td>10억 원 내외</td>
+                            <td>75:25</td>
+                            <td>약 1.25%</td>
+                        </tr>
+                        <tr>
+                            <td>임상 1a/1b 및 동반진단 구축</td>
+                            <td>KDDF 신약 임상개발 과제</td>
+                            <td>35억 원 내외</td>
+                            <td>50:50</td>
+                            <td>약 2.2%</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">종합</td>
+                            <td>-</td>
+                            <td>최대 45억 원 내외</td>
+                            <td>-</td>
+                            <td>약 3.45%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="my-12">
+                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">현금 소모 절감 전략의 실질적 의미</h3>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 leading-relaxed">
+                    KDDF의 단독 지원으로는 '30% 현금 소모 절감' 목표 달성이 어렵습니다. 이 목표는 **현물 부담금(인건비, 장비)** 활용, **CMO 제휴**를 통한 비용 절감 등 포괄적인 전략을 포함한 것으로 분석됩니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 목차 4. 결론 및 종합 제언 -->
+        <section id="chapter4" class="chapter-section">
+            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 4. 결론 및 종합 제언</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <h3 class="text-xl font-bold text-[#005CB9] mb-2">최적의 지원 포트폴리오</h3>
+                    <p class="text-gray-600">
+                        HO-1197의 임상 개발 및 동반진단 구축 계획을 **KDDF 신약 임상개발 과제**에 통합하여 신청하는 전략이 최적입니다.
+                    </p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <h3 class="text-xl font-bold text-[#005CB9] mb-2">재무 모델 재검토</h3>
+                    <p class="text-gray-600">
+                        투자자는 '30% 절감' 주장을 보수적으로 평가하고, 실제 정부 매칭의 기여율(약 2.2%)을 반영한 현실적인 재무 모델을 구축해야 합니다.
+                    </p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <h3 class="text-xl font-bold text-[#005CB9] mb-2">리스크 완화 전략</h3>
+                    <p class="text-gray-600">
+                        정부 지원 여부와 관계없이 **'Biomarker Kill-Signal'**과 같은 적응형 설계 전략을 통해 자금 소모 리스크를 관리해야 합니다.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-center p-6 bg-[#E3F2FD] rounded-xl shadow-inner mt-12">
+                <h3 class="text-2xl font-bold text-[#00449E] mb-4">종합 결론</h3>
+                <p class="text-lg text-gray-700 max-w-4xl mx-auto">
+                    정부 R&D 자금은 기술의 **객관적 검증**과 **재정적 리스크 완화**를 위한 **전략적 지렛대**입니다. HO-1197의 성공적인 개발을 위해서는 정부 지원의 현실적인 기여도와 기업의 자체적인 재무 계획을 유기적으로 연계하는 것이 중요합니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#00449E] text-white mt-16 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 HO-1197 R&D Infographic. All Rights Reserved.</p>
+            <p class="text-sm mt-2 opacity-75">본 자료는 'HO-1197 간암 치료제 개발을 위한 국내 공공 R&D 지원 프로그램 분석 및 전략적 제언 보고서'를 기반으로 제작되었습니다.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
