@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>국내 바이오 제약 R&D 지원 프로그램 종합 인포그래픽</title>
+    <title>대한민국 바이오 제약 공공 R&D 지원 프로그램 인포그래픽</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #F8F9FA;
         }
         .chart-container {
             position: relative;
@@ -28,425 +25,249 @@
                 height: 350px;
             }
         }
-        .flow-line::after {
-            content: '▼';
-            display: block;
-            font-size: 2rem;
-            color: #3A86FF;
-            margin: 1rem 0;
-            animation: bounce 1.5s infinite;
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-15px);
-            }
-            60% {
-                transform: translateY(-7px);
-            }
-        }
-        .kpi-card {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            border-left: 5px solid #005CB9;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        .chapter-section {
-            background-color: #FFFFFF;
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .styled-table th, .styled-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #E5E7EB;
-        }
-        .styled-table th {
-            background-color: #E3F2FD;
-            font-weight: bold;
-            color: #005CB9;
-        }
-        .styled-table tr:hover {
-            background-color: #F8F9FA;
-        }
     </style>
 </head>
-<body class="bg-slate-50 text-gray-800">
+<body class="bg-gray-100">
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4">
-            <h1 class="text-2xl md:text-3xl font-bold text-center text-[#00449E]">대한민국 바이오 벤처 공공 R&D 지원 종합 인포그래픽</h1>
-        </nav>
-    </header>
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#003B73] mb-4">대한민국 바이오 R&D 성장 사다리</h1>
+            <p class="text-lg text-[#0074D9]">공공 R&D 지원금을 활용한 바이오 벤처의 전략적 성장 가이드</p>
+        </header>
 
-    <main class="container mx-auto p-4 md:p-8 space-y-16">
-        
-        <!-- 목차 1. 서론 및 Executive Summary -->
-        <section id="chapter1" class="chapter-section">
-            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 1. 서론 및 Executive Summary</h2>
-            <div class="text-center my-8">
-                <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
-                    정부는 바이오헬스 산업을 미래 핵심 성장 동력으로 육성하며, 바이오 벤처가 겪는 '죽음의 계곡' 극복을 위한 지원에 집중하고 있습니다. 핵심 프로그램들은 아래와 같이 요약할 수 있습니다.
-                </p>
-            </div>
+        <main>
+            <section class="mb-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <h3 class="text-2xl font-bold text-[#0074D9] mb-2">항암제 집중 지원</h3>
+                        <p class="text-5xl font-bold text-[#003B73]">51%</p>
+                        <p class="text-gray-600 mt-2">국가신약개발사업(KDDF) 누적 지원 과제의 절반 이상이 항암제 분야에 집중되어, 정부의 '선택과 집중' 전략을 명확히 보여줍니다.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <h3 class="text-2xl font-bold text-[#0074D9] mb-2">초기 R&D 집중</h3>
+                        <p class="text-5xl font-bold text-[#003B73]">88%</p>
+                        <p class="text-gray-600 mt-2">KDDF 지원 과제의 대부분이 초기 R&D 단계에 집중되어, '죽음의 계곡' 극복을 위한 정부의 강력한 의지를 나타냅니다.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center lg:col-span-1 md:col-span-2">
+                        <h3 class="text-2xl font-bold text-[#0074D9] mb-2">임상단계 민간부담금</h3>
+                        <p class="text-5xl font-bold text-[#003B73]">50%</p>
+                        <p class="text-gray-600 mt-2">KDDF 임상 개발 단계에서는 민간 부담금이 50%로 상향되어, 기업의 시장성 증명 및 민간 투자 유치를 유도합니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-center text-[#003B73] mb-8">신약 개발 단계별 R&D 지원 포트폴리오</h2>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <p class="text-center text-gray-700 mb-8">정부는 신약 개발 전주기에 걸쳐 체계적인 '성장 사다리'를 구축하여 바이오 벤처의 단계별 성장을 지원합니다. 각 단계별 최적의 프로그램을 활용하여 리스크를 완화하고 성공 가능성을 높일 수 있습니다.</p>
+                    <div class="chart-container mx-auto h-96 md:h-[500px] max-h-[600px]">
+                        <canvas id="portfolioChart"></canvas>
+                    </div>
+                </div>
+            </section>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-gray-500 mb-2">핵심 지원 분야</h3>
-                    <p class="text-5xl font-extrabold text-[#005CB9]">항암제</p>
-                    <p class="text-gray-600 mt-2">KDDF 지원 과제의 51%가 집중되어 글로벌 시장을 정조준합니다.</p>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-gray-500 mb-2">초기 스타트업 지원</h3>
-                    <p class="text-5xl font-extrabold text-[#005CB9]">최대 15억</p>
-                    <p class="text-gray-600 mt-2">딥테크 TIPS 프로그램을 통해 R&D 자금을 지원합니다.</p>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-gray-500 mb-2">임상 개발 매칭 비율</h3>
-                    <p class="text-5xl font-extrabold text-[#005CB9]">50%</p>
-                    <p class="text-gray-600 mt-2">KDDF 임상 단계에서 총 연구비의 50%를 민간이 부담합니다.</p>
-                </div>
-            </div>
-            <!-- KDDF(국가신약개발재단):  -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">KDDF(국가신약개발재단):</h3>
-                    <div class="text-center">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            과학기술정보통신부, 보건복지부, 산업통상자원부의 공동 출자로 운영되는 KDDF는 후보물질 발굴부터 임상 2상까지 신약 개발의 전주기 단계를 통합 지원하는 국내 바이오 R&D 생태계의 핵심 축이다. 2021년부터 2024년 1차 사업까지 누적 지원 과제 중 51%가 항암제 분야에 집중되어, 항암 분야 글로벌 시장에 대한 정부의 전략적 '선택과 집중' 의지를 보여준다.
-                        </p>
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-center text-[#003B73] mb-8">주요 공공 R&D 지원 프로그램 (2024-2025)</h2>
+                <div class="space-y-8">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 bg-[#003B73] text-white">
+                            <h3 class="text-2xl font-bold">국가신약개발사업 (KDDF)</h3>
+                            <p class="text-sm">범부처신약개발재단</p>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><strong class="text-[#0074D9]">지원 분야/단계:</strong> 신약 개발 전주기 (후보물질 ~ 임상 2상)</div>
+                            <div><strong class="text-[#0074D9]">지원 대상:</strong> 혁신 신약 개발 기업, 기관 컨소시엄 (중소/중견기업 우대)</div>
+                            <div><strong class="text-[#0074D9]">지원 예산 규모:</strong> 임상 1상 최대 35억 원, 임상 2상 최대 70억 원</div>
+                            <div><strong class="text-[#0074D9]">공고 시기:</strong> 연 2회 (상/하반기)</div>
+                            <div class="md:col-span-2"><strong class="text-[#0074D9]">선정 절차:</strong> 서면평가 → 대면발표평가. 기술성, 혁신성, 사업화 가능성 등 종합 평가.</div>
+                            <div class="md:col-span-2 bg-blue-50 p-4 rounded-md"><strong class="text-[#0074D9]">HO-1197 전략적 적합성:</strong> 간암 천연물 신약으로 항암 신약 임상개발 트랙에 부합. 임상 1상 준비 완료 단계에서 최대 35억 원의 지원자금 활용 가능. 다중 기전 혁신 치료제로서의 잠재력 어필 가능.</div>
+                        </div>
                     </div>
-            </div>
-            <!-- 중소벤처기업부:   -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">중소벤처기업부: </h3>
-                    <div class="text-center">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            TIPS(팁스) 프로그램과 같이 민간의 투자와 연계하여 정부가 R&D 자금을 매칭 지원하는 방식으로 초기 스타트업을 지원한다.
-                        </p>
-                    </div>
-            </div>
-            <!-- 보건복지부 및 산하기관:   -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">보건복지부 및 산하기관: </h3>
-                    <div class="text-center">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            보건복지부와 한국보건산업진흥원(KHIDI)은 국립암센터의 암정복추진연구개발사업과 같은 질환별 특화 연구를 지원하며, AI 신약개발, 동반진단 기술 등 최신 기술 분야에 대한 전략적 투자를 담당한다.
-                        </p>
-                    </div>
-            </div>
-        </section>
 
-        <!-- 목차 2. 국내 바이오 제약 R&D 공공 지원 프로그램 상세 분석 -->
-        <section id="chapter2" class="chapter-section">
-            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 2. 국내 바이오 제약 R&D 공공 지원 프로그램 상세 분석</h2>
-
-            <!-- 2.1 신약개발 전주기 지원의 핵심, KDDF -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.1 신약개발 전주기 지원의 핵심, KDDF</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="text-center md:text-left">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            KDDF는 후보물질 발굴부터 임상 2상까지 신약 개발의 전주기를 통합 지원하는 범부처 사업입니다. 특히 초기 R&D 단계에 전체 과제의 88%가 집중되어 있고, 유효물질 단계에서 24개월 동안 총 12억원, 비임상 단계에서 24개월 동안 총 20억원 이내 지원. 임상 1상 단계에는 최대 24개월 내외 동안 총 35억원, 임상 2상 단계에는 최대 24개월 내외 동안 총 70억 원 내외를 지원. 
-                        </p>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 bg-[#0074D9] text-white">
+                            <h3 class="text-2xl font-bold">바이오산업기술개발사업</h3>
+                            <p class="text-sm">산업통상자원부 / KEIT</p>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><strong class="text-[#7FDBFF]">지원 분야/단계:</strong> 첨단바이오제품 임상 전후 실용화 기술 (예: 난치암 진단치료 상용화)</div>
+                            <div><strong class="text-[#7FDBFF]">지원 대상:</strong> 기업 주관 R&D 과제 (산학연 컨소시엄 가능)</div>
+                            <div><strong class="text-[#7FDBFF]">지원 예산 규모:</strong> 과제당 약 5~6억 원 (2~3년 지원)</div>
+                            <div><strong class="text-[#7FDBFF]">공고 시기:</strong> 연중 수시 (분기별)</div>
+                            <div class="md:col-span-2"><strong class="text-[#7FDBFF]">선정 절차:</strong> 서류심사 + 대면평가. 사업성(제품화 전망) 비중이 높음.</div>
+                            <div class="md:col-span-2 bg-sky-50 p-4 rounded-md"><strong class="text-[#7FDBFF]">HO-1197 전략적 적합성:</strong> 난치성 간암 표적 천연물 신약으로서 사업 취지에 부합. 지원 규모를 고려할 때, 전임상/기전 연구 추가 지원이나 파일럿 생산기술 확보 등에 활용하여 후속 대형 사업과 연계하는 전략이 유효.</div>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-center font-semibold text-gray-600 mb-2">KDDF 지원 과제 집중 단계</p>
-                        <div class="chart-container h-64 md:h-80">
-                            <canvas id="kddfStageChart"></canvas>
+
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 bg-[#003B73] text-white">
+                            <h3 class="text-2xl font-bold">한의약혁신기술개발사업</h3>
+                            <p class="text-sm">보건복지부 / 한국한의약진흥원</p>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><strong class="text-[#0074D9]">지원 분야/단계:</strong> 천연물/한의약 기반 치료기술 R&D, 임상근거 창출</div>
+                            <div><strong class="text-[#0074D9]">지원 대상:</strong> 한의약 관련 산·학·연 (기업 포함)</div>
+                            <div><strong class="text-[#0074D9]">지원 예산 규모:</strong> 과제당 2억 ~ 13.2억 원 (2~5년 지원)</div>
+                            <div><strong class="text-[#0074D9]">공고 시기:</strong> 연 1~2회</div>
+                            <div class="md:col-span-2"><strong class="text-[#0074D9]">선정 절차:</strong> 서류평가 → 발표평가. 과학적 타당성, 한의약적 근거, 연구계획 구체성 등을 심사.</div>
+                            <div class="md:col-span-2 bg-blue-50 p-4 rounded-md"><strong class="text-[#0074D9]">HO-1197 전략적 적합성:</strong> 전통 한약 복합제를 현대 신약으로 개발하는 프로젝트로서 사업 취지와 부합. 과학적 기전 규명 및 임상 근거 확보 연구에 지원 가능. 단, 단일 과제 규모가 작아 전임상-초기임상 일부를 지원받아 KDDF 등 대형사업과 연계하는 브릿지 전략이 필요.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 bg-[#0074D9] text-white">
+                            <h3 class="text-2xl font-bold">중소기업 기술개발지원사업</h3>
+                            <p class="text-sm">중소벤처기업부 / TIPA 등</p>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><strong class="text-[#7FDBFF]">지원 분야/단계:</strong> 혁신 중소기업 기술개발 전주기 지원 (바이오헬스는 '딥테크 전략 분야'로 우대)</div>
+                            <div><strong class="text-[#7FDBFF]">지원 대상:</strong> 중소기업 및 스타트업 (TIPS 연계 시 가산)</div>
+                            <div><strong class="text-[#7FDBFF]">지원 예산 규모:</strong> 사업 유형별 상이 (창업성장 디딤돌: 1~2억, 기술혁신 개발: 5~10억)</div>
+                            <div><strong class="text-[#7FDBFF]">공고 시기:</strong> 연초 통합공고 후 사업별 상/하반기 공모</div>
+                            <div class="md:col-span-2"><strong class="text-[#7FDBFF]">선정 절차:</strong> 사업별 서류 + 대면평가. 기술성·사업성 균형 평가.</div>
+                            <div class="md:col-span-2 bg-sky-50 p-4 rounded-md"><strong class="text-[#7FDBFF]">HO-1197 전략적 적합성:</strong> 스타트업으로서 비임상 연구 보강, 시제품 생산공정 개발 등에 활용 가능. 특히 글로벌 진출형 과제를 통해 해외 임상 준비 연구 지원 가능. 민간 투자(TIPS 등)와 정부 R&D를 혼합한 자금 전략 필요.</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
+        </main>
 
-            <!-- 2.2 질환별 특화 지원 프로그램 -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.2 질환별 특화 지원 프로그램</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <p class="text-center font-semibold text-gray-600 mb-2">정부의 항암제 R&D 집중 전략</p>
-                        <div class="flex items-center justify-center space-x-4">
-                            <div class="text-center p-4 bg-blue-50 rounded-lg shadow-sm w-1/2">
-                                <p class="text-xl font-bold text-[#3A86FF]">KDDF</p>
-                                <p class="text-sm text-gray-600">지원 과제의 51%가 항암제에 집중</p>
-                            </div>
-                            <div class="text-center p-4 bg-blue-50 rounded-lg shadow-sm w-1/2">
-                                <p class="text-xl font-bold text-[#3A86FF]">국립암센터</p>
-                                <p class="text-sm text-gray-600">대규모 '암정복추진연구개발사업' 운영</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center md:text-left">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            정부는 국립암센터의 사업 등을 통해 특정 질환 분야에 특화된 연구를 지원합니다. 이는 글로벌 시장 비중이 큰 항암제 분야에 대한 전략적 우선순위를 보여줍니다.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2.3 기술 및 인프라 특화 지원 프로그램 -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.3 기술 및 인프라 특화 지원 프로그램</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="text-center md:text-left">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            신약 개발의 성공률을 높이기 위해 동반진단 기술 및 AI 활용 연구에 대한 지원도 강화하고 있습니다. 이를 통해 개발 기간과 비용을 절감하는 것을 목표로 합니다.
-                        </p>
-                    </div>
-                    <div class="p-4 bg-white rounded-lg shadow">
-                        <p class="font-bold text-[#005CB9]">동반진단 기술 개발</p>
-                        <ul class="list-disc list-inside text-gray-600 mt-2">
-                            <li>주관기관: 국가 항암신약개발사업단 (KDDF)</li>
-                            <li>지원규모: 연간 3억~15억 원 이내</li>
-                        </ul>
-                        <p class="font-bold text-[#005CB9] mt-4">AI 신약개발 지원</p>
-                        <ul class="list-disc list-inside text-gray-600 mt-2">
-                            <li>주관기관: 보건복지부, KHIDI</li>
-                            <li>지원목표: 개발 기간 14년→6년, 비용 2조원→1조원 절감</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2.4 스타트업 및 중소벤처기업 특화 프로그램 -->
-            <div class="my-12">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">2.4 스타트업 및 중소벤처기업 특화 프로그램</h3>
-                <div class="flex flex-col items-center">
-                    <div class="w-full max-w-2xl p-6 bg-white rounded-xl shadow-lg border-l-4 border-[#3A86FF] mb-4">
-                        <h4 class="text-xl font-bold text-[#005CB9]">TIPS (팁스) 프로그램</h4>
-                        <p class="text-gray-600 mt-2">민간 투자를 선행하면 정부가 R&D 자금 매칭 지원 (일반 최대 5억 원, 딥테크 최대 15억 원)</p>
-                    </div>
-                    <div class="flow-line"></div>
-                    <div class="w-full max-w-2xl p-6 bg-white rounded-xl shadow-lg border-l-4 border-[#3A86FF]">
-                        <h4 class="text-xl font-bold text-[#005CB9]">바이오헬스 투자인프라 연계형 R&D</h4>
-                        <p class="text-gray-600 mt-2">민간과 정부의 공동 투자로 기술 상용화 지원 (민간 투자금은 총 정부 지원금의 20% 이상)</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 목차 3. 핵심 지원 정책 및 재정 조건 심층 분석 -->
-        <section id="chapter3" class="chapter-section">
-            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 3. 핵심 지원 정책 및 재정 조건 심층 분석</h2>
-            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-8">
-                정부 R&D 프로그램을 활용하기 위해서는 각 사업별 민간 부담금의 비율과 구성(현금/현물)을 명확히 이해해야 합니다.
-            </p>
-            
-            <div class="overflow-x-auto my-8">
-                <table class="styled-table">
-                    <thead>
-                        <tr>
-                            <th>프로그램</th>
-                            <th>주관 부처/기관</th>
-                            <th>정부지원금 비율</th>
-                            <th>민간부담금 비율</th>
-                            <th>민간부담금 중 현금 비율</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>KDDF 신약개발 (후보/비임상)</td>
-                            <td>KDDF</td>
-                            <td>75% 이내</td>
-                            <td>25% 이상</td>
-                            <td>10% 이상</td>
-                        </tr>
-                        <tr>
-                            <td>KDDF 신약개발 (임상 개발)</td>
-                            <td>KDDF</td>
-                            <td>50% 이내</td>
-                            <td>50% 이상</td>
-                            <td>10% 이상</td>
-                        </tr>
-                        <tr>
-                            <td>TIPS</td>
-                            <td>중소벤처기업부</td>
-                            <td>80% 이내</td>
-                            <td>20% 이상</td>
-                            <td>10% 이상</td>
-                        </tr>
-                        <tr>
-                            <td>바이오헬스 투자인프라</td>
-                            <td>보건복지부/KHIDI</td>
-                            <td>80% 이내</td>
-                            <td>20% 이상</td>
-                            <td>필수 조건 없음</td>
-                        </tr>
-                        <tr>
-                            <td>기타 (산통부)</td>
-                            <td>산업통상자원부</td>
-                            <td>80% 이하</td>
-                            <td>20% 이상</td>
-                            <td>10% 이상</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
-                <div class="p-6 bg-white rounded-xl shadow-lg border-l-4 border-[#005CB9]">
-                    <h3 class="text-xl font-bold text-[#00449E] mb-2">투자 라운드 연계 전략</h3>
-                    <ul class="list-disc list-inside text-gray-600">
-                        <li>정부의 엄격한 평가 통과는 민간 투자 유치에 강력한 **신호(Signaling)**로 작용합니다.</li>
-                        <li>대규모 자금이 필요한 **Series A, B 라운드** 유치 시 신뢰도 확보에 유리합니다.</li>
-                    </ul>
-                </div>
-                <div class="p-6 bg-white rounded-xl shadow-lg border-l-4 border-[#005CB9]">
-                    <h3 class="text-xl font-bold text-[#00449E] mb-2">현금 소모 절감 전략</h3>
-                    <ul class="list-disc list-inside text-gray-600">
-                        <li>민간 부담금을 **현금**과 **현물(인건비, 장비 등)**로 구성 가능합니다.</li>
-                        <li>**현물 비중**을 높여 기업의 실제 현금 지출을 최소화하고 재무 유연성을 확보할 수 있습니다.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- 목차 4. 바이오 벤처를 위한 종합 전략 제언 및 결론 -->
-        <section id="chapter4" class="chapter-section">
-            <h2 class="text-3xl font-extrabold text-center text-[#005CB9] mb-8">목차 4. 바이오 벤처를 위한 종합 전략 제언 및 결론</h2>
-            <div class="my-8">
-                <h3 class="text-2xl font-bold text-center text-[#00449E] mb-6">개발 단계별 최적 지원 프로그램 포트폴리오</h3>
-                <div class="overflow-x-auto">
-                    <table class="styled-table">
-                        <thead>
-                            <tr>
-                                <th>개발 단계</th>
-                                <th>주요 프로그램</th>
-                                <th>주관 부처/기관</th>
-                                <th>지원 내용</th>
-                                <th>지원 규모</th>
-                                <th>민간 매칭 조건</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>후보/비임상 (Pre-IND)</td>
-                                <td>국가신약개발사업 (신약 기반 확충 연구)</td>
-                                <td>KDDF</td>
-                                <td>유효/선도물질 발굴 및 비임상 시험</td>
-                                <td>최대 20억 원 (24개월)</td>
-                                <td>총 연구비의 25% 이상, 현금 10% 이상</td>
-                            </tr>
-                            <tr>
-                                <td>임상 1상/1b</td>
-                                <td>국가신약개발사업 (신약 임상 개발)</td>
-                                <td>KDDF</td>
-                                <td>MTD, PK, PD, 임상시험 설계 및 진행</td>
-                                <td>최대 35억 원 (24개월)</td>
-                                <td>총 연구비의 50% 이상, 현금 10% 이상</td>
-                            </tr>
-                            <tr>
-                                <td>임상 2상 PoC</td>
-                                <td>국가신약개발사업 (신약 임상 개발)</td>
-                                <td>KDDF</td>
-                                <td>유효성 및 안전성 확인, 적응증 확장 등</td>
-                                <td>최대 70억 원 (24개월)</td>
-                                <td>총 연구비의 50% 이상, 현금 10% 이상</td>
-                            </tr>
-                            <tr>
-                                <td>기술 특화</td>
-                                <td>동반진단 기술 개발</td>
-                                <td>국가항암신약개발사업단</td>
-                                <td>신약 후보물질 연계 동반진단 기술 개발</td>
-                                <td>연간 3~15억 원 (총 3년 7개월)</td>
-                                <td>공고에 따라 상이</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="text-center p-6 bg-[#E3F2FD] rounded-xl shadow-inner mt-12">
-                <h3 class="text-2xl font-bold text-[#00449E] mb-4">결론: 정부 지원의 전략적 활용</h3>
-                <p class="text-lg text-gray-700 max-w-4xl mx-auto">
-                    바이오 벤처는 정부 지원을 단순한 자금 조달 수단이 아닌, **기술 신뢰도 확보** 및 **재정 리스크 완화**를 위한 '전략적 지렛대'로 활용해야 합니다. 단계별로 최적의 프로그램을 구성하고, 민간 부담금의 **현금/현물 비율**을 효과적으로 관리하는 것이 성공적인 신약 개발의 핵심입니다.
-                </p>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-[#00449E] text-white mt-16 py-8">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2025 Bio-Pharma R&D Infographic. All Rights Reserved.</p>
-            <p class="text-sm mt-2 opacity-75">본 자료는 '국내 바이오 제약 분야 공공 R&D 지원 프로그램 종합 분석 보고서'를 기반으로 제작되었습니다.</p>
-        </div>
-    </footer>
+        <footer class="text-center mt-12 py-6 border-t">
+            <p class="text-gray-600">본 인포그래픽은 제공된 '국내 바이오 제약 분야 공공 R&D 지원 프로그램 종합 분석 보고서'를 기반으로 제작되었습니다.</p>
+        </footer>
+    </div>
 
     <script>
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
+        function wrapText(label) {
+            const maxLen = 16;
+            if (label.length <= maxLen) {
+                return label;
             }
-            return label;
-        };
-
-        const wrapLabel = (label, maxWidth) => {
             const words = label.split(' ');
             let lines = [];
             let currentLine = '';
-            words.forEach(word => {
-                if ((currentLine + word).length > maxWidth) {
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+                if ((currentLine + word).length > maxLen) {
                     lines.push(currentLine.trim());
                     currentLine = '';
                 }
                 currentLine += word + ' ';
-            });
+            }
             lines.push(currentLine.trim());
             return lines;
-        };
+        }
 
-        const kddfStageCtx = document.getElementById('kddfStageChart').getContext('2d');
-        new Chart(kddfStageCtx, {
-            type: 'doughnut',
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        const portfolioChart = new Chart(portfolioCtx, {
+            type: 'bar',
             data: {
-                labels: ['후보물질/비임상 (88%)', '임상 개발 (12%)'],
+                labels: [
+                    wrapText('후보/비임상 (Pre-IND)'), 
+                    wrapText('임상 1상/1b'), 
+                    wrapText('임상 2상 PoC'), 
+                    wrapText('기술 특화 (동반진단)')
+                ],
                 datasets: [{
-                    label: '지원 비중',
-                    data: [88, 12],
-                    backgroundColor: [
-                        '#3A86FF',
-                        '#8ECAE6'
-                    ],
-                    borderColor: '#FFFFFF',
-                    borderWidth: 4
+                    label: '정부 지원 규모 (억 원)',
+                    data: [20, 35, 70, 15],
+                    backgroundColor: '#0074D9',
+                    borderColor: '#003B73',
+                    borderWidth: 2,
+                    borderRadius: 5,
+                    yAxisID: 'y'
+                }, {
+                    label: '민간 매칭 조건 (%)',
+                    data: [25, 50, 50, null],
+                    backgroundColor: '#7FDBFF',
+                    borderColor: '#0074D9',
+                    borderWidth: 2,
+                    borderRadius: 5,
+                    yAxisID: 'y1'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                stacked: false,
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            font: {
-                                size: 14,
-                                weight: '500'
-                            }
+                    title: {
+                        display: true,
+                        text: '신약 개발 단계별 지원 규모 및 민간 매칭 조건',
+                        font: {
+                            size: 18
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 30
                         }
                     },
                     tooltip: {
                         callbacks: {
-                            title: tooltipTitleCallback
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
                         }
                     }
                 },
-                cutout: '60%'
-            }
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14,
+                            },
+                        },
+                         grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '지원 규모 (억 원)',
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false, 
+                        },
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '민간 매칭 조건 (%)',
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%'
+                            }
+                        }
+                    }
+                }
+            },
         });
     </script>
 </body>
