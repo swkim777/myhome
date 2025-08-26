@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HO-1197 Interactive Investment Proposal | H&O Biosis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Beige, Charcoal, Muted Teal, Light Grey) -->
+    <!-- Application Structure Plan: A thematic, non-linear SPA with a sticky top navigation for direct access to key sections: Home, The Challenge, Our Solution, Clinical/Funding Plan, and Market/Exit. The 'Our Solution' section now contains an internal 10-page carousel to detail the drug's mechanism and superiority. This paginated structure allows for a deep dive into the complex scientific data in a sequential, guided manner, ensuring comprehensive understanding without leaving the core section. -->
+    <!-- Visualization & Content Choices: Market size -> Goal: Show Change -> Line Chart (Chart.js) for trend visualization. Pre-clinical data (HO-1197 vs Sorafenib) -> Goal: Compare -> Interactive multi-line chart (Chart.js) for dose-response and a grouped bar chart for combo synergy, allowing direct visual comparison. Clinical/Funding plan -> Goal: Organize -> HTML/CSS timeline and flowchart for clarity on process and strategy. All visualizations are Canvas-based via Chart.js, ensuring no SVG/Mermaid is used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #333333;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #D08770;
+            border-bottom-color: #D08770;
+        }
+        .stat-card {
+            background-color: white;
+            border-left: 4px solid #4A90E2;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .plan-page-content {
+            display: none;
+        }
+        .plan-page-content.active {
+            display: block;
+        }
+        .market-page-content {
+            display: none;
+        }
+        .market-page-content.active {
+            display: block;
+        }
+        .challenge-page-content {
+            display: none;
+        }
+        .challenge-page-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-[#D08770]">H&O Biosis</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Summary</a>
+                        <a href="#challenge" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Market Overview</a>
+                        <a href="#solution" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Solution: HO-1197</a>
+                        <a href="#plan" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Dev & Funding Strategy</a>
+                        <a href="#market" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Market Opportunity & EXIT</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="py-16 sm:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-[#333333]">
+                    HO-1197: A Paradigm Shift in the Liver Cancer Market
+                </h1>
+                <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-600">
+                    H&O Biosis aims to overcome the limitations of current treatments and provide new hope to patients through the development of HO-1197, a multi-target oral liver cancer therapy.
+                </p>
+            </div>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">Funding Goal</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">₩80 Billion</p>
+                        <p class="mt-1 text-sm text-gray-500">Series A (Phase 1a/1b)</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">Core Pipeline</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">HO-1197</p>
+                        <p class="mt-1 text-sm text-gray-500">FOXM1 Multi-target Inhibitor</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">Key Advantage</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">> 4x</p>
+                        <p class="mt-1 text-sm text-gray-500">Safety Window vs. Normal Cells</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">Potential Valuation</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">~₩5.8 Trillion</p>
+                        <p class="mt-1 text-sm text-gray-500">Based on 2030 Exit</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenge" class="py-16 sm:py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">Market Overview: Urgent Unmet Medical Need</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Liver cancer has a high global mortality rate, and existing treatments have clear limitations such as cost, side effects, and resistance, highlighting the urgent need for innovative therapeutic options. Explore the current state of the liver cancer market by navigating the pages below.</p>
+                </div>
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="challenge-carousel" class="relative">
+                        <!-- Page 1: Liver Cancer Status -->
+                        <div class="challenge-page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 1: Liver Cancer Status</h3>
+                            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div class="space-y-6">
+                                    <div class="p-6 border rounded-lg bg-gray-50">
+                                        <div class="text-4xl mb-3">🌍</div>
+                                        <h4 class="text-xl font-bold mb-2">Global Hepatocellular Carcinoma (HCC) Status</h4>
+                                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                            <li>3rd most common cause of cancer death worldwide</li>
+                                            <li>870,000 new cases and 760,000 deaths in 2024</li>
+                                            <li>5-year survival rate of less than 20%</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="chart-container h-80 md:h-96">
+                                    <canvas id="marketGrowthChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 2: Limitations of Standard Treatments -->
+                        <div class="challenge-page-content" data-page="2">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 2: Limitations of Standard Treatments</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">Sorafenib Limitations</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>Fails to eradicate CD133⁺ cancer stem cells, increasing recurrence risk</li>
+                                        <li>Toxicity issues with normal hepatocytes</li>
+                                        <li>Leads to treatment resistance</li>
+                                    </ul>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">Problems with Latest Combination Therapies</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>High cost, over $20,000 per month</li>
+                                        <li>Accompanied by severe side effects (Grade ≥ 3)</li>
+                                        <li>Not effective for all patients</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 3: Urgency for New Treatments -->
+                        <div class="challenge-page-content" data-page="3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 3: Urgency for New Treatments</h3>
+                            <p class="text-center text-gray-600 mb-6">Due to the limitations of existing treatments and the complex nature of liver cancer, the need for effective, low-toxicity new drugs is growing rapidly.</p>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold mb-2">Market Opportunity</h4>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>The global HCC therapeutics market is projected to grow at a <span class="font-bold">CAGR of 17.9%</span> until 2030.</li>
+                                    <li>There is particularly high demand for oral, low-toxicity options in Asia-Pacific and low-income countries.</li>
+                                </ul>
+                            </div>
+                            <div class="chart-container h-80 md:h-96 mt-8">
+                                <canvas id="marketOpportunityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="challenge-prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; Prev
+                            </button>
+                            <span id="challenge-page-counter" class="text-gray-600 font-semibold self-center">1 / 3</span>
+                            <button id="challenge-next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                Next &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 sm:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">Our Solution: The Innovative Drug HO-1197</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">HO-1197 has the potential to transform the existing liver cancer treatment paradigm based on pre-clinical data proving its unique mechanism of action and superior safety profile. Explore the pages below to learn more about HO-1197's advantages.</p>
+                </div>
+
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="solution-carousel" class="relative">
+                        <!-- Page 1 -->
+                        <div class="page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 1: Key Value of HO-1197</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">🌿</div>
+                                    <p class="font-semibold text-lg">Novel Natural Medicine</p>
+                                    <p class="text-sm text-gray-600">Scientifically reconstituted Integrated Natural Medicine (INM)</p>
+                                </div>
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">🎯</div>
+                                    <p class="font-semibold text-lg">Exclusive Multi-modal MoA</p>
+                                    <p class="text-sm text-gray-600">Multi-pronged anti-cancer effects targeting FOXM1</p>
+                                </div>
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">✨</div>
+                                    <p class="font-semibold text-lg">Superior Safety</p>
+                                    <p class="text-sm text-gray-600">Minimized toxicity to normal hepatocytes</p>
+                                </div>
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">🛡️</div>
+                                    <p class="font-semibold text-lg">Overcomes Resistance</p>
+                                    <p class="text-sm text-gray-600">Eradicates cancer stem cells and shows combo synergy</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 2 -->
+                        <div class="page-content" data-page="2">
+                             <h3 class="text-2xl font-bold mb-4 text-center">Page 2: Key Target, FOXM1</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 directly inhibits FOXM1, the 'master regulator' of cancer proliferation, metastasis, and treatment resistance. This strategy disrupts the fundamental driving mechanism of the tumor.</p>
+                            <div class="w-full h-auto p-4 border rounded-lg flex justify-center items-center bg-gray-50">
+                                <p class="text-gray-700 font-mono text-center">
+                                    [HO-1197] Inhibition → [FOXM1] → (PLK1, TTK and other downstream signalling)<br>
+                                    ↓<br>
+                                    [Cell Cycle Arrest (G2/M Arrest)] + [Inhibition of Angiogenesis] + [Inhibition of Metastasis] + [Immune Activation]
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Page 3 -->
+                        <div class="page-content" data-page="3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 3: ROS-mediated DNA Damage</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 induces DNA damage by accumulating Reactive Oxygen Species (ROS) in cancer cells, which leads to apoptosis. This mechanism works independently of p53 mutation, making it effective even for tumors resistant to conventional therapies.</p>
+                            <div class="chart-container h-96">
+                                <canvas id="rosDamageChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Page 4 -->
+                        <div class="page-content" data-page="4">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 4: Cell Cycle Arrest</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 downregulates mitosis-related genes to stop cancer cell proliferation. Specifically, it induces G2/M phase cell cycle arrest, disrupting the division process of cancer cells.</p>
+                            <div class="chart-container h-96">
+                                <canvas id="cellCycleChart"></canvas>
+                            </div>
+                        </div>
+
+                         <!-- Page 5 -->
+                        <div class="page-content" data-page="5">
+                             <h3 class="text-2xl font-bold mb-4 text-center">Page 5: Anti-angiogenic and Anti-metastatic Properties</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 inhibits the formation of new blood vessels, which are essential for tumor growth, and reduces the migration and invasion capabilities of cancer cells, thereby preventing metastasis.</p>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="chart-container h-80">
+                                    <canvas id="tubeFormationChart"></canvas>
+                                </div>
+                                <div class="chart-container h-80">
+                                    <canvas id="migrationChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Page 6 -->
+                        <div class="page-content" data-page="6">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 6: Immunomodulatory Effects</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 not only directly attacks cancer cells but also enhances anti-cancer effects by activating the body's immune system.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="text-center p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">🛡️</div>
+                                    <h4 class="text-xl font-bold">M1 Macrophage Polarization</h4>
+                                    <p class="mt-2 text-gray-600">Reprograms tumor-promoting M2 macrophages into M1 macrophages that attack cancer cells.</p>
+                                </div>
+                                <div class="text-center p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">💥</div>
+                                    <h4 class="text-xl font-bold">NK Cell Activation</h4>
+                                    <p class="mt-2 text-gray-600">Selectively enhances the anti-cancer activity of Natural Killer (NK) cells, especially those with low baseline function.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Page 7 -->
+                        <div class="page-content" data-page="7">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 7: Superior Efficacy vs. Sorafenib</h3>
+                             <p class="text-center text-gray-600 mb-6">HO-1197 shows stronger anti-cancer activity at lower concentrations than Sorafenib, with a unique ability to eradicate cancer stem cells.</p>
+                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                                <div class="chart-container h-[450px]">
+                                    <canvas id="doseResponseChart"></canvas>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                                    <h4 class="text-xl font-bold mb-4">HO-1197 vs Sorafenib: Comparison Summary</h4>
+                                    <table class="w-full text-sm text-left text-gray-500">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">Feature</th>
+                                                <th scope="col" class="px-6 py-3 bg-blue-50">HO-1197</th>
+                                                <th scope="col" class="px-6 py-3 bg-red-50">Sorafenib</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white border-b">
+                                                <td class="px-6 py-4 font-medium">Anti-cancer Activity</td>
+                                                <td class="px-6 py-4 bg-blue-50">IC₅₀ 1-9.5mg/ml</td>
+                                                <td class="px-6 py-4 bg-red-50">Lower efficacy/selectivity</td>
+                                            </tr>
+                                            <tr class="bg-white border-b">
+                                                <td class="px-6 py-4 font-medium">Eradication of Cancer Stem Cells</td>
+                                                <td class="px-6 py-4 bg-blue-50">Complete eradication (CD133⁺)</td>
+                                                <td class="px-6 py-4 bg-red-50">Fails to eradicate</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="px-6 py-4 font-medium">Inhibition of Cell Migration</td>
+                                                <td class="px-6 py-4 bg-blue-50">Highly effective</td>
+                                                <td class="px-6 py-4 bg-red-50">Less effective</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Page 8 -->
+                        <div class="page-content" data-page="8">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 8: Overwhelming Safety Profile</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 was proven safe and non-toxic in pre-clinical toxicity studies. Its ability to selectively kill cancer cells without toxicity to normal hepatocytes is a significant advantage over existing treatments.</p>
+                            <div class="chart-container h-96">
+                                <canvas id="safetyChart"></canvas>
+                            </div>
+                        </div>
+
+                         <!-- Page 9 -->
+                        <div class="page-content" data-page="9">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 9: Synergy with Sorafenib</h3>
+                             <p class="text-center text-gray-600 mb-6">HO-1197 complements the limitations of Sorafenib monotherapy, maximizing efficacy and delaying treatment resistance through a powerful synergistic effect.</p>
+                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="text-xl font-bold">Synergistic Mechanism: FOXM1 Compensation</h4>
+                                    <p class="mt-2 text-gray-600">Sorafenib has been reported to paradoxically upregulate FOXM1, leading to treatment resistance. HO-1197 directly inhibits this FOXM1, providing a rational mechanism to enhance Sorafenib's efficacy and overcome resistance.</p>
+                                </div>
+                                <div class="chart-container h-80 md:h-96">
+                                    <canvas id="synergyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Page 10 -->
+                        <div class="page-content" data-page="10">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 10: Summary of Innovation</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ Exclusive Multi-modal MoA</h4>
+                                    <p class="text-sm text-gray-600">Controls cell cycle, metastasis, angiogenesis, and immunity by targeting FOXM1.</p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ Next-Generation Natural Medicine</h4>
+                                    <p class="text-sm text-gray-600">A scientifically validated 'Integrated Natural Medicine'.</p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ Superior Therapeutic Value</h4>
+                                    <p class="text-sm text-gray-600">Unique ability to eradicate cancer stem cells without toxicity to normal cells.</p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ Marketable Combination Strategy</h4>
+                                    <p class="text-sm text-gray-600">Complements existing therapies like Sorafenib by overcoming their limitations.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; Prev
+                            </button>
+                            <span id="page-counter" class="text-gray-600 font-semibold self-center">1 / 10</span>
+                            <button id="next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                Next &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="plan" class="py-16 sm:py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">Development and Funding Strategy</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">We have established a clear roadmap and a systematic funding strategy to ensure the successful clinical development of HO-1197. Navigate the pages below to explore each strategy in detail.</p>
+                </div>
+
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="plan-carousel" class="relative">
+                        <!-- Page 1: Clinical Development Roadmap -->
+                        <div class="plan-page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold text-center mb-6">Page 1: Clinical Development Roadmap</h3>
+                            <div class="relative wrap overflow-hidden p-10 h-full">
+                                <div class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border" style="left: 50%"></div>
+                                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Pre-IND (Q3 2025)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">FDA/MFDS meeting, GLP tox completion</p>
+                                    </div>
+                                </div>
+                                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Phase 1a/1b (2026)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">MTD, PK, PLK1 PD confirmation (n=30)</p>
+                                    </div>
+                                </div>
+                                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Phase 2 PoC (2027-28)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Efficacy in PLK1-high patients (n=120)</p>
+                                    </div>
+                                </div>
+                                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Phase 3 & Approval (2029-31)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Global Phase 3 and New Drug Application</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 2: Dual-Track Funding Strategy -->
+                        <div class="plan-page-content" data-page="2">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 2: Dual-Track Funding Strategy</h3>
+                            <p class="text-center text-gray-600 mb-6">We are implementing a hybrid strategy that leverages both public R&D grants and private VC investment to ensure successful clinical entry and minimize cash burn.</p>
+                            <div class="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
+                                <div class="p-6 border rounded-lg text-center shadow-sm w-full">
+                                    <div class="text-5xl text-[#4A90E2] mb-4">🏆</div>
+                                    <h4 class="font-bold text-xl mb-2">Public R&D (Track A)</h4>
+                                    <p class="text-sm text-gray-600">Technical validation & initial funding</p>
+                                </div>
+                                <div class="text-5xl text-[#333333] hidden md:block">&harr;</div>
+                                <div class="p-6 border rounded-lg text-center shadow-sm w-full">
+                                    <div class="text-5xl text-[#D08770] mb-4">💰</div>
+                                    <h4 class="font-bold text-xl mb-2">Private VC Investment (Track B)</h4>
+                                    <p class="text-sm text-gray-600">Large-scale clinical funding & growth network</p>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold">Funding Plan & Use of Funds</h4>
+                                <div class="overflow-x-auto mt-4">
+                                    <table class="w-full text-sm text-left text-gray-500">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">Source</th>
+                                                <th scope="col" class="px-6 py-3">Est. Amount (₩ Billion)</th>
+                                                <th scope="col" class="px-6 py-3">Key Use</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white border-b">
+                                                <td class="px-6 py-4 font-medium">Public R&D</td>
+                                                <td class="px-6 py-4">50</td>
+                                                <td class="px-6 py-4">Pre-IND costs, companion diagnostics</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="px-6 py-4 font-medium">Private VC</td>
+                                                <td class="px-6 py-4">750</td>
+                                                <td class="px-6 py-4">Phase 1a/1b trial costs, operations</td>
+                                            </tr>
+                                            <tr class="bg-white font-bold">
+                                                <td class="px-6 py-4">Total</td>
+                                                <td class="px-6 py-4">800</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 3: Value of Public R&D Funding -->
+                        <div class="plan-page-content" data-page="3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 3: Value of Public R&D Funding</h3>
+                            <p class="text-center text-gray-600 mb-6">Korean bio R&D support programs are more than just a source of funding; they are a critical tool for objective technical validation through rigorous evaluation.</p>
+                            <div class="overflow-x-auto mt-4">
+                                <h4 class="text-xl font-bold mb-2">Key Program Matching Conditions</h4>
+                                <table class="w-full text-sm text-left text-gray-500">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">Program Name</th>
+                                            <th scope="col" class="px-6 py-3">Development Phase</th>
+                                            <th scope="col" class="px-6 py-3">Gov't Contribution %</th>
+                                            <th scope="col" class="px-6 py-3">Private Cash %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4 font-medium">KDDF Clinical Dev.</td>
+                                            <td class="px-6 py-4">Phase 1, 2</td>
+                                            <td class="px-6 py-4">50%</td>
+                                            <td class="px-6 py-4">10%+ of private share</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="px-6 py-4 font-medium">SME TIPS (Deep Tech)</td>
+                                            <td class="px-6 py-4">Early-stage R&D</td>
+                                            <td class="px-6 py-4">80%</td>
+                                            <td class="px-6 py-4">10%+ of private share</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold mb-2">Strategic Value of Public R&D</h4>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>**Technical Validation Signal:** Passing a rigorous government review boosts confidence for private investors.</li>
+                                    <li>**Financial Flexibility:** In-kind contributions (e.g., personnel, equipment) can minimize actual cash outlay.</li>
+                                    <li>**Budget Efficiency:** Public funds can be used for CRO/CMO services, optimizing R&D spending.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Page 4: Private VC Investment Strategy -->
+                        <div class="plan-page-content" data-page="4">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 4: Private VC Investment Strategy</h3>
+                            <p class="text-center text-gray-600 mb-6">Leveraging the signal from public R&D, we will actively market the unique technical value of HO-1197 to successfully secure a large-scale Series A funding round.</p>
+                            <div class="overflow-x-auto mt-4">
+                                <h4 class="text-xl font-bold mb-2">Key Bio-focused VC Portfolio</h4>
+                                <table class="w-full text-sm text-left text-gray-500">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">VC Name</th>
+                                            <th scope="col" class="px-6 py-3">Key Investment Strategy</th>
+                                            <th scope="col" class="px-6 py-3">Strategic Fit with HO-1197</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4 font-medium">Korea Investment Partners</td>
+                                            <td class="px-6 py-4">Innovative tech, global expansion</td>
+                                            <td class="px-6 py-4">Large fund, expertise in global tech valuation</td>
+                                        </tr>
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4 font-medium">KB Investment</td>
+                                            <td class="px-6 py-4">Expanding overseas assets</td>
+                                            <td class="px-6 py-4">Aligns with Asia/emerging market strategy</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="px-6 py-4 font-medium">InterVest</td>
+                                            <td class="px-6 py-4">New Modalities, AI/Big Data synergy</td>
+                                            <td class="px-6 py-4">Matches multi-modal MoA and biomarker strategy</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold mb-2">Core Investment Message</h4>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>**Clear Market Opportunity:** High unmet medical need in the liver cancer market.</li>
+                                    <li>**Innovative MoA:** Multi-target mechanism that overcomes Sorafenib's limitations.</li>
+                                    <li>**Systematic Funding Plan:** Efficient cash-burn strategy linked with public R&D.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Page 5: Risk Mitigation & Team Capability -->
+                        <div class="plan-page-content" data-page="5">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 5: Risk Mitigation & Team Capability</h3>
+                            <p class="text-center text-gray-600 mb-6">We have a systematic management system to minimize technical and financial risks and maximize the project's probability of success.</p>
+                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">📉 Technical Risk Mitigation</h4>
+                                    <ul class="mt-2 list-disc list-inside text-sm text-gray-600 space-y-1">
+                                        <li>**Biomarker Kill-Signal:** Early termination of trials if PLK1 reduction is <50%.</li>
+                                        <li>**Adaptive Design:** Early identification of non-responders to efficiently manage cash burn.</li>
+                                    </ul>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">💰 Financial Risk Mitigation</h4>
+                                    <ul class="mt-2 list-disc list-inside text-sm text-gray-600 space-y-1">
+                                        <li>**Public-Private Linkage:** Reduced cash burn through public R&D and CMO/CRO alliances.</li>
+                                        <li>**Phased Funding:** Phased fundraising to match the required budget for each clinical stage.</li>
+                                    </ul>
+                                </div>
+                                 <div class="p-6 col-span-1 md:col-span-2 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">🤝 Strong Leadership Team</h4>
+                                    <ul class="mt-2 text-gray-600 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <li><span class="font-bold">CEO Jong-Min Park:</span> Natural product oncology & commercialization expert</li>
+                                        <li><span class="font-bold">CSO Haeng-Ran Seo:</span> FOXM1 biology expert</li>
+                                        <li><span class="font-bold">CMO Ji-Young Kim:</span> GI Oncology expert, National Cancer Center</li>
+                                        <li><span class="font-bold">CBO Gi-Woong Hyun:</span> Bio-venture funding expert</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="plan-prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; Prev
+                            </button>
+                            <span id="plan-page-counter" class="text-gray-600 font-semibold self-center">1 / 5</span>
+                            <button id="plan-next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                Next &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="py-16 sm:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">Market Opportunity & EXIT Strategy</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">We offer an attractive value proposition to investors with vast market potential and a clear EXIT strategy. Navigate the pages below to explore our market strategy in detail.</p>
+                </div>
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="market-carousel" class="relative">
+                        <!-- Page 1: Market Penetration Strategy -->
+                        <div class="market-page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 1: Market Penetration Strategy</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197 plans to penetrate the global market with a dual-track strategy of monotherapy and combination therapy to rapidly gain market share.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">Monotherapy</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>Primary target: Asia and low-income countries</li>
+                                        <li>Positioned as a cost-effective '1.5-line' treatment due to low toxicity</li>
+                                    </ul>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">Combination Therapy</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>Leverages the existing market share of Sorafenib</li>
+                                        <li>Rapid market entry as a '2nd-line treatment option' that overcomes resistance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page 2: Market Size & Projected Sales -->
+                        <div class="market-page-content" data-page="2">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Page 2: Market Size & Projected Sales</h3>
+                            <p class="text-center text-gray-600 mb-6">We have projected potential sales based on HO-1197's market penetration strategy in the growing liver cancer market.</p>
+                            <div class="chart-container h-80 md:h-96">
+                                <canvas id="salesProjectionChart"></canvas>
+                            </div>
+                            <div class="flex justify-center items-center mt-4 text-center">
+                                <span class="font-semibold text-lg text-gray-800">2030 Total Projected Sales: </span>
+                                <span class="ml-2 text-2xl font-bold text-[#4A90E2]">~ $870 Million</span>
+                            </div>
+                        </div>
+
+                        <!-- Page 3: Exit Strategy -->
+                        <div class="market-page-content" data-page="3">
+                             <h3 class="text-2xl font-bold mb-4 text-center">Page 3: Exit Strategy</h3>
+                             <p class="text-center text-gray-600 mb-6">We have a clear and realistic exit strategy to maximize investor returns and company valuation.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">🤝</div>
+                                    <h4 class="text-xl font-bold mb-2">Short-Term EXIT (2028)</h4>
+                                    <p class="text-sm text-gray-600">Global licensing (L/O) after securing <span class="font-bold text-[#D08770]">Phase 2 PoC</span></p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">🚀</div>
+                                    <h4 class="text-xl font-bold mb-2">Long-Term EXIT (2029)</h4>
+                                    <p class="text-sm text-gray-600">Pursue <span class="font-bold text-[#D08770]">IPO</span> before entering Phase 3</p>
+                                </div>
+                            </div>
+                            <div class="mt-8 text-center">
+                                <span class="font-semibold text-lg text-gray-800">Estimated Valuation (Based on 2030 projected sales): </span>
+                                <span class="ml-2 text-2xl font-bold text-[#4A90E2]">~ $4.3 Billion (~₩5.8 Trillion)</span>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="market-prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; Prev
+                            </button>
+                            <span id="market-page-counter" class="text-gray-600 font-semibold self-center">1 / 3</span>
+                            <button id="market-next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                Next &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-2">H&O Biosis</h3>
+            <p>We are looking for strategic partners to innovate the liver cancer market.</p>
+            <p class="mt-4 text-sm text-gray-400">invest@hobiosis.com | 19-10 Jeongnam-sandan-ro, Hwaseong-si, Gyeonggi-do, Korea</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const marketData = {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                global: [3.67, 4.33, 5.10, 6.01, 7.09, 8.36, 9.81],
+                korea: [0.048, 0.057, 0.068, 0.082, 0.098, 0.117, 0.139]
+            };
+            const marketOpportunityData = {
+                labels: ['Global Liver Cancer Market'],
+                datasets: [{
+                    label: '2024 Market Size',
+                    data: [3.67],
+                    backgroundColor: '#4A90E2',
+                }, {
+                    label: '2030 Projected Market Size',
+                    data: [9.81],
+                    backgroundColor: '#D08770',
+                }]
+            };
+
+            const doseResponseData = {
+                labels: ['0.1', '0.5', '1', '2.5', '5', '10', '20', '40'],
+                datasets: [{
+                    label: 'HO-1197 (HCC Huh7)',
+                    data: [98, 95, 90, 60, 40, 15, 5, 2],
+                    borderColor: '#4A90E2',
+                    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }, {
+                    label: 'Sorafenib (HCC Huh7)',
+                    data: [99, 97, 94, 85, 70, 50, 30, 10],
+                    borderColor: '#F56565',
+                    backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }]
+            };
+
+             const safetyData = {
+                labels: ['0.1', '0.5', '1', '2.5', '5', '10', '20', '40'],
+                datasets: [{
+                    label: 'HO-1197 (Normal Hepatocytes Fa2N-4)',
+                    data: [100, 100, 100, 100, 100, 99, 98, 95],
+                    borderColor: '#48BB78',
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }, {
+                    label: 'Sorafenib (Normal Hepatocytes Fa2N-4)',
+                    data: [100, 98, 92, 80, 65, 45, 25, 8],
+                    borderColor: '#ECC94B',
+                    backgroundColor: 'rgba(236, 201, 75, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }]
+            };
+
+            const synergyData = {
+                labels: ['Sorafenib Alone', 'HO-1197 Alone', 'Combination Therapy'],
+                datasets: [{
+                    label: 'HCC Spheroid Size Reduction Rate',
+                    data: [45, 55, 85],
+                    backgroundColor: ['#F56565', '#4A90E2', '#48BB78'],
+                }]
+            };
+
+            const rosData = {
+                labels: ['HO-1197 0mg/ml', 'HO-1197 0.5mg/ml'],
+                datasets: [{
+                    label: 'ROS Accumulation (Relative Intensity)',
+                    data: [1, 5],
+                    backgroundColor: ['#A0AEC0', '#4A90E2'],
+                }]
+            };
+            
+            const cellCycleData = {
+                labels: ['Normal Cells (G2/M %)', 'HO-1197 1mg/ml (G2/M %)'],
+                datasets: [{
+                    label: 'Cell Cycle Arrest Rate',
+                    data: [23.38, 32.4],
+                    backgroundColor: ['#A0AEC0', '#4A90E2'],
+                }]
+            };
+
+            const tubeFormationData = {
+                labels: ['HO-1197 0mg/ml', 'HO-1197 0.5mg/ml'],
+                datasets: [{
+                    label: 'HUVEC Tube Formation Inhibition Rate',
+                    data: [0, 65],
+                    backgroundColor: ['#A0AEC0', '#4A90E2'],
+                }]
+            };
+
+            const migrationData = {
+                labels: ['Sorafenib 3μM', 'HO-1197 0.5mg/ml'],
+                datasets: [{
+                    label: 'HCC Cell Migration Inhibition Rate',
+                    data: [30, 60],
+                    backgroundColor: ['#F56565', '#4A90E2'],
+                }]
+            };
+
+            const salesProjectionData = {
+                labels: ['2028', '2029', '2030'],
+                datasets: [{
+                    label: 'Monotherapy (Global)',
+                    data: [0.19, 0.32, 0.49],
+                    backgroundColor: '#4A90E2',
+                }, {
+                    label: 'Combination Therapy (Global)',
+                    data: [0.12, 0.25, 0.38],
+                    backgroundColor: '#A0AEC0',
+                }]
+            };
+
+            const createChart = (ctx, type, data, options) => new Chart(ctx, { type, data, options });
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + (context.chart.canvas.id === 'marketGrowthChart' || context.chart.canvas.id === 'marketOpportunityChart' || context.chart.canvas.id === 'salesProjectionChart' ? 'B$' : (context.chart.canvas.id === 'synergyChart' || context.chart.canvas.id === 'safetyChart' || context.chart.canvas.id === 'doseResponseChart' || context.chart.canvas.id === 'rosDamageChart' || context.chart.canvas.id === 'cellCycleChart' || context.chart.canvas.id === 'tubeFormationChart' || context.chart.canvas.id === 'migrationChart' ? '%' : ''));
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + (this.chart.canvas.id === 'marketGrowthChart' || this.chart.canvas.id === 'marketOpportunityChart' || this.chart.canvas.id === 'salesProjectionChart' ? 'B$' : (this.chart.canvas.id === 'synergyChart' || this.chart.canvas.id === 'safetyChart' || this.chart.canvas.id === 'doseResponseChart' || this.chart.canvas.id === 'rosDamageChart' || this.chart.canvas.id === 'cellCycleChart' || this.chart.canvas.id === 'tubeFormationChart' || this.chart.canvas.id === 'migrationChart' ? '%' : ''));
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const renderCharts = () => {
+                if (document.getElementById('marketGrowthChart')) {
+                    createChart(document.getElementById('marketGrowthChart').getContext('2d'), 'line', {
+                        labels: marketData.labels,
+                        datasets: [{
+                            label: 'Global Market Size',
+                            data: marketData.global,
+                            borderColor: '#4A90E2',
+                            tension: 0.1
+                        }, {
+                            label: 'Korean Market Size',
+                            data: marketData.korea,
+                            borderColor: '#D08770',
+                            tension: 0.1
+                        }]
+                    }, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Liver Cancer Treatment Market Growth Projection (in B$)' } } });
+                }
+                 if (document.getElementById('marketOpportunityChart')) {
+                     createChart(document.getElementById('marketOpportunityChart').getContext('2d'), 'bar', marketOpportunityData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Global Liver Cancer Market Size Change (in B$)' } } });
+                }
+                 if (document.getElementById('doseResponseChart')) {
+                    createChart(document.getElementById('doseResponseChart').getContext('2d'), 'line', doseResponseData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'HO-1197 vs Sorafenib Dose-response (HCC Cell Survival %)' } }, scales: { y: { max: 105 } } });
+                }
+                if (document.getElementById('safetyChart')) {
+                    createChart(document.getElementById('safetyChart').getContext('2d'), 'line', safetyData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Toxicity Comparison on Normal Hepatocytes (%)' } }, scales: { y: { max: 105 } } });
+                }
+                if (document.getElementById('synergyChart')) {
+                    createChart(document.getElementById('synergyChart').getContext('2d'), 'bar', synergyData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Combination Therapy Synergy Effect (%)' } }, scales: { y: { max: 100 } } });
+                }
+                if (document.getElementById('rosDamageChart')) {
+                     createChart(document.getElementById('rosDamageChart').getContext('2d'), 'bar', rosData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'ROS Accumulation after HO-1197 Treatment (Relative Intensity)' } }, scales: { y: { max: 6 } } });
+                }
+                if (document.getElementById('cellCycleChart')) {
+                     createChart(document.getElementById('cellCycleChart').getContext('2d'), 'bar', cellCycleData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'G2/M Cell Cycle Arrest Rate (%)' } }, scales: { y: { max: 40 } } });
+                }
+                if (document.getElementById('tubeFormationChart')) {
+                     createChart(document.getElementById('tubeFormationChart').getContext('2d'), 'bar', tubeFormationData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Anti-angiogenic Activity: HUVEC Tube Formation Inhibition Rate (%)' } }, scales: { y: { max: 100 } } });
+                }
+                 if (document.getElementById('migrationChart')) {
+                     createChart(document.getElementById('migrationChart').getContext('2d'), 'bar', migrationData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Anti-metastatic Activity: HCC Cell Migration Inhibition Rate (%)' } }, scales: { y: { max: 100 } } });
+                }
+                if (document.getElementById('salesProjectionChart')) {
+                    createChart(document.getElementById('salesProjectionChart').getContext('2d'), 'bar', salesProjectionData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'HO-1197 Projected Sales (in B$)' } }, scales: { x: { stacked: true }, y: { stacked: true } } });
+                }
+            };
+
+            const showPage = (pageNumber, pages, prevButton, nextButton, pageCounter) => {
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                if (pages.length > 0) {
+                    pages[pageNumber - 1].classList.add('active');
+                    prevButton.disabled = pageNumber === 1;
+                    nextButton.disabled = pageNumber === pages.length;
+                    pageCounter.textContent = `${pageNumber} / ${pages.length}`;
+                }
+            };
+            
+            const initCarousels = () => {
+                let currentPageSolution = 1;
+                const totalPagesSolution = 10;
+                const pagesSolution = document.querySelectorAll('#solution-carousel .page-content');
+                const prevButtonSolution = document.getElementById('prev-page');
+                const nextButtonSolution = document.getElementById('next-page');
+                const pageCounterSolution = document.getElementById('page-counter');
+                
+                let currentPagePlan = 1;
+                const totalPagesPlan = 5;
+                const pagesPlan = document.querySelectorAll('#plan-carousel .plan-page-content');
+                const prevButtonPlan = document.getElementById('plan-prev-page');
+                const nextButtonPlan = document.getElementById('plan-next-page');
+                const pageCounterPlan = document.getElementById('plan-page-counter');
+
+                let currentPageMarket = 1;
+                const totalPagesMarket = 3;
+                const pagesMarket = document.querySelectorAll('#market-carousel .market-page-content');
+                const prevButtonMarket = document.getElementById('market-prev-page');
+                const nextButtonMarket = document.getElementById('market-next-page');
+                const pageCounterMarket = document.getElementById('market-page-counter');
+                
+                let currentPageChallenge = 1;
+                const totalPagesChallenge = 3;
+                const pagesChallenge = document.querySelectorAll('#challenge-carousel .challenge-page-content');
+                const prevButtonChallenge = document.getElementById('challenge-prev-page');
+                const nextButtonChallenge = document.getElementById('challenge-next-page');
+                const pageCounterChallenge = document.getElementById('challenge-page-counter');
+
+                prevButtonSolution.addEventListener('click', () => {
+                    if (currentPageSolution > 1) {
+                        currentPageSolution--;
+                        showPage(currentPageSolution, pagesSolution, prevButtonSolution, nextButtonSolution, pageCounterSolution);
+                    }
+                });
+                nextButtonSolution.addEventListener('click', () => {
+                    if (currentPageSolution < totalPagesSolution) {
+                        currentPageSolution++;
+                        showPage(currentPageSolution, pagesSolution, prevButtonSolution, nextButtonSolution, pageCounterSolution);
+                    }
+                });
+
+                prevButtonPlan.addEventListener('click', () => {
+                    if (currentPagePlan > 1) {
+                        currentPagePlan--;
+                        showPage(currentPagePlan, pagesPlan, prevButtonPlan, nextButtonPlan, pageCounterPlan);
+                    }
+                });
+                nextButtonPlan.addEventListener('click', () => {
+                    if (currentPagePlan < totalPagesPlan) {
+                        currentPagePlan++;
+                        showPage(currentPagePlan, pagesPlan, prevButtonPlan, nextButtonPlan, pageCounterPlan);
+                    }
+                });
+                
+                prevButtonMarket.addEventListener('click', () => {
+                    if (currentPageMarket > 1) {
+                        currentPageMarket--;
+                        showPage(currentPageMarket, pagesMarket, prevButtonMarket, nextButtonMarket, pageCounterMarket);
+                    }
+                });
+                nextButtonMarket.addEventListener('click', () => {
+                    if (currentPageMarket < totalPagesMarket) {
+                        currentPageMarket++;
+                        showPage(currentPageMarket, pagesMarket, prevButtonMarket, nextButtonMarket, pageCounterMarket);
+                    }
+                });
+
+                prevButtonChallenge.addEventListener('click', () => {
+                    if (currentPageChallenge > 1) {
+                        currentPageChallenge--;
+                        showPage(currentPageChallenge, pagesChallenge, prevButtonChallenge, nextButtonChallenge, pageCounterChallenge);
+                    }
+                });
+                nextButtonChallenge.addEventListener('click', () => {
+                    if (currentPageChallenge < totalPagesChallenge) {
+                        currentPageChallenge++;
+                        showPage(currentPageChallenge, pagesChallenge, prevButtonChallenge, nextButtonChallenge, pageCounterChallenge);
+                    }
+                });
+
+                showPage(currentPageSolution, pagesSolution, prevButtonSolution, nextButtonSolution, pageCounterSolution);
+                showPage(currentPagePlan, pagesPlan, prevButtonPlan, nextButtonPlan, pageCounterPlan);
+                showPage(currentPageMarket, pagesMarket, prevButtonMarket, nextButtonMarket, pageCounterMarket);
+                showPage(currentPageChallenge, pagesChallenge, prevButtonChallenge, nextButtonChallenge, pageCounterChallenge);
+            };
+
+            renderCharts();
+            initCarousels();
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            const headerHeight = document.getElementById('header').offsetHeight;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: `-${headerHeight}px 0px 0px 0px`, threshold: 0.4 });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
