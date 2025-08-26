@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HO-1197 대화형 투자 제안서 | H&O Biosis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Beige, Charcoal, Muted Teal, Light Grey) -->
+    <!-- Application Structure Plan: A thematic, non-linear SPA with a sticky top navigation for direct access to key sections: Home, The Challenge, Our Solution, Clinical/Funding Plan, and Market/Exit. The 'Our Solution' section now contains an internal 10-page carousel to detail the drug's mechanism and superiority. This paginated structure allows for a deep dive into the complex scientific data in a sequential, guided manner, ensuring comprehensive understanding without leaving the core section. -->
+    <!-- Visualization & Content Choices: Market size -> Goal: Show Change -> Line Chart (Chart.js) for trend visualization. Pre-clinical data (HO-1197 vs Sorafenib) -> Goal: Compare -> Interactive multi-line chart (Chart.js) for dose-response and a grouped bar chart for combo synergy, allowing direct visual comparison. Clinical/Funding plan -> Goal: Organize -> HTML/CSS timeline and flowchart for clarity on process and strategy. All visualizations are Canvas-based via Chart.js, ensuring no SVG/Mermaid is used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #333333;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #D08770;
+            border-bottom-color: #D08770;
+        }
+        .stat-card {
+            background-color: white;
+            border-left: 4px solid #4A90E2;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .plan-page-content {
+            display: none;
+        }
+        .plan-page-content.active {
+            display: block;
+        }
+        .market-page-content {
+            display: none;
+        }
+        .market-page-content.active {
+            display: block;
+        }
+        .challenge-page-content {
+            display: none;
+        }
+        .challenge-page-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-[#D08770]">H&O Biosis</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">요약</a>
+                        <a href="#challenge" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">시장 현황</a>
+                        <a href="#solution" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">솔루션: HO-1197</a>
+                        <a href="#plan" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">개발 및 자금 전략</a>
+                        <a href="#market" class="nav-link px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">시장 기회 및 EXIT</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="py-16 sm:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-[#333333]">
+                    HO-1197: 간암 시장의 패러다임을 바꿀 혁신 신약
+                </h1>
+                <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-600">
+                    ㈜H&O Biosis는 독보적인 다중 표적 기전의 경구용 간암 치료제 HO-1197 개발을 통해, 기존 치료의 한계를 극복하고 환자들에게 새로운 희망을 제공하고자 합니다.
+                </p>
+            </div>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">자금 조달 목표</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">800억 원</p>
+                        <p class="mt-1 text-sm text-gray-500">시리즈 A (임상 1a/1b)</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">핵심 파이프라인</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">HO-1197</p>
+                        <p class="mt-1 text-sm text-gray-500">FOXM1 다중 표적 저해제</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">주요 장점</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">> 4배</p>
+                        <p class="mt-1 text-sm text-gray-500">정상세포 대비 안전성</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700">잠재적 기업 가치</h3>
+                        <p class="mt-2 text-3xl font-bold text-[#4A90E2]">~5.8조 원</p>
+                        <p class="mt-1 text-sm text-gray-500">2030년 EXIT 기준</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenge" class="py-16 sm:py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">시장 현황: 시급한 미충족 의료 수요</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">간암은 전 세계적으로 높은 사망률을 보이며, 기존 치료법은 비용, 부작용, 내성 문제 등 명확한 한계를 가지고 있어 혁신적인 치료 옵션이 절실합니다. 아래 페이지를 넘기며 간암 시장의 현황을 자세히 살펴보세요.</p>
+                </div>
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="challenge-carousel" class="relative">
+                        <!-- 페이지 1: 간암 현황 -->
+                        <div class="challenge-page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 1: 간암 현황</h3>
+                            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div class="space-y-6">
+                                    <div class="p-6 border rounded-lg bg-gray-50">
+                                        <div class="text-4xl mb-3">🌍</div>
+                                        <h4 class="text-xl font-bold mb-2">전 세계 간암(HCC) 현황</h4>
+                                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                            <li>전 세계 암 사망 원인 3위</li>
+                                            <li>2024년 기준 신규 환자 87만 명, 사망자 76만 명</li>
+                                            <li>5년 생존율 20% 미만</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="chart-container h-80 md:h-96">
+                                    <canvas id="marketGrowthChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 2: 기존 표준 치료법의 한계 -->
+                        <div class="challenge-page-content" data-page="2">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 2: 기존 표준 치료법의 한계</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">소라페닙(Sorafenib)의 한계</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>CD133⁺ 암 줄기세포 제거에 실패하여 재발 위험 높음</li>
+                                        <li>정상 간세포에 대한 독성 문제</li>
+                                        <li>치료 내성 발생</li>
+                                    </ul>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">최신 병용 요법의 문제점</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>월 약 2만 달러의 고비용</li>
+                                        <li>높은 등급(Grade ≥ 3)의 심각한 부작용 동반</li>
+                                        <li>모든 환자에게 효과적이지 않음</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 3: 새로운 치료법의 시급성 -->
+                        <div class="challenge-page-content" data-page="3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 3: 새로운 치료법의 시급성</h3>
+                            <p class="text-center text-gray-600 mb-6">기존 치료법의 한계와 간암의 복잡한 특성으로 인해, 효과적인 저독성 신약 개발의 필요성이 점점 더 커지고 있습니다.</p>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold mb-2">시장 기회</h4>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>전 세계 간세포암 치료제 시장은 2030년까지 <span class="font-bold">17.9%의 연평균 성장률</span>을 기록할 전망입니다.</li>
+                                    <li>특히 아시아-태평양 및 저소득 국가에서 경구용, 저독성 치료제에 대한 수요가 높습니다.</li>
+                                </ul>
+                            </div>
+                            <div class="chart-container h-80 md:h-96 mt-8">
+                                <canvas id="marketOpportunityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="challenge-prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; 이전
+                            </button>
+                            <span id="challenge-page-counter" class="text-gray-600 font-semibold self-center">1 / 3</span>
+                            <button id="challenge-next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                다음 &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 sm:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">우리의 솔루션: 혁신 신약 HO-1197</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">HO-1197은 전임상 데이터로 입증된 독보적인 작용 기전과 우월한 안전성을 바탕으로 기존 간암 치료의 패러다임을 전환할 잠재력을 가지고 있습니다. 아래 페이지를 넘기며 HO-1197의 우수성을 자세히 확인해 보세요.</p>
+                </div>
+
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="solution-carousel" class="relative">
+                        <!-- 페이지 1 -->
+                        <div class="page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 1: HO-1197의 핵심 가치</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">🌿</div>
+                                    <p class="font-semibold text-lg">새로운 천연물 신약</p>
+                                    <p class="text-sm text-gray-600">과학적으로 재구성된 통합 천연 의약품(INM)</p>
+                                </div>
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">🎯</div>
+                                    <p class="font-semibold text-lg">독점적 다중 기전</p>
+                                    <p class="text-sm text-gray-600">FOXM1을 표적하는 다각적 항암 효과</p>
+                                </div>
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">✨</div>
+                                    <p class="font-semibold text-lg">우월한 안전성</p>
+                                    <p class="text-sm text-gray-600">정상 간세포에 대한 독성 최소화</p>
+                                </div>
+                                <div class="p-4 border rounded-lg text-center">
+                                    <div class="text-4xl mb-2">🛡️</div>
+                                    <p class="font-semibold text-lg">치료 저항성 극복</p>
+                                    <p class="text-sm text-gray-600">암 줄기세포 박멸 및 병용 시너지</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 2 -->
+                        <div class="page-content" data-page="2">
+                             <h3 class="text-2xl font-bold mb-4 text-center">페이지 2: 핵심 표적, FOXM1</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 암 증식, 전이 및 치료 저항성의 '마스터 조절자'인 FOXM1을 직접적으로 억제합니다. 이는 종양의 근본적인 구동 메커니즘을 파괴하는 전략입니다.</p>
+                            <div class="w-full h-auto p-4 border rounded-lg flex justify-center items-center bg-gray-50">
+                                <p class="text-gray-700 font-mono text-center">
+                                    [HO-1197] 抑制 → [FOXM1] → (PLK1, TTK 등 하위 신호 차단)<br>
+                                    ↓<br>
+                                    [세포주기 정지 (G2/M Arrest)] + [혈관신생 억제] + [전이 억제] + [면역 활성화]
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 3 -->
+                        <div class="page-content" data-page="3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 3: ROS 매개 DNA 손상 유도</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 암세포 내 반응성 산소종(ROS)을 축적시켜 DNA 손상을 유발하고, 이로 인해 암세포 자멸사(apoptosis)를 유도합니다. 이 기전은 p53 유전자 변이와 무관하게 작동하여, 기존 치료에 내성을 보이는 종양에도 효과적입니다.</p>
+                            <div class="chart-container h-96">
+                                <canvas id="rosDamageChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 4 -->
+                        <div class="page-content" data-page="4">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 4: 세포 주기 정지</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 유사 분열(mitosis) 관련 유전자를 하향 조절하여 암세포가 증식하는 것을 막습니다. 특히 G2/M기 세포 주기 정지를 유도함으로써 암세포의 분열 과정을 방해합니다.</p>
+                            <div class="chart-container h-96">
+                                <canvas id="cellCycleChart"></canvas>
+                            </div>
+                        </div>
+
+                         <!-- 페이지 5 -->
+                        <div class="page-content" data-page="5">
+                             <h3 class="text-2xl font-bold mb-4 text-center">페이지 5: 항혈관신생 및 항전이 특성</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 종양의 성장에 필수적인 혈관 생성을 억제하고, 암세포의 이동 및 침윤 능력을 감소시켜 전이를 막습니다.</p>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="chart-container h-80">
+                                    <canvas id="tubeFormationChart"></canvas>
+                                </div>
+                                <div class="chart-container h-80">
+                                    <canvas id="migrationChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- 페이지 6 -->
+                        <div class="page-content" data-page="6">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 6: 면역 조절 효과</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 단순히 암세포를 직접 공격하는 것을 넘어, 인체의 면역 시스템을 활성화시켜 항암 효과를 증강시킵니다.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="text-center p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">🛡️</div>
+                                    <h4 class="text-xl font-bold">M1 대식세포 분극화 촉진</h4>
+                                    <p class="mt-2 text-gray-600">종양 성장을 돕는 M2 대식세포를 항암 기능을 하는 M1 대식세포로 전환합니다.</p>
+                                </div>
+                                <div class="text-center p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">💥</div>
+                                    <h4 class="text-xl font-bold">NK 세포 활성화</h4>
+                                    <p class="mt-2 text-gray-600">특히 기능이 저하된 NK 세포의 암세포 사멸 능력을 선택적으로 강화합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- 페이지 7 -->
+                        <div class="page-content" data-page="7">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 7: 소라페닙 대비 우월한 효능</h3>
+                             <p class="text-center text-gray-600 mb-6">HO-1197은 소라페닙보다 낮은 농도에서 더 강력한 항암 활성을 보이며, 특히 암 줄기세포를 효과적으로 박멸하는 독보적인 능력을 가집니다.</p>
+                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                                <div class="chart-container h-[450px]">
+                                    <canvas id="doseResponseChart"></canvas>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                                    <h4 class="text-xl font-bold mb-4">HO-1197 vs 소라페닙 비교 요약</h4>
+                                    <table class="w-full text-sm text-left text-gray-500">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">특징</th>
+                                                <th scope="col" class="px-6 py-3 bg-blue-50">HO-1197</th>
+                                                <th scope="col" class="px-6 py-3 bg-red-50">소라페닙</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white border-b">
+                                                <td class="px-6 py-4 font-medium">항암 활성</td>
+                                                <td class="px-6 py-4 bg-blue-50">IC₅₀ 1-9.5mg/ml</td>
+                                                <td class="px-6 py-4 bg-red-50">효능/선택성 낮음</td>
+                                            </tr>
+                                            <tr class="bg-white border-b">
+                                                <td class="px-6 py-4 font-medium">암 줄기세포 박멸</td>
+                                                <td class="px-6 py-4 bg-blue-50">완전 박멸 (CD133⁺)</td>
+                                                <td class="px-6 py-4 bg-red-50">제거 실패</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="px-6 py-4 font-medium">세포 이동 억제</td>
+                                                <td class="px-6 py-4 bg-blue-50">매우 효과적</td>
+                                                <td class="px-6 py-4 bg-red-50">덜 효과적</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- 페이지 8 -->
+                        <div class="page-content" data-page="8">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 8: 압도적인 안전성 프로필</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 전임상 독성 연구에서 안전하고 무독성임이 입증되었습니다. 특히 정상 간세포에 대한 독성 없이 암세포만을 선택적으로 사멸하는 능력은 기존 치료제와 큰 차이를 보입니다.</p>
+                            <div class="chart-container h-96">
+                                <canvas id="safetyChart"></canvas>
+                            </div>
+                        </div>
+
+                         <!-- 페이지 9 -->
+                        <div class="page-content" data-page="9">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 9: 소라페닙과의 시너지 효과</h3>
+                             <p class="text-center text-gray-600 mb-6">HO-1197은 소라페닙 단독 요법의 한계를 보완하여, 강력한 시너지 효과를 통해 치료 저항성을 지연시키고 효능을 극대화합니다.</p>
+                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="text-xl font-bold">시너지 기전: FOXM1 상쇄</h4>
+                                    <p class="mt-2 text-gray-600">소라페닙은 역설적으로 FOXM1 상향 조절을 유도하여 치료 저항성을 유발할 수 있습니다. HO-1197은 이 FOXM1을 직접 억제함으로써 소라페닙의 효능을 강화하고 내성을 극복하는 합리적인 기전을 가집니다.</p>
+                                </div>
+                                <div class="chart-container h-80 md:h-96">
+                                    <canvas id="synergyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- 페이지 10 -->
+                        <div class="page-content" data-page="10">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 10: 혁신성 요약</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ 독점적 다중 기전</h4>
+                                    <p class="text-sm text-gray-600">FOXM1 표적을 통해 세포 주기, 전이, 혈관신생 및 면역을 동시에 제어합니다.</p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ 차세대 천연물 신약</h4>
+                                    <p class="text-sm text-gray-600">과학적 검증을 거쳐 재구성된 '통합 천연 의약품'입니다.</p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ 우월한 치료 가치</h4>
+                                    <p class="text-sm text-gray-600">정상 세포에 대한 독성 없이 암 줄기세포를 박멸하는 독보적 능력입니다.</p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">✔️ 시장성 높은 병용 전략</h4>
+                                    <p class="text-sm text-gray-600">소라페닙과의 시너지를 통해 기존 치료법의 한계를 보완합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; 이전
+                            </button>
+                            <span id="page-counter" class="text-gray-600 font-semibold self-center">1 / 10</span>
+                            <button id="next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                다음 &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="plan" class="py-16 sm:py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">개발 및 자금 조달 전략</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">HO-1197의 성공적인 임상 개발을 위해 명확한 로드맵과 체계적인 자금 조달 전략을 수립했습니다. 아래 페이지를 넘기며 각 전략을 자세히 살펴보세요.</p>
+                </div>
+
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="plan-carousel" class="relative">
+                        <!-- 페이지 1: 임상 개발 로드맵 -->
+                        <div class="plan-page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold text-center mb-6">페이지 1: 임상 개발 로드맵</h3>
+                            <div class="relative wrap overflow-hidden p-10 h-full">
+                                <div class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border" style="left: 50%"></div>
+                                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Pre-IND (2025년 3분기)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">FDA/MFDS 미팅, GLP 독성 시험 완료</p>
+                                    </div>
+                                </div>
+                                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Phase 1a/1b (2026년)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">MTD, PK, PLK1 PD 확인 (환자 30명)</p>
+                                    </div>
+                                </div>
+                                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Phase 2 PoC (2027-28년)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">PLK1-high 환자군 대상 유효성 입증 (n=120)</p>
+                                    </div>
+                                </div>
+                                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                                    <div class="order-1 w-5/12"></div>
+                                    <div class="z-20 flex items-center order-1 bg-[#4A90E2] shadow-xl w-8 h-8 rounded-full">
+                                        <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
+                                    </div>
+                                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                                        <h3 class="font-bold text-gray-800 text-xl">Phase 3 & 허가 (2029-31년)</h3>
+                                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">글로벌 3상 진행 및 신약 허가 신청</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 2: 이중 트랙(Dual-Track) 자금 조달 전략 -->
+                        <div class="plan-page-content" data-page="2">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 2: 이중 트랙(Dual-Track) 자금 조달 전략</h3>
+                            <p class="text-center text-gray-600 mb-6">성공적인 임상 진입과 자금 소모 최소화를 위해 공공 R&D와 민간 VC 투자를 상호 보완적으로 활용하는 하이브리드 전략을 실행합니다.</p>
+                            <div class="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
+                                <div class="p-6 border rounded-lg text-center shadow-sm w-full">
+                                    <div class="text-5xl text-[#4A90E2] mb-4">🏆</div>
+                                    <h4 class="font-bold text-xl mb-2">공공 R&D (Track A)</h4>
+                                    <p class="text-sm text-gray-600">기술력 공인 신호 & 초기 자금 확보</p>
+                                </div>
+                                <div class="text-5xl text-[#333333] hidden md:block">&harr;</div>
+                                <div class="p-6 border rounded-lg text-center shadow-sm w-full">
+                                    <div class="text-5xl text-[#D08770] mb-4">💰</div>
+                                    <h4 class="font-bold text-xl mb-2">민간 VC 투자 (Track B)</h4>
+                                    <p class="text-sm text-gray-600">대규모 임상 자금 & 성장 네트워크 확보</p>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold">자금 조달 및 사용 계획</h4>
+                                <div class="overflow-x-auto mt-4">
+                                    <table class="w-full text-sm text-left text-gray-500">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">자금원</th>
+                                                <th scope="col" class="px-6 py-3">예상 금액 (억 원)</th>
+                                                <th scope="col" class="px-6 py-3">주요 용도</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white border-b">
+                                                <td class="px-6 py-4 font-medium">공공 R&D</td>
+                                                <td class="px-6 py-4">50</td>
+                                                <td class="px-6 py-4">Pre-IND 비용, 동반진단 개발</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="px-6 py-4 font-medium">민간 VC</td>
+                                                <td class="px-6 py-4">750</td>
+                                                <td class="px-6 py-4">임상 1a/1b 시험 진행, 운영 자금</td>
+                                            </tr>
+                                            <tr class="bg-white font-bold">
+                                                <td class="px-6 py-4">총계</td>
+                                                <td class="px-6 py-4">800</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 3: 공공 R&D 활용의 가치 -->
+                        <div class="plan-page-content" data-page="3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 3: 공공 R&D 활용 전략</h3>
+                            <p class="text-center text-gray-600 mb-6">국내 바이오 R&D 지원 정책은 단순한 자금 지원을 넘어, 엄격한 심사를 통해 기술력을 객관적으로 검증하는 중요한 수단입니다.</p>
+                            <div class="overflow-x-auto mt-4">
+                                <h4 class="text-xl font-bold mb-2">주요 프로그램 매칭 조건 비교</h4>
+                                <table class="w-full text-sm text-left text-gray-500">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">프로그램명</th>
+                                            <th scope="col" class="px-6 py-3">지원 대상 단계</th>
+                                            <th scope="col" class="px-6 py-3">정부출연금 비율</th>
+                                            <th scope="col" class="px-6 py-3">민간 현금 부담금</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4 font-medium">KDDF 신약 임상개발</td>
+                                            <td class="px-6 py-4">임상 1상, 2상</td>
+                                            <td class="px-6 py-4">50%</td>
+                                            <td class="px-6 py-4">민간부담금의 10% 이상</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="px-6 py-4 font-medium">중기부 TIPS (딥테크)</td>
+                                            <td class="px-6 py-4">초기 기술 개발</td>
+                                            <td class="px-6 py-4">80%</td>
+                                            <td class="px-6 py-4">민간부담금의 10% 이상</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold mb-2">공공 R&D가 제공하는 전략적 가치</h4>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>**기술력 공인 신호:** 엄격한 심사를 통과하여 민간 투자자에게 프로젝트의 신뢰도를 높입니다.</li>
+                                    <li>**재무적 유연성 확보:** 민간 부담금을 현금과 현물로 구성하여 실제 현금 소모를 최소화합니다.</li>
+                                    <li>**자금 집행 효율성:** CMO/CRO 제휴 비용을 공공 연구비로 충당하여 예산 효율을 극대화합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 페이지 4: 민간 VC 투자 전략 -->
+                        <div class="plan-page-content" data-page="4">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 4: 민간 VC 투자 전략</h3>
+                            <p class="text-center text-gray-600 mb-6">공공 R&D의 신호를 바탕으로 HO-1197의 독보적인 기술 가치를 적극적으로 어필하여 대규모 시리즈 A 펀딩을 성공적으로 유치합니다.</p>
+                            <div class="overflow-x-auto mt-4">
+                                <h4 class="text-xl font-bold mb-2">주요 바이오 전문 VC 포트폴리오</h4>
+                                <table class="w-full text-sm text-left text-gray-500">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">VC명</th>
+                                            <th scope="col" class="px-6 py-3">주요 투자 전략</th>
+                                            <th scope="col" class="px-6 py-3">HO-1197과의 전략적 연관성</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4 font-medium">한국투자파트너스</td>
+                                            <td class="px-6 py-4">혁신 기술 기반, 글로벌 시장 확장</td>
+                                            <td class="px-6 py-4">대규모 펀드 운용, 글로벌 기술 평가 전문성</td>
+                                        </tr>
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4 font-medium">KB인베스트먼트</td>
+                                            <td class="px-6 py-4">해외 투자 확대</td>
+                                            <td class="px-6 py-4">아시아/신흥국 시장 선점 전략과 부합</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="px-6 py-4 font-medium">인터베스트</td>
+                                            <td class="px-6 py-4">New Modalities, AI/빅데이터 융합</td>
+                                            <td class="px-6 py-4">다중 기전, 바이오마커 기반 정밀의료 전략과 일치</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-xl font-bold mb-2">투자 유치 핵심 메시지</h4>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>**명확한 시장 기회:** 미충족 의료 수요가 높은 간암 시장.</li>
+                                    <li>**혁신 기전:** 소라페닙의 한계를 극복하는 다중 표적 기전.</li>
+                                    <li>**체계적 자금 계획:** 공공 R&D와 연계된 효율적인 자금 소모 전략.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 5: 리스크 완화 전략 및 팀 역량 -->
+                        <div class="plan-page-content" data-page="5">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 5: 리스크 완화 전략 및 팀 역량</h3>
+                            <p class="text-center text-gray-600 mb-6">기술적, 재무적 리스크를 최소화하고 프로젝트 성공 가능성을 극대화하는 체계적인 관리 시스템을 갖추고 있습니다.</p>
+                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">📉 기술적 리스크 완화</h4>
+                                    <ul class="mt-2 list-disc list-inside text-sm text-gray-600 space-y-1">
+                                        <li>**Biomarker Kill-Signal:** PLK1 감소율 50% 미만 시 임상 조기 중단.</li>
+                                        <li>**적응형 설계:** 비반응 환자군을 조기 탐색하여 자금 소모를 효율적으로 관리.</li>
+                                    </ul>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">💰 재무적 리스크 완화</h4>
+                                    <ul class="mt-2 list-disc list-inside text-sm text-gray-600 space-y-1">
+                                        <li>**공공-민간 연계:** 공공 R&D와 CMO/CRO 제휴를 통한 현금 소모 절감.</li>
+                                        <li>**단계별 자금 확보:** 각 임상 단계별 필요한 자금 규모에 맞춰 펀딩 추진.</li>
+                                    </ul>
+                                </div>
+                                 <div class="p-6 col-span-1 md:col-span-2 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">🤝 강력한 리더십 팀</h4>
+                                    <ul class="mt-2 text-gray-600 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <li><span class="font-bold">박종민 CEO:</span> 천연물 항암 연구 & 사업화 전문가</li>
+                                        <li><span class="font-bold">서행란 CSO:</span> FOXM1 생물학 전문가</li>
+                                        <li><span class="font-bold">김지영 CMO:</span> 국립암센터 GI 종양내과 전문가</li>
+                                        <li><span class="font-bold">현기웅 CBO:</span> 바이오 벤처 투자 유치 전문가</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="plan-prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; 이전
+                            </button>
+                            <span id="plan-page-counter" class="text-gray-600 font-semibold self-center">1 / 5</span>
+                            <button id="plan-next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                다음 &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="py-16 sm:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight">시장 기회 및 EXIT 전략</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">막대한 시장 잠재력과 명확한 EXIT 전략을 통해 투자자에게 매력적인 가치 제안을 제공합니다. 아래 페이지를 넘기며 HO-1197의 시장 전략을 자세히 살펴보세요.</p>
+                </div>
+                <div class="mt-10 bg-white p-8 rounded-lg shadow-md">
+                    <div id="market-carousel" class="relative">
+                        <!-- 페이지 1: 시장 침투 전략 -->
+                        <div class="market-page-content active" data-page="1">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 1: 시장 침투 전략</h3>
+                            <p class="text-center text-gray-600 mb-6">HO-1197은 단독 요법과 병용 요법이라는 투 트랙 전략으로 글로벌 시장에 침투하여 빠르게 시장 점유율을 확보할 계획입니다.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">단독 요법 (Monotherapy)</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>아시아 및 저소득 국가를 우선 공략</li>
+                                        <li>기존 치료제 대비 저독성을 활용한 비용 효율적 '1.5차 치료제'로 포지셔닝</li>
+                                    </ul>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <h4 class="text-xl font-bold mb-2">병용 요법 (Combination Therapy)</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                        <li>기존 표준 치료제인 소라페닙의 시장 점유율 활용</li>
+                                        <li>내성을 극복하는 '2차 치료 옵션'으로 빠른 시장 진입</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 2: 시장 규모 및 예상 매출 -->
+                        <div class="market-page-content" data-page="2">
+                            <h3 class="text-2xl font-bold mb-4 text-center">페이지 2: 시장 규모 및 예상 매출</h3>
+                            <p class="text-center text-gray-600 mb-6">성장하는 간암 시장에서 HO-1197의 시장 침투 전략에 따른 잠재적 매출을 예측했습니다.</p>
+                            <div class="chart-container h-80 md:h-96">
+                                <canvas id="salesProjectionChart"></canvas>
+                            </div>
+                            <div class="flex justify-center items-center mt-4 text-center">
+                                <span class="font-semibold text-lg text-gray-800">2030년 예상 총 매출: </span>
+                                <span class="ml-2 text-2xl font-bold text-[#4A90E2]">약 8.7억 달러</span>
+                            </div>
+                        </div>
+
+                        <!-- 페이지 3: 투자 출구(Exit) 전략 -->
+                        <div class="market-page-content" data-page="3">
+                             <h3 class="text-2xl font-bold mb-4 text-center">페이지 3: 투자 출구(Exit) 전략</h3>
+                             <p class="text-center text-gray-600 mb-6">투자 회수 및 기업 가치 극대화를 위한 명확하고 현실적인 출구 전략을 수립했습니다.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">🤝</div>
+                                    <h4 class="text-xl font-bold mb-2">단기 EXIT (2028년)</h4>
+                                    <p class="text-sm text-gray-600">임상 2상 PoC 확보 후 <span class="font-bold text-[#D08770]">글로벌 제약사에 기술이전(L/O)</span></p>
+                                </div>
+                                <div class="p-6 border rounded-lg bg-gray-50">
+                                    <div class="text-4xl mb-3">🚀</div>
+                                    <h4 class="text-xl font-bold mb-2">장기 EXIT (2029년)</h4>
+                                    <p class="text-sm text-gray-600">임상 3상 진입 전 <span class="font-bold text-[#D08770]">IPO(기업공개)</span> 추진</p>
+                                </div>
+                            </div>
+                            <div class="mt-8 text-center">
+                                <span class="font-semibold text-lg text-gray-800">예상 기업 가치 (2030년 예상 매출 기준): </span>
+                                <span class="ml-2 text-2xl font-bold text-[#4A90E2]">~5.8조 원 (약 43억 달러)</span>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between mt-8">
+                            <button id="market-prev-page" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; 이전
+                            </button>
+                            <span id="market-page-counter" class="text-gray-600 font-semibold self-center">1 / 3</span>
+                            <button id="market-next-page" class="bg-[#D08770] text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-[#A66C55] transition-colors">
+                                다음 &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold mb-2">H&O Biosis</h3>
+            <p>간암 시장의 혁신을 함께할 전략적 파트너를 기다립니다.</p>
+            <p class="mt-4 text-sm text-gray-400">invest@hobiosis.com | 경기도 화성시 정남산단로 19-10</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const marketData = {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                global: [3.67, 4.33, 5.10, 6.01, 7.09, 8.36, 9.81],
+                korea: [0.048, 0.057, 0.068, 0.082, 0.098, 0.117, 0.139]
+            };
+            const marketOpportunityData = {
+                labels: ['글로벌 간암 시장'],
+                datasets: [{
+                    label: '2024년 시장 규모',
+                    data: [3.67],
+                    backgroundColor: '#4A90E2',
+                }, {
+                    label: '2030년 예상 시장 규모',
+                    data: [9.81],
+                    backgroundColor: '#D08770',
+                }]
+            };
+
+            const doseResponseData = {
+                labels: ['0.1', '0.5', '1', '2.5', '5', '10', '20', '40'],
+                datasets: [{
+                    label: 'HO-1197 (HCC Huh7)',
+                    data: [98, 95, 90, 60, 40, 15, 5, 2],
+                    borderColor: '#4A90E2',
+                    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }, {
+                    label: 'Sorafenib (HCC Huh7)',
+                    data: [99, 97, 94, 85, 70, 50, 30, 10],
+                    borderColor: '#F56565',
+                    backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }]
+            };
+
+             const safetyData = {
+                labels: ['0.1', '0.5', '1', '2.5', '5', '10', '20', '40'],
+                datasets: [{
+                    label: 'HO-1197 (정상세포 Fa2N-4)',
+                    data: [100, 100, 100, 100, 100, 99, 98, 95],
+                    borderColor: '#48BB78',
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }, {
+                    label: 'Sorafenib (정상세포 Fa2N-4)',
+                    data: [100, 98, 92, 80, 65, 45, 25, 8],
+                    borderColor: '#ECC94B',
+                    backgroundColor: 'rgba(236, 201, 75, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                }]
+            };
+
+            const synergyData = {
+                labels: ['소라페닙 단독', 'HO-1197 단독', '병용 요법'],
+                datasets: [{
+                    label: 'HCC Spheroid 크기 감소율',
+                    data: [45, 55, 85],
+                    backgroundColor: ['#F56565', '#4A90E2', '#48BB78'],
+                }]
+            };
+
+            const rosData = {
+                labels: ['HO-1197 0mg/ml', 'HO-1197 0.5mg/ml'],
+                datasets: [{
+                    label: 'ROS 축적(상대적 강도)',
+                    data: [1, 5],
+                    backgroundColor: ['#A0AEC0', '#4A90E2'],
+                }]
+            };
+            
+            const cellCycleData = {
+                labels: ['정상세포 (G2/M %)', 'HO-1197 1mg/ml (G2/M %)'],
+                datasets: [{
+                    label: '세포 주기 정지 비율',
+                    data: [23.38, 32.4],
+                    backgroundColor: ['#A0AEC0', '#4A90E2'],
+                }]
+            };
+
+            const tubeFormationData = {
+                labels: ['HO-1197 0mg/ml', 'HO-1197 0.5mg/ml'],
+                datasets: [{
+                    label: 'HUVEC 모세혈관 형성 억제율',
+                    data: [0, 65],
+                    backgroundColor: ['#A0AEC0', '#4A90E2'],
+                }]
+            };
+
+            const migrationData = {
+                labels: ['소라페닙 3μM', 'HO-1197 0.5mg/ml'],
+                datasets: [{
+                    label: 'HCC세포 이동 억제율',
+                    data: [30, 60],
+                    backgroundColor: ['#F56565', '#4A90E2'],
+                }]
+            };
+
+            const salesProjectionData = {
+                labels: ['2028', '2029', '2030'],
+                datasets: [{
+                    label: '단독 요법 (Global)',
+                    data: [0.19, 0.32, 0.49],
+                    backgroundColor: '#4A90E2',
+                }, {
+                    label: '병용 요법 (Global)',
+                    data: [0.12, 0.25, 0.38],
+                    backgroundColor: '#A0AEC0',
+                }]
+            };
+
+            const createChart = (ctx, type, data, options) => new Chart(ctx, { type, data, options });
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + (context.chart.canvas.id === 'marketGrowthChart' || context.chart.canvas.id === 'marketOpportunityChart' || context.chart.canvas.id === 'salesProjectionChart' ? '억$' : (context.chart.canvas.id === 'synergyChart' || context.chart.canvas.id === 'safetyChart' || context.chart.canvas.id === 'doseResponseChart' || context.chart.canvas.id === 'rosDamageChart' || context.chart.canvas.id === 'cellCycleChart' || context.chart.canvas.id === 'tubeFormationChart' || context.chart.canvas.id === 'migrationChart' ? '%' : ''));
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + (this.chart.canvas.id === 'marketGrowthChart' || this.chart.canvas.id === 'marketOpportunityChart' || this.chart.canvas.id === 'salesProjectionChart' ? '억$' : (this.chart.canvas.id === 'synergyChart' || this.chart.canvas.id === 'safetyChart' || this.chart.canvas.id === 'doseResponseChart' || this.chart.canvas.id === 'rosDamageChart' || this.chart.canvas.id === 'cellCycleChart' || this.chart.canvas.id === 'tubeFormationChart' || this.chart.canvas.id === 'migrationChart' ? '%' : ''));
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const renderCharts = () => {
+                if (document.getElementById('marketGrowthChart')) {
+                    createChart(document.getElementById('marketGrowthChart').getContext('2d'), 'line', {
+                        labels: marketData.labels,
+                        datasets: [{
+                            label: '글로벌 시장 규모',
+                            data: marketData.global,
+                            borderColor: '#4A90E2',
+                            tension: 0.1
+                        }, {
+                            label: '한국 시장 규모',
+                            data: marketData.korea,
+                            borderColor: '#D08770',
+                            tension: 0.1
+                        }]
+                    }, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: '간암 치료제 시장 성장 전망 (단위: 억 달러)' } } });
+                }
+                 if (document.getElementById('marketOpportunityChart')) {
+                     createChart(document.getElementById('marketOpportunityChart').getContext('2d'), 'bar', marketOpportunityData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: '글로벌 간암 시장 규모 변화 (단위: 억 달러)' } } });
+                }
+                 if (document.getElementById('doseResponseChart')) {
+                    createChart(document.getElementById('doseResponseChart').getContext('2d'), 'line', doseResponseData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'HO-1197 vs 소라페닙 농도별 HCC 세포 생존율 (%)' } }, scales: { y: { max: 105 } } });
+                }
+                if (document.getElementById('safetyChart')) {
+                    createChart(document.getElementById('safetyChart').getContext('2d'), 'line', safetyData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: '정상 간세포에 대한 독성 비교 (%)' } }, scales: { y: { max: 105 } } });
+                }
+                if (document.getElementById('synergyChart')) {
+                    createChart(document.getElementById('synergyChart').getContext('2d'), 'bar', synergyData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: '병용 요법 시너지 효과 (%)' } }, scales: { y: { max: 100 } } });
+                }
+                if (document.getElementById('rosDamageChart')) {
+                     createChart(document.getElementById('rosDamageChart').getContext('2d'), 'bar', rosData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'HO-1197 처리 후 ROS 축적 (상대적 강도)' } }, scales: { y: { max: 6 } } });
+                }
+                if (document.getElementById('cellCycleChart')) {
+                     createChart(document.getElementById('cellCycleChart').getContext('2d'), 'bar', cellCycleData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'G2/M기 세포 주기 정지율 (%)' } }, scales: { y: { max: 40 } } });
+                }
+                if (document.getElementById('tubeFormationChart')) {
+                     createChart(document.getElementById('tubeFormationChart').getContext('2d'), 'bar', tubeFormationData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: '항혈관신생 활성: HUVEC 모세혈관 형성 억제율 (%)' } }, scales: { y: { max: 100 } } });
+                }
+                 if (document.getElementById('migrationChart')) {
+                     createChart(document.getElementById('migrationChart').getContext('2d'), 'bar', migrationData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: '항전이 활성: HCC 세포 이동 억제율 (%)' } }, scales: { y: { max: 100 } } });
+                }
+                if (document.getElementById('salesProjectionChart')) {
+                    createChart(document.getElementById('salesProjectionChart').getContext('2d'), 'bar', salesProjectionData, { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'HO-1197 예상 매출액 (단위: 억 달러)' } }, scales: { x: { stacked: true }, y: { stacked: true } } });
+                }
+            };
+
+            const showPage = (pageNumber, pages, prevButton, nextButton, pageCounter) => {
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                if (pages.length > 0) {
+                    pages[pageNumber - 1].classList.add('active');
+                    prevButton.disabled = pageNumber === 1;
+                    nextButton.disabled = pageNumber === pages.length;
+                    pageCounter.textContent = `${pageNumber} / ${pages.length}`;
+                }
+            };
+            
+            const initCarousels = () => {
+                let currentPageSolution = 1;
+                const totalPagesSolution = 10;
+                const pagesSolution = document.querySelectorAll('#solution-carousel .page-content');
+                const prevButtonSolution = document.getElementById('prev-page');
+                const nextButtonSolution = document.getElementById('next-page');
+                const pageCounterSolution = document.getElementById('page-counter');
+                
+                let currentPagePlan = 1;
+                const totalPagesPlan = 5;
+                const pagesPlan = document.querySelectorAll('#plan-carousel .plan-page-content');
+                const prevButtonPlan = document.getElementById('plan-prev-page');
+                const nextButtonPlan = document.getElementById('plan-next-page');
+                const pageCounterPlan = document.getElementById('plan-page-counter');
+
+                let currentPageMarket = 1;
+                const totalPagesMarket = 3;
+                const pagesMarket = document.querySelectorAll('#market-carousel .market-page-content');
+                const prevButtonMarket = document.getElementById('market-prev-page');
+                const nextButtonMarket = document.getElementById('market-next-page');
+                const pageCounterMarket = document.getElementById('market-page-counter');
+                
+                let currentPageChallenge = 1;
+                const totalPagesChallenge = 3;
+                const pagesChallenge = document.querySelectorAll('#challenge-carousel .challenge-page-content');
+                const prevButtonChallenge = document.getElementById('challenge-prev-page');
+                const nextButtonChallenge = document.getElementById('challenge-next-page');
+                const pageCounterChallenge = document.getElementById('challenge-page-counter');
+
+                prevButtonSolution.addEventListener('click', () => {
+                    if (currentPageSolution > 1) {
+                        currentPageSolution--;
+                        showPage(currentPageSolution, pagesSolution, prevButtonSolution, nextButtonSolution, pageCounterSolution);
+                    }
+                });
+                nextButtonSolution.addEventListener('click', () => {
+                    if (currentPageSolution < totalPagesSolution) {
+                        currentPageSolution++;
+                        showPage(currentPageSolution, pagesSolution, prevButtonSolution, nextButtonSolution, pageCounterSolution);
+                    }
+                });
+
+                prevButtonPlan.addEventListener('click', () => {
+                    if (currentPagePlan > 1) {
+                        currentPagePlan--;
+                        showPage(currentPagePlan, pagesPlan, prevButtonPlan, nextButtonPlan, pageCounterPlan);
+                    }
+                });
+                nextButtonPlan.addEventListener('click', () => {
+                    if (currentPagePlan < totalPagesPlan) {
+                        currentPagePlan++;
+                        showPage(currentPagePlan, pagesPlan, prevButtonPlan, nextButtonPlan, pageCounterPlan);
+                    }
+                });
+                
+                prevButtonMarket.addEventListener('click', () => {
+                    if (currentPageMarket > 1) {
+                        currentPageMarket--;
+                        showPage(currentPageMarket, pagesMarket, prevButtonMarket, nextButtonMarket, pageCounterMarket);
+                    }
+                });
+                nextButtonMarket.addEventListener('click', () => {
+                    if (currentPageMarket < totalPagesMarket) {
+                        currentPageMarket++;
+                        showPage(currentPageMarket, pagesMarket, prevButtonMarket, nextButtonMarket, pageCounterMarket);
+                    }
+                });
+
+                prevButtonChallenge.addEventListener('click', () => {
+                    if (currentPageChallenge > 1) {
+                        currentPageChallenge--;
+                        showPage(currentPageChallenge, pagesChallenge, prevButtonChallenge, nextButtonChallenge, pageCounterChallenge);
+                    }
+                });
+                nextButtonChallenge.addEventListener('click', () => {
+                    if (currentPageChallenge < totalPagesChallenge) {
+                        currentPageChallenge++;
+                        showPage(currentPageChallenge, pagesChallenge, prevButtonChallenge, nextButtonChallenge, pageCounterChallenge);
+                    }
+                });
+
+                showPage(currentPageSolution, pagesSolution, prevButtonSolution, nextButtonSolution, pageCounterSolution);
+                showPage(currentPagePlan, pagesPlan, prevButtonPlan, nextButtonPlan, pageCounterPlan);
+                showPage(currentPageMarket, pagesMarket, prevButtonMarket, nextButtonMarket, pageCounterMarket);
+                showPage(currentPageChallenge, pagesChallenge, prevButtonChallenge, nextButtonChallenge, pageCounterChallenge);
+            };
+
+            renderCharts();
+            initCarousels();
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            const headerHeight = document.getElementById('header').offsetHeight;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: `-${headerHeight}px 0px 0px 0px`, threshold: 0.4 });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
