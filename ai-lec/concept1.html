@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 정의 인포그래픽</title>
+    <title>AI 정의 인포그래픽 (이미지 활용)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -20,30 +20,28 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        .icon-container {
-            width: 80px;
-            height: 80px;
+        .profile-img {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: white;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="max-w-4xl w-full p-8">
+    <div class="max-w-5xl w-full p-8">
         <div class="text-center mb-12">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">인공지능 정의: 두 가지 관점</h1>
-            <p class="text-lg sm:text-xl text-gray-600">존 매카시와 가트너의 정의를 통해 AI를 이해합니다.</p>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">인공지능의 정의</h1>
+            <p class="text-lg sm:text-xl text-gray-600">제공된 자료를 바탕으로 AI의 핵심 개념을 시각적으로 정리합니다.</p>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- John McCarthy Definition Card -->
+            <!-- John McCarthy Card -->
             <div class="card p-8 flex flex-col items-center text-center">
-                <div class="icon-container bg-blue-500 mb-6">🧠</div>
+                <img src="https://placehold.co/150x150/d1d5db/4b5563?text=John+McCarthy" class="profile-img mb-6" alt="존 매카시 이미지">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">존 매카시의 정의</h2>
                 <p class="text-gray-600 text-sm italic mb-4">(AI 창시자)</p>
                 <div class="bg-blue-50 bg-opacity-70 p-6 rounded-xl border-2 border-blue-200">
@@ -58,9 +56,9 @@
                 </p>
             </div>
             
-            <!-- Gartner Definition Card -->
+            <!-- Gartner Card -->
             <div class="card p-8 flex flex-col items-center text-center">
-                <div class="icon-container bg-green-500 mb-6">🧑‍💻</div>
+                <img src="https://placehold.co/150x150/d1d5db/4b5563?text=Gartner" class="profile-img mb-6" alt="가트너 이미지">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">가트너의 정의</h2>
                 <p class="text-gray-600 text-sm italic mb-4">(IT 연구 및 자문 회사)</p>
                 <div class="bg-green-50 bg-opacity-70 p-6 rounded-xl border-2 border-green-200">
