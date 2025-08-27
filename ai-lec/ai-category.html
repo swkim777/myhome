@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 용어 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .icon {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 text-gray-800">
+    <div class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+        <div class="bg-white bg-opacity-80 p-6 sm:p-10 rounded-3xl shadow-2xl max-w-7xl w-full backdrop-filter backdrop-blur-md">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-center text-gray-900 mb-4 animate-fade-in">인공지능 개념 구조</h1>
+            <p class="text-lg sm:text-xl text-center text-gray-600 mb-12 animate-fade-in-delay-1">AI의 다양한 종류와 하위 개념을 한눈에 살펴보세요.</p>
+
+            <div class="flex flex-col items-center">
+                <!-- AI (인공지능) Main Card -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105 mb-8 w-full md:w-1/2 lg:w-1/3">
+                    <div class="icon bg-blue-500 text-white mb-4">🤖</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">AI (인공지능)</h3>
+                    <p class="text-gray-600 text-base">인간의 지능을 모방하여 학습, 추론, 문제 해결 능력을 갖춘 컴퓨터 시스템.</p>
+                </div>
+            </div>
+
+            <!-- AI Scope Hierarchy -->
+            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-700 mt-8 mb-6">AI의 세 가지 범위</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-green-500 text-white mb-4">💡</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">약인공지능</h3>
+                    <p class="text-gray-600 text-sm">특정 작업을 수행하도록 설계된 AI. (예: 음성 인식, 이미지 분류)</p>
+                </div>
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-orange-500 text-white mb-4">🦾</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">강인공지능</h3>
+                    <p class="text-gray-600 text-sm">인간과 동등한 수준의 지능을 갖추고, 새로운 문제를 해결하거나 추론할 수 있는 AI.</p>
+                </div>
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-red-500 text-white mb-4">🌟</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">초인공지능</h3>
+                    <p class="text-gray-600 text-sm">인간의 지능을 훨씬 능가하는 지능을 가진 가상의 AI.</p>
+                </div>
+            </div>
+
+            <!-- AI Sub-fields Hierarchy -->
+            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-700 mt-8 mb-6">AI의 하위 분야</h2>
+            <div class="flex justify-center items-center w-full mb-12">
+                <div class="flex flex-col items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105 w-full md:w-1/2">
+                    <div class="icon bg-purple-500 text-white mb-4">🧠</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">기계 학습</h3>
+                    <p class="text-gray-600 text-base mb-4">명시적인 프로그래밍 없이 데이터로부터 학습하는 AI의 하위 분야.</p>
+                    <div class="w-full flex justify-center">
+                        <div class="flex flex-col items-center text-center p-4 bg-gray-50 rounded-2xl shadow-inner hover:shadow-md transition-shadow duration-300 transform hover:scale-105 mt-4 w-full">
+                            <div class="icon w-12 h-12 text-2xl bg-pink-500 text-white mb-2">🧬</div>
+                            <h4 class="text-xl font-bold text-gray-800 mb-1">심층 학습</h4>
+                            <p class="text-gray-600 text-sm">인공 신경망을 사용하는 기계 학습의 한 종류.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
