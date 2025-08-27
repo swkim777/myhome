@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio · 조원 — 개인 홈페이지</title>
+  <title>Jowon Portfolio</title>
   <meta name="description" content="AI·프로그래밍 엔지니어 & 작가 조원의 개인 홈페이지">
   <meta property="og:title" content="Portfolio · 조원 — 개인 홈페이지">
   <meta property="og:description" content="AI·프로그래밍 엔지니어 & 작가 조원의 개인 홈페이지">
@@ -96,13 +96,25 @@ a:hover{text-decoration:underline}
     <select id="portfolio-filter">
       <option value="all">전체</option>
       <option value="AI">AI</option>
-      <option value="Web">Web</option>
       <option value="Automation">Automation</option>
+      <option value="DB">DataBase</option>
+      <option value="Web">Web</option>
       <option value="Writing">Writing</option>
     </select>
   </label>
 </div>
 <div class="grid" id="portfolio-grid">
+  <article class="card" data-tags="AI,Automation">
+    <h3>주소관리도구 </h3>
+      <a class="brand" href="./addrbook.html"><span class="logo">∴</span> <span>Link</span></a>
+    <p>개인 주소를 관리해 주는 도구</p>
+    <ul class="tags"><li>AI</li><li>DB</li></ul>
+  </article>
+  <article class="card" data-tags="AI,Web">
+    <h3>주식 분석 챗봇</h3>
+    <p>실시간 시세·리스크 기반 의사결정.</p>
+    <ul class="tags"><li>AI</li><li>Web</li></ul>
+  </article>
   <article class="card" data-tags="AI,Automation">
     <h3>DXF 파이프라인</h3>
     <p>DWG→DXF 변환과 요소 추출 자동화.</p>
