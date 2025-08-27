@@ -3,77 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 정의 인포그래픽 (이미지 활용)</title>
+    <title>인공지능의 정의: 존 매카시와 가트너의 관점</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
         }
         .card {
-            background-color: #ffffff;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease-in-out;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
         }
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        .header-title {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .definition-box {
+            background-color: #e0f2fe;
+            border-left: 5px solid #3b82f6;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="p-4 sm:p-8">
 
-    <div class="max-w-5xl w-full p-8">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">인공지능의 정의</h1>
-            <p class="text-lg sm:text-xl text-gray-600">제공된 자료를 바탕으로 AI의 핵심 개념을 시각적으로 정리합니다.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="card p-8 flex flex-col items-center text-center">
-                <img src="https://drive.google.com/uc?export=view&id=1hnuQTFmrFK87ZcqPKZuhXxpvmHWVZnxp" alt="존 매카시 이미지" class="profile-img">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">존 매카시의 정의</h2>
-                <p class="text-gray-600 text-sm italic mb-4">(AI 창시자)</p>
-                <div class="bg-blue-50 bg-opacity-70 p-6 rounded-xl border-2 border-blue-200">
-                    <p class="text-gray-700 text-lg leading-relaxed">
-                        지능적인 기계를 만드는 과학 및 엔지니어링
-                    </p>
+    <!-- Main Container -->
+    <div class="container mx-auto p-4 bg-white rounded-2xl shadow-xl">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold header-title">
+                인공지능의 정의: 시대에 따른 관점의 변화
+            </h1>
+            <p class="mt-4 text-sm sm:text-base md:text-lg text-gray-600 font-medium">
+                인공지능의 최초 정의와 현대적 정의를 통해 그 발전 과정을 이해합니다.
+            </p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- John McCarthy Section -->
+            <section class="card p-6 md:p-8">
+                <div class="flex items-center space-x-4 mb-4">
+                    <img src="https://placehold.co/64x64/E0F2FE/3b82f6?text=JM" alt="John McCarthy" class="rounded-full w-16 h-16">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">존 매카시 (John McCarthy)</h2>
+                        <p class="text-sm text-gray-500">1956년, 다트머스 회의</p>
+                    </div>
                 </div>
-                <p class="text-gray-500 text-sm mt-4">
-                    과학적 연구와 공학적 실용성을 강조하는
-                    <br class="hidden sm:inline">
-                    기술 중심의 정의입니다.
-                </p>
-            </div>
-            
-            <div class="card p-8 flex flex-col items-center text-center">
-                <img src="https://drive.google.com/uc?export=view&id=1R_pp_0hbJus4YdBPJaVJQlA-X2s7pyOQ" alt="가트너 이미지" class="profile-img">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">가트너의 정의</h2>
-                <p class="text-gray-600 text-sm italic mb-4">(IT 연구 및 자문 회사)</p>
-                <div class="bg-green-50 bg-opacity-70 p-6 rounded-xl border-2 border-green-200">
-                    <p class="text-gray-700 text-lg leading-relaxed">
-                        사람과 자연스러운 대화를 나누고,<br>
-                        인간의 인지 능력을 향상시키거나,<br>
-                        반복적인 작업 수행 시 사람을 대체함으로써,<br>
-                        인간을 모방하는 기술
-                    </p>
+                <div class="definition-box p-4 rounded-lg">
+                    <p class="text-sm sm:text-base text-gray-800 font-semibold mb-2">정의 내용:</p>
+                    <blockquote class="text-gray-700 italic">
+                        "인간의 지능을 이해하고, 지능적인 기계를 만드는 과학 및 공학."
+                    </blockquote>
                 </div>
-                <p class="text-gray-500 text-sm mt-4">
-                    인간의 행동과 상호작용에 초점을 맞춘
-                    <br class="hidden sm:inline">
-                    실용성 중심의 정의입니다.
-                </p>
+                <div class="mt-4 text-gray-600 space-y-3 text-sm">
+                    <h3 class="font-bold text-lg">핵심 특징</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><span class="font-semibold text-gray-800">학문적 접근:</span> 인간 지능을 모방하는 것에 초점을 맞춘 순수 학문적, 이론적 목표.</li>
+                        <li><span class="font-semibold text-gray-800">초기 단계:</span> AI 연구의 시작을 알리는 광범위한 개념.</li>
+                        <li><span class="font-semibold text-gray-800">지능의 모방:</span> 기계가 인간처럼 사고하고 행동하는 능력에 대한 강조.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Gartner Section -->
+            <section class="card p-6 md:p-8">
+                <div class="flex items-center space-x-4 mb-4">
+                    <img src="https://placehold.co/64x64/E0F2FE/3b82f6?text=G" alt="Gartner" class="rounded-full w-16 h-16">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">가트너 (Gartner)</h2>
+                        <p class="text-sm text-gray-500">2020년대, 현대적 정의</p>
+                    </div>
+                </div>
+                <div class="definition-box p-4 rounded-lg">
+                    <p class="text-sm sm:text-base text-gray-800 font-semibold mb-2">정의 내용:</p>
+                    <blockquote class="text-gray-700 italic">
+                        "인간의 인지 기능을 모방하고, 주어진 작업을 자율적으로 수행하는 시스템."
+                    </blockquote>
+                </div>
+                <div class="mt-4 text-gray-600 space-y-3 text-sm">
+                    <h3 class="font-bold text-lg">핵심 특징</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><span class="font-semibold text-gray-800">실용적 접근:</span> 비즈니스와 산업에 적용 가능한 '자동화된 시스템'에 초점.</li>
+                        <li><span class="font-semibold text-gray-800">기술적 명확성:</span> '학습', '추론', '예측'과 같은 구체적인 기능을 포함.</li>
+                        <li><span class="font-semibold text-gray-800">자율적 수행:</span> 인간의 개입 없이 스스로 문제를 해결하고 작업을 처리하는 능력에 대한 강조.</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- Difference Section -->
+        <section class="mt-12 p-6 md:p-8 bg-gray-50 rounded-2xl shadow-inner">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">두 정의의 차이점</h2>
+            <div class="space-y-6 text-gray-700">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold">1</div>
+                    <div>
+                        <p class="font-semibold text-lg">관점의 변화: 이론적 → 실용적</p>
+                        <p class="mt-1 text-sm">
+                            <span class="font-bold text-blue-700">존 매카시</span>는 인공지능을 인간 지능을 모방하는 '학문'으로 정의한 반면, <span class="font-bold text-blue-700">가트너</span>는 인공지능을 특정 문제를 해결하는 '시스템'이라는 실용적인 관점에서 접근합니다.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold">2</div>
+                    <div>
+                        <p class="font-semibold text-lg">목표의 변화: 모방 → 자율</p>
+                        <p class="mt-1 text-sm">
+                            <span class="font-bold text-blue-700">존 매카시</span>의 정의는 인간과 유사한 지능을 '만드는 것'에 중점을 둔 반면, <span class="font-bold text-blue-700">가트너</span>의 정의는 기계가 인간의 도움 없이 '자율적으로 작업'을 수행하는 능력에 초점을 맞춥니다. 이는 기술 발전과 AI가 실제 산업에 적용되면서 나타난 변화입니다.
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
+
     </div>
+
 </body>
 </html>
