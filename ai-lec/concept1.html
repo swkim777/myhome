@@ -35,6 +35,16 @@
             background-color: #e0f2fe;
             border-left: 5px solid #3b82f6;
         }
+        .navigation-icon {
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            transition: transform 0.2s ease, fill 0.2s ease;
+        }
+        .navigation-icon:hover {
+            transform: scale(1.1);
+            fill: #1e3a8a;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8">
@@ -105,7 +115,7 @@
 
         <!-- Difference Section -->
         <section class="mt-12 p-6 md:p-8 bg-gray-50 rounded-2xl shadow-inner">
-            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">두 정의 차이점</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">두 정의의 차이점</h2>
             <div class="space-y-6 text-gray-700">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                     <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold">1</div>
@@ -127,6 +137,25 @@
                 </div>
             </div>
         </section>
+
+        <!-- Navigation Section -->
+        <footer class="mt-12 flex justify-center space-x-8">
+            <a href="left.html" title="이전 페이지">
+                <svg class="navigation-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+            </a>
+            <a href="https://bit.ly/AI-Play" title="홈">
+                <svg class="navigation-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+            </a>
+            <a href="right.html" title="다음 페이지">
+                <svg class="navigation-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                </svg>
+            </a>
+        </footer>
 
     </div>
 
