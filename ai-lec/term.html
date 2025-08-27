@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 용어 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 text-gray-800">
+    <div class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+        <div class="bg-white bg-opacity-80 p-6 sm:p-10 rounded-3xl shadow-2xl max-w-7xl w-full backdrop-filter backdrop-blur-md">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-center text-gray-900 mb-4 animate-fade-in">인공지능 핵심 용어</h1>
+            <p class="text-lg sm:text-xl text-center text-gray-600 mb-12 animate-fade-in-delay-1">AI의 복잡한 개념들을 한눈에 쉽게 이해하세요.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- AI (인공지능) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-blue-500 text-white mb-4 animate-pop-in">🤖</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">AI (인공지능)</h3>
+                    <p class="text-gray-600 text-base">인간의 지능을 모방하여 학습, 추론, 문제 해결 능력을 갖춘 컴퓨터 시스템.</p>
+                </div>
+                
+                <!-- Machine Learning (기계 학습) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-green-500 text-white mb-4 animate-pop-in">🧠</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">기계 학습</h3>
+                    <p class="text-gray-600 text-base">명시적인 프로그래밍 없이 데이터로부터 학습하는 AI의 하위 분야.</p>
+                </div>
+                
+                <!-- Deep Learning (심층 학습) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-purple-500 text-white mb-4 animate-pop-in">🧬</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">심층 학습</h3>
+                    <p class="text-gray-600 text-base">인간 뇌의 신경망을 모방한 인공 신경망을 사용하는 기계 학습의 한 종류.</p>
+                </div>
+
+                <!-- Neural Network (신경망) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-red-500 text-white mb-4 animate-pop-in">🕸️</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">신경망</h3>
+                    <p class="text-gray-600 text-base">상호 연결된 노드(뉴런)의 계층으로 구성된 컴퓨터 시스템 모델.</p>
+                </div>
+
+                <!-- Training Data (학습 데이터) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-yellow-500 text-white mb-4 animate-pop-in">📊</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">학습 데이터</h3>
+                    <p class="text-gray-600 text-base">모델이 패턴을 학습하고 예측을 수행하는 데 사용되는 정보의 집합.</p>
+                </div>
+
+                <!-- Algorithm (알고리즘) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-teal-500 text-white mb-4 animate-pop-in">⚙️</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">알고리즘</h3>
+                    <p class="text-gray-600 text-base">문제 해결 또는 계산을 위한 단계별 절차 또는 규칙의 집합.</p>
+                </div>
+
+                <!-- Natural Language Processing (자연어 처리) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-orange-500 text-white mb-4 animate-pop-in">💬</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">자연어 처리</h3>
+                    <p class="text-gray-600 text-base">컴퓨터가 인간의 언어를 이해, 해석, 생성하는 AI의 한 분야.</p>
+                </div>
+
+                <!-- Computer Vision (컴퓨터 비전) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-pink-500 text-white mb-4 animate-pop-in">👁️</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">컴퓨터 비전</h3>
+                    <p class="text-gray-600 text-base">컴퓨터가 이미지와 비디오에서 시각적 정보를 인식하고 이해하는 AI 분야.</p>
+                </div>
+
+                <!-- Large Language Model (거대 언어 모델) -->
+                <div class="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                    <div class="icon bg-cyan-500 text-white mb-4 animate-pop-in">📚</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">거대 언어 모델</h3>
+                    <p class="text-gray-600 text-base">대규모 텍스트 데이터 세트로 학습하여 인간과 유사한 텍스트를 생성하는 AI 모델.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+        .animate-fade-in-delay-1 { animation: fadeIn 1s ease-out 0.5s forwards; }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-pop-in { animation: popIn 0.8s ease-out forwards; }
+    </style>
+</body>
+</html>
