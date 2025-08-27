@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 주소록 관리 프로그램</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .spinner { border-top-color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 sm:p-8 flex items-center justify-center">
+
+<div class="bg-white rounded-3xl shadow-xl w-full max-w-5xl p-6 sm:p-8">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 sm:mb-0">
+            <i class="fas fa-address-book text-blue-500 mr-2"></i> 웹 주소록 관리
+        </h1>
+        <div class="flex space-x-2">
+            <button id="add-btn" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:bg-green-600 transition-all">
+                <i class="fas fa-plus-circle mr-1"></i> 추가
+            </button>
+            <button id="save-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:bg-blue-600 transition-all">
+                <i class="fas fa-save mr-1"></i> 저장
+            </button>
+        </div>
+    </div>
+
+    <!-- 로딩/상태 메시지 -->
+    <div id="status-message" class="text-center p-4 mb-4 rounded-lg text-gray-700 bg-gray-200 hidden">
+        <div class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500 hidden" id="status-spinner" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span id="status-text">데이터를 불러오는 중...</span>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl shadow-inner">
+        <table id="address-table" class="min-w-full bg-white">
+            <thead>
+                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <th class="py-3 px-6 text-left">이름</th>
+                    <th class="py-3 px-6 text-left">전화번호</th>
+                    <th class="py-3 px-6 text-left">분류</th>
+                    <th class="py-3 px-6 text-left">주소</th>
+                    <th class="py-3 px-6 text-center">작업</th>
+                </tr>
+            </thead>
+            <tbody id="address-table-body" class="text-gray-600 text-sm font-light">
+                <!-- Data will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- 모달 다이얼로그 -->
+<div id="modal-backdrop" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4">
+        <h2 id="modal-title" class="text-2xl font-bold text-gray-900 mb-4">새 주소록 항목</h2>
+        <div class="space-y-4">
+            <div>
+                <label for="modal-name" class="block text-sm font-medium text-gray-700">이름</label>
+                <input type="text" id="modal-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+            </div>
+            <div>
+                <label for="modal-phone" class="block text-sm font-medium text-gray-700">전화번호</label>
+                <input type="text" id="modal-phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+            </div>
+            <div>
+                <label for="modal-category" class="block text-sm font-medium text-gray-700">분류</label>
+                <input type="text" id="modal-category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+            </div>
+            <div>
+                <label for="modal-address" class="block text-sm font-medium text-gray-700">주소</label>
+                <input type="text" id="modal-address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+            </div>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+            <button id="modal-cancel-btn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">취소</button>
+            <button id="modal-save-btn" class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">저장</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Constants
+    const SPREADSHEET_ID = '1mPSAdyOVaOeM8H5cm2n0gKhxZoBLpz-7_d31ZwME3QQ';
+    const API_KEY = ""; // Canvas will inject this automatically
+
+    // DOM Elements
+    const tableBody = document.getElementById('address-table-body');
+    const addBtn = document.getElementById('add-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const statusMessage = document.getElementById('status-message');
+    const statusText = document.getElementById('status-text');
+    const statusSpinner = document.getElementById('status-spinner');
+    
+    // Modal Elements
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalTitle = document.getElementById('modal-title');
+    const modalName = document.getElementById('modal-name');
+    const modalPhone = document.getElementById('modal-phone');
+    const modalCategory = document.getElementById('modal-category');
+    const modalAddress = document.getElementById('modal-address');
+    const modalSaveBtn = document.getElementById('modal-save-btn');
+    const modalCancelBtn = document.getElementById('modal-cancel-btn');
+
+    let currentData = [];
+    let isEditing = false;
+    let editingIndex = -1;
+    let isSaving = false;
+
+    // Show status message with a spinner
+    const showStatus = (message, showSpinner = true) => {
+        statusText.textContent = message;
+        if (showSpinner) {
+            statusSpinner.classList.remove('hidden');
+        } else {
+            statusSpinner.classList.add('hidden');
+        }
+        statusMessage.classList.remove('hidden');
+    };
+
+    // Hide status message
+    const hideStatus = () => {
+        statusMessage.classList.add('hidden');
+    };
+
+    // Render the table from currentData
+    const renderTable = () => {
+        tableBody.innerHTML = '';
+        currentData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.classList.add('border-b', 'border-gray-200', 'hover:bg-gray-100');
+            tr.innerHTML = `
+                <td class="py-3 px-6 text-left whitespace-nowrap">${row.name}</td>
+                <td class="py-3 px-6 text-left">${row.phone}</td>
+                <td class="py-3 px-6 text-left">${row.category}</td>
+                <td class="py-3 px-6 text-left">${row.address}</td>
+                <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center space-x-2">
+                        <button class="edit-btn w-6 h-6 transform hover:text-purple-500 hover:scale-110 transition-transform" data-index="${index}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-btn w-6 h-6 transform hover:text-red-500 hover:scale-110 transition-transform" data-index="${index}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        // Add event listeners to edit and delete buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', handleEdit);
+        });
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', handleDelete);
+        });
+    };
+
+    // Fetch data from the Google Sheet
+    const fetchData = async () => {
+        showStatus('데이터를 불러오는 중...');
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&key=${API_KEY}`;
+        
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const text = await response.text();
+            const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+            const data = JSON.parse(jsonText);
+            
+            if (data && data.table && data.table.rows) {
+                // Assuming the order of columns is '이름', '전화번호', '분류', '주소'
+                currentData = data.table.rows.map(row => {
+                    const cells = row.c;
+                    return {
+                        name: cells[0] ? (cells[0].v || '') : '',
+                        phone: cells[1] ? (cells[1].v || '') : '',
+                        category: cells[2] ? (cells[2].v || '') : '',
+                        address: cells[3] ? (cells[3].v || '') : ''
+                    };
+                });
+                renderTable();
+                showStatus('데이터 로딩 완료!', false);
+                setTimeout(hideStatus, 2000);
+            } else {
+                showStatus('데이터 형식이 올바르지 않습니다.', false);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            showStatus('데이터 불러오기 실패. 공개된 스프레드시트인지 확인하세요.', false);
+        }
+    };
+
+    // Open the modal for adding/editing data
+    const openModal = (isEdit = false, index = -1) => {
+        isEditing = isEdit;
+        editingIndex = index;
+        modalTitle.textContent = isEditing ? '주소록 항목 수정' : '새 주소록 항목 추가';
+        if (isEditing) {
+            const row = currentData[index];
+            modalName.value = row.name;
+            modalPhone.value = row.phone;
+            modalCategory.value = row.category;
+            modalAddress.value = row.address;
+        } else {
+            modalName.value = '';
+            modalPhone.value = '';
+            modalCategory.value = '';
+            modalAddress.value = '';
+        }
+        modalBackdrop.classList.remove('hidden');
+        modalBackdrop.classList.add('flex');
+    };
+
+    // Close the modal
+    const closeModal = () => {
+        modalBackdrop.classList.add('hidden');
+        modalBackdrop.classList.remove('flex');
+    };
+
+    // Handle modal save button click
+    const handleModalSave = () => {
+        const name = modalName.value;
+        const phone = modalPhone.value;
+        const category = modalCategory.value;
+        const address = modalAddress.value;
+
+        if (name.trim() === '') {
+            showStatus('이름은 필수 입력 항목입니다.', false);
+            return;
+        }
+
+        const newData = { name, phone, category, address };
+
+        if (isEditing) {
+            currentData[editingIndex] = newData;
+        } else {
+            currentData.push(newData);
+        }
+
+        renderTable();
+        closeModal();
+    };
+
+    // Handle delete button click
+    const handleDelete = (event) => {
+        const index = parseInt(event.currentTarget.dataset.index);
+        currentData.splice(index, 1);
+        renderTable();
+    };
+
+    // Handle edit button click
+    const handleEdit = (event) => {
+        const index = parseInt(event.currentTarget.dataset.index);
+        openModal(true, index);
+    };
+
+    // Handle save button click to export data to Google Sheets
+    // Note: The `gviz/tq` API is for read-only.
+    // To write data, a different API (e.g., Google Sheets API with OAuth) is required.
+    // This function will only provide a message for now.
+    const handleSave = () => {
+        if (isSaving) return;
+        isSaving = true;
+        showStatus('데이터를 Google 스프레드시트에 저장 중입니다...', true);
+        
+        // This is a simulated save operation.
+        // Actual Google Sheets API writes would require OAuth2 authentication.
+        // This is not feasible in a simple client-side HTML file.
+        // A server-side component would be needed.
+        setTimeout(() => {
+            isSaving = false;
+            showStatus('데이터가 저장되었습니다. (실제 저장 기능은 서버 연동이 필요합니다)', false);
+            setTimeout(hideStatus, 3000);
+        }, 2000);
+    };
+
+    // Event Listeners
+    addBtn.addEventListener('click', () => openModal(false));
+    modalSaveBtn.addEventListener('click', handleModalSave);
+    modalCancelBtn.addEventListener('click', closeModal);
+    saveBtn.addEventListener('click', handleSave);
+
+    // Initial data load on page load
+    window.onload = fetchData;
+</script>
+</body>
+</html>
