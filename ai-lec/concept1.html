@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 정의 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-4xl w-full p-8">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">인공지능 정의: 두 가지 관점</h1>
+            <p class="text-lg sm:text-xl text-gray-600">존 매카시와 가트너의 정의를 통해 AI를 이해합니다.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- John McCarthy Definition Card -->
+            <div class="card p-8 flex flex-col items-center text-center">
+                <div class="icon-container bg-blue-500 mb-6">🧠</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">존 매카시의 정의</h2>
+                <p class="text-gray-600 text-sm italic mb-4">(AI 창시자)</p>
+                <div class="bg-blue-50 bg-opacity-70 p-6 rounded-xl border-2 border-blue-200">
+                    <p class="text-gray-700 text-lg leading-relaxed">
+                        지능적인 기계를 만드는 과학 및 엔지니어링
+                    </p>
+                </div>
+                <p class="text-gray-500 text-sm mt-4">
+                    과학적 연구와 공학적 실용성을 강조하는
+                    <br class="hidden sm:inline">
+                    기술 중심의 정의입니다.
+                </p>
+            </div>
+            
+            <!-- Gartner Definition Card -->
+            <div class="card p-8 flex flex-col items-center text-center">
+                <div class="icon-container bg-green-500 mb-6">🧑‍💻</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">가트너의 정의</h2>
+                <p class="text-gray-600 text-sm italic mb-4">(IT 연구 및 자문 회사)</p>
+                <div class="bg-green-50 bg-opacity-70 p-6 rounded-xl border-2 border-green-200">
+                    <p class="text-gray-700 text-lg leading-relaxed">
+                        사람과 자연스러운 대화를 나누고,<br>
+                        인간의 인지 능력을 향상시키거나,<br>
+                        반복적인 작업 수행 시 사람을 대체함으로써,<br>
+                        인간을 모방하는 기술
+                    </p>
+                </div>
+                <p class="text-gray-500 text-sm mt-4">
+                    인간의 행동과 상호작용에 초점을 맞춘
+                    <br class="hidden sm:inline">
+                    실용성 중심의 정의입니다.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
