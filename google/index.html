@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Workspace 인포그래픽 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid #e0e0e0;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .icon-container {
+            width: 80px;
+            height: 80px;
+        }
+        .category-title {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335);
+        }
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #4285F4, #EA4335);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto px-4 py-12">
+        
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">Google Workspace & AI Tools</h1>
+            <p class="text-lg md:text-xl text-gray-600">스마트한 업무를 위한 올인원 솔루션과 AI 도구</p>
+        </header>
+
+        <!-- Communication & Collaboration Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-12 category-title">소통 및 협업</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Gmail -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_48dp.png" alt="Gmail Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Gmail</h3>
+                    <p class="text-gray-600">AI 기반의 스마트하고 안전한 비즈니스 이메일</p>
+                </div>
+
+                <!-- Calendar -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_48dp.png" alt="Calendar Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Calendar</h3>
+                    <p class="text-gray-600">팀원들과 일정을 공유하고 관리하는 스마트 캘린더</p>
+                </div>
+                
+                <!-- Meet -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                         <img src="https://www.gstatic.com/images/branding/product/2x/meet_2020q4_48dp.png" alt="Meet Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Meet</h3>
+                    <p class="text-gray-600">어디서든 안전하게 참여할 수 있는 고품질 화상 회의</p>
+                </div>
+
+                <!-- Chat -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                         <img src="https://www.gstatic.com/images/branding/product/2x/chat_2020q4_48dp.png" alt="Chat Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Chat</h3>
+                    <p class="text-gray-600">프로젝트 기반의 빠르고 효율적인 팀 메신저</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Creation Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-12 category-title">콘텐츠 제작</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Docs -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/docs_2020q4_48dp.png" alt="Docs Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Docs</h3>
+                    <p class="text-gray-600">팀원들과 함께 실시간으로 문서를 작성하고 편집</p>
+                </div>
+
+                <!-- Sheets -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                         <img src="https://www.gstatic.com/images/branding/product/2x/sheets_2020q4_48dp.png" alt="Sheets Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sheets</h3>
+                    <p class="text-gray-600">데이터 분석 및 시각화를 위한 스마트 스프레드시트</p>
+                </div>
+                
+                <!-- Slides -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/slides_2020q4_48dp.png" alt="Slides Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Slides</h3>
+                    <p class="text-gray-600">어디서든 멋진 프레젠테이션을 만들고 발표</p>
+                </div>
+
+                <!-- Forms -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/forms_2020q4_48dp.png" alt="Forms Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Forms</h3>
+                    <p class="text-gray-600">간편하게 설문조사, 퀴즈, 신청 양식 제작</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Storage & Management Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-12 category-title">저장 및 관리</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                <!-- Drive -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png" alt="Drive Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Drive</h3>
+                    <p class="text-gray-600">모든 파일을 안전하게 저장하고 어디서든 액세스</p>
+                </div>
+                
+                <!-- Keep -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                         <img src="https://www.gstatic.com/images/branding/product/2x/keep_2020q4_48dp.png" alt="Keep Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Keep</h3>
+                    <p class="text-gray-600">아이디어를 메모하고 체크리스트로 정리</p>
+                </div>
+
+                <!-- Sites -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/sites_2020q4_48dp.png" alt="Sites Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sites</h3>
+                    <p class="text-gray-600">코딩 없이 손쉽게 팀 사이트나 프로젝트 웹 제작</p>
+                </div>
+                
+                <!-- Jamboard -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/jamboard_2020q4_48dp.png" alt="Jamboard Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Jamboard</h3>
+                    <p class="text-gray-600">아이디어를 시각화하고 협업하는 디지털 화이트보드</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Tools Section -->
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-12 category-title">AI 기반 스마트 도구</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                <!-- Gemini -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://www.gstatic.com/images/branding/product/1x/gemini_app_48dp.png" alt="Gemini Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Gemini</h3>
+                    <p class="text-gray-600">창의적인 작업과 생산성 향상을 돕는 AI 어시스턴트</p>
+                </div>
+                
+                <!-- NotebookLM -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                         <img src="https://www.gstatic.com/images/branding/product/1x/notebooklm_48dp.png" alt="NotebookLM Icon" class="h-16">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">NotebookLM</h3>
+                    <p class="text-gray-600">소스를 기반으로 글을 쓰는 AI 연구 및 글쓰기 파트너</p>
+                </div>
+
+                <!-- ImageFX -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://placehold.co/64x64/4285F4/FFFFFF?text=FX&font=noto+sans" alt="ImageFX Icon" class="h-16 rounded-full">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">ImageFX</h3>
+                    <p class="text-gray-600">간단한 텍스트 프롬프트로 이미지를 생성하는 AI 도구</p>
+                </div>
+                
+                <!-- Veo -->
+                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                    <div class="icon-container mb-4 flex items-center justify-center">
+                        <img src="https://placehold.co/64x64/34A853/FFFFFF?text=Veo&font=noto+sans" alt="Veo Icon" class="h-16 rounded-full">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Veo</h3>
+                    <p class="text-gray-600">텍스트 설명으로 고품질 동영상을 제작하는 AI 모델</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    
+    <!-- Footer -->
+    <footer class="text-center py-8 mt-12 bg-gray-100">
+        <p class="text-gray-500">
+            이 페이지는 정보 제공을 위해 제작되었습니다.
+        </p>
+    </footer>
+
+</body>
+</html>
+
+
