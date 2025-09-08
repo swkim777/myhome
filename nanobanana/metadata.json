@@ -1,0 +1,5 @@
+{
+  "name": "Gemini 이미지 생성 스튜디오",
+  "description": "Gemini 2.5 Flash Image 모델을 사용하여 텍스트 프롬프트와 이미지를 통해 이미지를 생성, 편집 및 합성하는 웹 애플리케이션입니다. 문서에 설명된 다양한 프롬프트 기법을 탐색해보세요.",
+  "requestFramePermissions": []
+}
