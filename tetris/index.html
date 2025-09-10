@@ -467,7 +467,7 @@
                 case 'ArrowUp':
                     rotatePiece();
                     break;
-                case ' ': // Space bar
+                case ' ': // 스페이스바
                     e.preventDefault(); // 스페이스바 누를 때 페이지 스크롤 방지
                     hardDrop();
                     break;
@@ -509,8 +509,8 @@
         });
         restartButton.addEventListener('click', startGame);
         closeButton.addEventListener('click', () => {
-            gameContainer.style.display = 'none';
-            hideMessageBox(gameOverBox);
+            // "종료" 버튼 클릭 시 index.html로 이동
+            window.location.href = 'index.html';
         });
     </script>
 </body>
