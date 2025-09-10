@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테트리스</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+        body {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 100px;
+        }
+
+        #next-piece-container {
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+            grid-template-columns: repeat(4, 1fr);
+            width: 80px;
+            height: 80px;
+        }
+
+        #game-canvas {
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cell, .next-cell {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-button {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #fff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message-box h2 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .message-box button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .message-box button:hover {
+            background-color: #45a049;
+        }
+
+        .game-over-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        #closeButton {
+            background-color: #f44336; /* Red */
+        }
+        #closeButton:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Piece colors */
+        .I { background-color: #00FFFF; }
+        .J { background-color: #0000FF; }
+        .L { background-color: #FFA500; }
+        .O { background-color: #FFFF00; }
+        .S { background-color: #00FF00; }
+        .T { background-color: #800080; }
+        .Z { background-color: #FF0000; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>테트리스</h1>
+        <div class="game-info">
+            <div class="info-box">
+                <h2>점수</h2>
+                <div id="score">0</div>
+            </div>
+            <div class="info-box">
+                <h2>다음 블록</h2>
+                <div id="next-piece-container"></div>
+            </div>
+        </div>
+        <canvas id="game-canvas" width="400" height="800"></canvas>
+        <div class="controls">
+            <button class="control-button" id="start-button">게임 시작</button>
+            <button class="control-button" id="pause-button">일시정지</button>
+        </div>
+    </div>
+    
+    <div class="message-box" id="gameOverBox">
+        <h2>게임 오버</h2>
+        <p>최종 점수: <span id="finalScore">0</span></p>
+        <div class="game-over-buttons">
+            <button id="restartButton">다시 시작</button>
+            <button id="closeButton">종료</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM 요소 가져오기
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const nextPieceContainer = document.getElementById('next-piece-container');
+        const startButton = document.getElementById('start-button');
+        const pauseButton = document.getElementById('pause-button');
+        const gameOverBox = document.getElementById('gameOverBox');
+        const finalScoreElement = document.getElementById('finalScore');
+        const restartButton = document.getElementById('restartButton');
+        const closeButton = document.getElementById('closeButton');
+        const gameContainer = document.querySelector('.game-container');
+
+        // 게임 설정
+        const ROWS = 20;
+        const COLS = 10;
+        const BLOCK_SIZE = canvas.width / COLS;
+
+        // 게임 변수
+        let board = [];
+        let score = 0;
+        let isPaused = false;
+        let gameOver = false;
+        let lastTime = 0;
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let currentPiece, nextPiece;
+
+        // 블록 모양과 색상
+        const PIECES = {
+            'I': [
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0]
+            ],
+            'J': [
+                [0, 1, 0],
+                [0, 1, 0],
+                [1, 1, 0]
+            ],
+            'L': [
+                [0, 1, 0],
+                [0, 1, 0],
+                [0, 1, 1]
+            ],
+            'O': [
+                [1, 1],
+                [1, 1]
+            ],
+            'S': [
+                [0, 1, 1],
+                [1, 1, 0],
+                [0, 0, 0]
+            ],
+            'T': [
+                [0, 1, 0],
+                [1, 1, 1],
+                [0, 0, 0]
+            ],
+            'Z': [
+                [1, 1, 0],
+                [0, 1, 1],
+                [0, 0, 0]
+            ]
+        };
+
+        const PIECE_NAMES = Object.keys(PIECES);
+        
+        const PIECE_COLORS = {
+            'I': '#00FFFF', 'J': '#0000FF', 'L': '#FFA500', 
+            'O': '#FFFF00', 'S': '#00FF00', 'T': '#800080', 'Z': '#FF0000'
+        };
+
+        // 보드 초기화
+        function initBoard() {
+            board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+        }
+
+        // 새로운 블록 생성
+        function createPiece() {
+            const randomPieceName = PIECE_NAMES[Math.floor(Math.random() * PIECE_NAMES.length)];
+            const shape = PIECES[randomPieceName];
+            return {
+                shape: shape,
+                color: randomPieceName,
+                x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2),
+                y: 0
+            };
+        }
+
+        // 보드에 블록 그리기
+        function drawBoard() {
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    drawBlock(c, r, board[r][c]);
+                }
+            }
+        }
+
+        // 블록 그리기
+        function drawBlock(x, y, colorName) {
+            if (colorName === 0) {
+                // 비어 있는 칸
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            } else {
+                // 블록이 있는 칸
+                ctx.fillStyle = PIECE_COLORS[colorName];
+                ctx.strokeStyle = '#fff';
+            }
+            ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
+
+        // 다음 블록 미리보기 그리기
+        function drawNextPiece() {
+            nextPieceContainer.innerHTML = '';
+            const nextShape = nextPiece.shape;
+            const nextColor = nextPiece.color;
+            nextPieceContainer.style.gridTemplateColumns = `repeat(${nextShape[0].length}, 1fr)`;
+            nextPieceContainer.style.gridTemplateRows = `repeat(${nextShape.length}, 1fr)`;
+
+            for (let r = 0; r < nextShape.length; r++) {
+                for (let c = 0; c < nextShape[r].length; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'next-cell';
+                    if (nextShape[r][c]) {
+                        cell.classList.add(nextColor);
+                    }
+                    nextPieceContainer.appendChild(cell);
+                }
+            }
+        }
+
+        // 현재 블록 그리기
+        function drawPiece() {
+            currentPiece.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value) {
+                        drawBlock(currentPiece.x + x, currentPiece.y + y, currentPiece.color);
+                    }
+                });
+            });
+        }
+
+        // 충돌 감지
+        function isValidMove(newX, newY, newShape) {
+            for (let y = 0; y < newShape.length; y++) {
+                for (let x = 0; x < newShape[y].length; x++) {
+                    if (newShape[y][x]) {
+                        const boardX = newX + x;
+                        const boardY = newY + y;
+                        if (boardX < 0 || boardX >= COLS || boardY >= ROWS || (boardY >= 0 && board[boardY][boardX] !== 0)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        // 블록을 보드에 병합
+        function mergePiece() {
+            currentPiece.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value) {
+                        board[currentPiece.y + y][currentPiece.x + x] = currentPiece.color;
+                    }
+                });
+            });
+        }
+
+        // 완성된 라인 제거
+        function clearLines() {
+            let linesCleared = 0;
+            for (let r = ROWS - 1; r >= 0; r--) {
+                if (board[r].every(cell => cell !== 0)) {
+                    board.splice(r, 1);
+                    board.unshift(Array(COLS).fill(0));
+                    linesCleared++;
+                }
+            }
+            if (linesCleared > 0) {
+                const scoreMultiplier = score > 3000 ? 2 : 1;
+                score += (linesCleared * 100) * scoreMultiplier;
+                scoreElement.textContent = score;
+
+                // 점수가 3000점을 넘으면 속도 증가
+                if (score > 3000) {
+                    dropInterval = 500; // 더 빠른 속도로 설정 (0.5초)
+                }
+            }
+        }
+
+        // 게임 루프
+        function gameLoop(time = 0) {
+            if (gameOver || isPaused) return;
+
+            const deltaTime = time - lastTime;
+            lastTime = time;
+            dropCounter += deltaTime;
+
+            if (dropCounter > dropInterval) {
+                dropPiece();
+                dropCounter = 0;
+            }
+
+            // 그리기
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBoard();
+            drawPiece();
+            if(nextPiece) drawNextPiece();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 블록 아래로 이동
+        function dropPiece() {
+            if (isValidMove(currentPiece.x, currentPiece.y + 1, currentPiece.shape)) {
+                currentPiece.y++;
+            } else {
+                mergePiece();
+                clearLines();
+                currentPiece = nextPiece;
+                nextPiece = createPiece();
+
+                if (!isValidMove(currentPiece.x, currentPiece.y, currentPiece.shape)) {
+                    gameOver = true;
+                    finalScoreElement.textContent = score;
+                    showMessageBox(gameOverBox);
+                }
+            }
+        }
+
+        // 블록 회전
+        function rotatePiece() {
+            const rotatedShape = currentPiece.shape[0].map((val, index) =>
+                currentPiece.shape.map(row => row[index]).reverse()
+            );
+            if (isValidMove(currentPiece.x, currentPiece.y, rotatedShape)) {
+                currentPiece.shape = rotatedShape;
+            }
+        }
+
+        // 블록을 맨 아래로 즉시 이동 (하드 드롭)
+        function hardDrop() {
+            while (isValidMove(currentPiece.x, currentPiece.y + 1, currentPiece.shape)) {
+                currentPiece.y++;
+            }
+            dropPiece();
+        }
+
+        // 키보드 이벤트 핸들러
+        document.addEventListener('keydown', (e) => {
+            if (gameOver || isPaused) return;
+
+            switch (e.key) {
+                case 'ArrowLeft':
+                    if (isValidMove(currentPiece.x - 1, currentPiece.y, currentPiece.shape)) {
+                        currentPiece.x--;
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (isValidMove(currentPiece.x + 1, currentPiece.y, currentPiece.shape)) {
+                        currentPiece.x++;
+                    }
+                    break;
+                case 'ArrowDown':
+                    dropPiece();
+                    break;
+                case 'ArrowUp':
+                    rotatePiece();
+                    break;
+                case ' ': // Space bar
+                    e.preventDefault(); // 스페이스바 누를 때 페이지 스크롤 방지
+                    hardDrop();
+                    break;
+            }
+        });
+
+        // 메시지 박스 표시/숨기기
+        function showMessageBox(box) {
+            box.style.display = 'flex';
+        }
+
+        function hideMessageBox(box) {
+            box.style.display = 'none';
+        }
+
+        // 게임 시작/다시 시작
+        function startGame() {
+            gameContainer.style.display = 'flex'; // 게임 재시작 시 컨테이너 표시
+            initBoard();
+            score = 0;
+            scoreElement.textContent = score;
+            gameOver = false;
+            isPaused = false;
+            dropInterval = 1000; // 속도 초기화
+            currentPiece = createPiece();
+            nextPiece = createPiece();
+            hideMessageBox(gameOverBox);
+            gameLoop();
+        }
+
+        // 이벤트 리스너
+        startButton.addEventListener('click', startGame);
+        pauseButton.addEventListener('click', () => {
+            isPaused = !isPaused;
+            if (!isPaused) {
+                gameLoop();
+            }
+            pauseButton.textContent = isPaused ? '재개' : '일시정지';
+        });
+        restartButton.addEventListener('click', startGame);
+        closeButton.addEventListener('click', () => {
+            gameContainer.style.display = 'none';
+            hideMessageBox(gameOverBox);
+        });
+    </script>
+</body>
+</html>
