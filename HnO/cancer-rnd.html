@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국립암센터 주요 R&D 사업</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .section-title {
+            position: relative;
+            padding-left: 1.5rem;
+            font-weight: bold;
+            color: #1a202c;
+        }
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+        .link {
+            color: #2563eb;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="p-8">
+
+<div class="container">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">국립암센터 주요 R&D 사업</h1>
+        <p class="text-lg text-gray-600">암 연구 및 관리, 기술 이전, 데이터 활용에 대한 사업을 소개합니다.</p>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <!-- 암정복추진연구개발사업 (NRDPC) -->
+        <div class="card p-6">
+            <h2 class="section-title text-2xl mb-4">암정복추진연구개발사업 (NRDPC)</h2>
+            <div class="space-y-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-blue-800 mb-1">목적</h3>
+                    <p class="text-gray-700">암 예방·관리, 공공데이터 활용, 다기관 임상 등 국가 암 관리 전 주기 연구 지원</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-blue-800 mb-1">지원 규모 (예시)</h3>
+                    <ul class="list-disc list-inside text-gray-700">
+                        <li>암 공공데이터 활용 연구: 최대 4억 원 / 3년</li>
+                        <li>예방·관리 연구: 최대 2.6억 원 / 2년</li>
+                        <li>연구자 주도 다기관 임상연구: 최대 4억 원 / 5년</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-blue-800 mb-1">접수 시스템</h3>
+                    <a href="https://www.iris.go.kr" target="_blank" class="link">IRIS (범부처통합연구지원시스템)</a>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-blue-800 mb-1">2025년도 공모 링크</h3>
+                    <a href="https://cancer.severance.healthcare/research/project/news.do?articleNo=124621&mode=view&title=%5B%EA%B5%AD%EB%A6%BD%EC%95%94%EC%84%BC%ED%84%B0%5D+2025%EB%85%84%EB%8F%84+%EC%95%94%EC%A0%95%EB%B3%B5%EC%B6%94%EC%A7%84%EC%97%B0%EA%B5%AC%EA%B0%9C%EB%B0%9C%EC%82%AC%EC%97%85+%EC%8B%A0%EA%B7%9C%EA%B3%BC%EC%A0%9C+%EA%B3%B5%EB%AA%A8&utm_source=chatgpt.com" target="_blank" class="link">2025년도 신규과제 공모</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 한미암공동연구사업 -->
+        <div class="card p-6">
+            <h2 class="section-title text-2xl mb-4">한미암공동연구사업</h2>
+            <div class="space-y-4">
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-green-800 mb-1">목적</h3>
+                    <p class="text-gray-700">한·미 공동 암 연구(기초중개, 임상·희귀암 등) 촉진</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-green-800 mb-1">지원 규모 (예시)</h3>
+                    <p class="text-gray-700">과제당 최대 3.5억 원 / 4년</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-green-800 mb-1">접수 시스템</h3>
+                    <a href="https://www.iris.go.kr" target="_blank" class="link">IRIS (범부처통합연구지원시스템)</a>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg text-green-800 mb-1">2025년도 공모 링크</h3>
+                    <a href="https://research.severance.healthcare/research/project/news.do?mode=view&articleNo=124622&title=%5B%EA%B5%AD%EB%A6%BD%EC%95%94%EC%84%BC%ED%84%B0%5D+2025%EB%85%84%EB%8F%84+%ED%95%9C%EB%AF%B8%EC%95%94%EA%B3%B5%EB%8F%99%EC%97%B0%EA%B5%AC%EC%82%AC%EC%97%85%28%EC%99%B8%EB%B6%80%29+%EC%8B%A0%EA%B7%9C%EA%B3%BC%EC%A0%9C+%EA%B3%B5%EB%AA%A8&utm_source=chatgpt.com" target="_blank" class="link">2025년도 신규과제 공모</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 추가 지원 채널 -->
+    <div class="card p-8 mb-12">
+        <h2 class="section-title text-2xl mb-6">데이터 활용 / 기술 이전 채널</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- 데이터 활용 -->
+            <div class="bg-indigo-50 p-6 rounded-lg">
+                <h3 class="font-bold text-xl text-indigo-800 mb-3">국가암데이터센터 / 암빅데이터 플랫폼</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>국가 암 데이터베이스(DB) 연계·개방형 데이터 융합 플랫폼 제공</li>
+                    <li>안심분석센터 등 연구 데이터 이용 창구 역할</li>
+                    <li><span class="font-semibold">지원 방식:</span> 과제 공모형뿐만 아니라 데이터 활용 신청을 통해 기업 연구 지원</li>
+                </ul>
+                <div class="mt-4">
+                    <a href="https://hcdl.mohw.go.kr" target="_blank" class="link">국가암데이터센터 바로가기</a>
+                </div>
+            </div>
+            <!-- 기술이전 -->
+            <div class="bg-purple-50 p-6 rounded-lg">
+                <h3 class="font-bold text-xl text-purple-800 mb-3">기술평가이전센터 (TLO)</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>우수 특허 발굴, BM 기반 R&D 기획, 기술도입 기업 지원</li>
+                    <li>글로벌 기술이전 네트워크 구축</li>
+                    <li><span class="font-semibold">지원 방식:</span> 기업 기술도입 및 공동개발 문의 창구 역할</li>
+                </ul>
+                <div class="mt-4">
+                    <a href="https://www.ncc.re.kr/main.ncc?uri=ri_skill" target="_blank" class="link">기술평가이전센터(TLO) 바로가기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 기업 매칭 부담 및 신청 절차 -->
+    <div class="card p-8">
+        <h2 class="section-title text-2xl mb-6">기업 요건 및 신청 절차</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- 기관 부담금 -->
+            <div class="bg-yellow-50 p-6 rounded-lg">
+                <h3 class="font-bold text-xl text-yellow-800 mb-3">지원 대상 및 부담금</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li><span class="font-semibold">지원 대상:</span> 비영리기관, 중소·중견·대기업 모두 참여 가능</li>
+                    <li><span class="font-semibold">부담 비율 (예시):</span>
+                        <ul class="list-[circle] list-inside ml-4">
+                            <li>중소기업: 정부지원비 최대 75% / 자부담 25% (현금 10% 이상)</li>
+                            <li>중견기업: 정부지원비 최대 70% / 자부담 30% (현금 13% 이상)</li>
+                            <li>대기업: 정부지원비 최대 50% / 자부담 50% (현금 15% 이상)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- 신청 절차 -->
+            <div class="bg-gray-100 p-6 rounded-lg">
+                <h3 class="font-bold text-xl text-gray-800 mb-3">전형적 신청 절차 (IRIS 기준)</h3>
+                <ol class="list-decimal list-inside text-gray-700 space-y-2">
+                    <li><span class="font-semibold">공고 확인:</span> RFP 범위, 자격, 매칭비율 등 확인</li>
+                    <li><span class="font-semibold">IRIS 등록:</span> 회원가입 및 기관등록</li>
+                    <li><span class="font-semibold">전산 입력:</span> 연구개발계획서 등 제출 서류 업로드</li>
+                    <li><span class="font-semibold">기관 인증:</span> 기관 담당자 인증</li>
+                    <li><span class="font-semibold">평가 진행:</span> 사전 검토 및 서면/발표 평가</li>
+                    <li><span class="font-semibold">예비 선정:</span> 수정 계획서 제출</li>
+                    <li><span class="font-semibold">협약 체결:</span> 협약 체결 후 사업 착수</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
