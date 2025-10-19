@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>디지털 시계</title>
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#000000"/>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="clock-icon.png" />
+
+  <style>
+    body {
+      background-color: #111;
+      color: #0f0;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .clock {
+      font-size: 5rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    .analog-clock {
+      display: none;
+      width: 200px;
+      height: 200px;
+      border: 8px solid #0f0;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .hand {
+      position: absolute;
+      background-color: #0f0;
+      transform-origin: bottom center;
+      bottom: 50%;
+      left: 50%;
+    }
+
+    .hour { height: 50px; width: 6px; }
+    .minute { height: 70px; width: 4px; }
+    .second { height: 90px; width: 2px; background: red; }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      background: #222;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0f0;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <div id="digitalClock" class="clock">00:00:00</div>
+
+  <div id="analogClock" class="analog-clock">
+    <div id="hourHand" class="hand hour"></div>
+    <div id="minuteHand" class="hand minute"></div>
+    <div id="secondHand" class="hand second"></div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="toggleClock()">아날로그/디지털 전환</button>
+    <button onclick="exitApp()">Exit</button>
+  </div>
+
+  <script>
+    const digital = document.getElementById('digitalClock');
+    const analog = document.getElementById('analogClock');
+    const hourHand = document.getElementById('hourHand');
+    const minuteHand = document.getElementById('minuteHand');
+    const secondHand = document.getElementById('secondHand');
+    let isDigital = true;
+
+    function updateClocks() {
+      const now = new Date();
+
+      // 디지털
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      digital.textContent = `${h}:${m}:${s}`;
+
+      // 아날로그
+      const hourDeg = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
+      const minuteDeg = now.getMinutes() * 6;
+      const secondDeg = now.getSeconds() * 6;
+
+      hourHand.style.transform = `rotate(${hourDeg}deg) translate(-50%, 0)`;
+      minuteHand.style.transform = `rotate(${minuteDeg}deg) translate(-50%, 0)`;
+      secondHand.style.transform = `rotate(${secondDeg}deg) translate(-50%, 0)`;
+    }
+
+    setInterval(updateClocks, 1000);
+    updateClocks();
+
+    function toggleClock() {
+      isDigital = !isDigital;
+      digital.style.display = isDigital ? 'block' : 'none';
+      analog.style.display = isDigital ? 'none' : 'block';
+    }
+
+    function exitApp() {
+      window.close(); // 대부분 환경에선 작동 안 함
+      alert("앱 종료 기능은 브라우저에서 차단되어 있습니다.");
+    }
+
+    // PWA 등록
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
