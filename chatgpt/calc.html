@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Media & Calculator App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* 기본 스타일 */
+    body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f2f2f2;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .tab-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px;
+        background: #333;
+    }
+
+    .tab-container button {
+        background: #555;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    .tab-container button:hover {
+        background: #777;
+    }
+
+    .file-box, .media-wrapper {
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    /* 계산기 스타일 */
+    #calculatorApp {
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    #calcDisplay {
+        width: 100%;
+        height: 40px;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        text-align: right;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    .calc-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .calc-buttons button {
+        padding: 15px;
+        font-size: 1.2em;
+        cursor: pointer;
+    }
+
+    .calc-buttons .wide {
+        grid-column: span 4;
+        background-color: #f44336;
+        color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 홈 탭 -->
+    <div id="home" class="tab-content" style="display: block;">
+        <h2>Welcome to Your Media App</h2>
+        <p>이곳은 멀티미디어 업로드 & 계산기 웹앱입니다!</p>
+    </div>
+
+    <!-- 업로드 탭 -->
+    <div id="upload" class="tab-content">
+        <h2>Upload Media</h2>
+        <input type="file" id="mediaInput" accept="*" multiple>
+        <button onclick="uploadMedia()">Upload</button>
+        <div id="uploadedFiles"></div>
+        <button id="saveButton" onclick="saveMedia()">Save</button>
+    </div>
+
+    <!-- 보기 탭 -->
+    <div id="view" class="tab-content">
+        <h2>View Media</h2>
+        <div id="mediaGallery"></div>
+    </div>
+
+    <!-- 계산기 탭 -->
+    <div id="calculator" class="tab-content">
+        <h2>계산기</h2>
+        <div id="calculatorApp">
+            <input type="text" id="calcDisplay" readonly>
+            <div class="calc-buttons">
+                <button onclick="press('7')">7</button>
+                <button onclick="press('8')">8</button>
+                <button onclick="press('9')">9</button>
+                <button onclick="press('/')">÷</button>
+
+                <button onclick="press('4')">4</button>
+                <button onclick="press('5')">5</button>
+                <button onclick="press('6')">6</button>
+                <button onclick="press('*')">×</button>
+
+                <button onclick="press('1')">1</button>
+                <button onclick="press('2')">2</button>
+                <button onclick="press('3')">3</button>
+                <button onclick="press('-')">−</button>
+
+                <button onclick="press('0')">0</button>
+                <button onclick="press('.')">.</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="press('+')">+</button>
+
+                <button onclick="clearDisplay()" class="wide">C</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- 탭 버튼 -->
+  <div class="tab-container">
+      <button onclick="changeTab('home')">Home</button>
+      <button onclick="changeTab('upload')">Upload</button>
+      <button onclick="changeTab('view')">View</button>
+      <button onclick="changeTab('calculator')">Calculator</button>
+  </div>
+
+  <script>
+    let uploadedMedia = [];
+    let savedMedia = [];
+
+    function uploadMedia() {
+        const input = document.getElementById('mediaInput');
+        const files = input.files;
+
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                const fileInfo = {
+                    id: Date.now() + i,
+                    name: files[i].name,
+                    type: files[i].type,
+                    url: URL.createObjectURL(files[i])
+                };
+                uploadedMedia.push(fileInfo);
+            }
+            updateUploadedFiles();
+        }
+    }
+
+    function updateUploadedFiles() {
+        const container = document.getElementById('uploadedFiles');
+        container.innerHTML = '';
+
+        uploadedMedia.forEach(media => {
+            const box = document.createElement('div');
+            box.className = 'file-box';
+
+            const info = document.createElement('p');
+            info.textContent = media.name;
+            box.appendChild(info);
+
+            const delBtn = document.createElement('button');
+            delBtn.innerText = 'Delete';
+            delBtn.onclick = () => deleteFile(media.id);
+            box.appendChild(delBtn);
+
+            container.appendChild(box);
+        });
+    }
+
+    function deleteFile(id) {
+        uploadedMedia = uploadedMedia.filter(media => media.id !== id);
+        updateUploadedFiles();
+    }
+
+    function saveMedia() {
+        savedMedia = [...uploadedMedia];
+        uploadedMedia = [];
+        updateUploadedFiles();
+        updateMediaGallery();
+    }
+
+    function updateMediaGallery() {
+        const gallery = document.getElementById('mediaGallery');
+        gallery.innerHTML = '';
+
+        savedMedia.forEach(media => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'media-wrapper';
+
+            const toggle = document.createElement('button');
+            toggle.textContent = 'View Content';
+
+            const content = createMediaElement(media);
+            content.style.display = 'none';
+            toggle.onclick = () => {
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            };
+
+            wrapper.appendChild(toggle);
+            wrapper.appendChild(content);
+            gallery.appendChild(wrapper);
+        });
+    }
+
+    function createMediaElement(media) {
+        let element;
+        if (media.type.startsWith('image/')) {
+            element = document.createElement('img');
+            element.src = media.url;
+            element.style.maxWidth = '100%';
+        } else if (media.type.startsWith('video/')) {
+            element = document.createElement('video');
+            element.src = media.url;
+            element.controls = true;
+            element.style.maxWidth = '100%';
+        } else if (media.type.startsWith('audio/')) {
+            element = document.createElement('audio');
+            element.src = media.url;
+            element.controls = true;
+        } else {
+            element = document.createElement('a');
+            element.href = media.url;
+            element.textContent = `Download ${media.name}`;
+            element.download = media.name;
+            element.target = '_blank';
+        }
+        return element;
+    }
+
+    function changeTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+        document.getElementById(tabId).style.display = 'block';
+    }
+
+    // 계산기 로직
+    let calcInput = "";
+
+    function press(val) {
+        calcInput += val;
+        document.getElementById('calcDisplay').value = calcInput;
+    }
+
+    function calculate() {
+        try {
+            const result = eval(calcInput);
+            document.getElementById('calcDisplay').value = result;
+            calcInput = result.toString();
+        } catch {
+            document.getElementById('calcDisplay').value = "Error";
+            calcInput = "";
+        }
+    }
+
+    function clearDisplay() {
+        calcInput = "";
+        document.getElementById('calcDisplay').value = "";
+    }
+  </script>
+</body>
+</html>
