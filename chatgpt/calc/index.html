@@ -51,6 +51,11 @@
     button.operator { background: #f9c74f; }
     button.equal { background: #90be6d; color: white; }
     button.clear { background: #f94144; color: white; }
+    button.exit {
+      background: #6c757d;
+      color: white;
+      grid-column: span 4;
+    }
   </style>
 </head>
 <body>
@@ -74,6 +79,7 @@
       <button class="equal" onclick="calculate()">=</button>
       <button class="operator" onclick="append('+')">+</button>
       <button class="clear" onclick="clearDisplay()">C</button>
+      <button class="exit" onclick="exitApp()">Exit</button>
     </div>
   </div>
 
@@ -100,7 +106,16 @@
       display.innerText = '0';
     }
 
-    // ✅ 서비스워커 등록 (PWA)
+    // ✅ Exit 버튼 기능
+    function exitApp() {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        window.close();
+      } else {
+        alert("앱이 아닌 브라우저에서 실행 중입니다. 브라우저 탭을 수동으로 닫아주세요.");
+      }
+    }
+
+    // ✅ 서비스워커 등록 (PWA용)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('serviceWorker.js')
@@ -111,3 +126,4 @@
   </script>
 </body>
 </html>
+
