@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDDF 국가신약개발사업 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .infographic-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease;
+        }
+        .infographic-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto p-4 sm:p-8 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2 rounded-lg p-2 bg-blue-100">
+                KDDF 국가신약개발사업 지원 프로그램 (2025년도)
+            </h1>
+            <p class="text-gray-600 text-lg">신약 R&D 파이프라인 전주기 지원 개요</p>
+        </header>
+
+        <!-- Section 1: 범부처 국가신약개발 R&D 사업 (3대 축) -->
+        <h2 class="text-2xl font-bold text-gray-800 border-b-4 border-indigo-400 pb-2 mb-6">
+            <span class="text-indigo-600 mr-2">1.</span> 범부처 R&D 파이프라인 지원 (3-Phase Cycle)
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            
+            <!-- Phase 1: 기반 확충 연구 -->
+            <div class="infographic-card text-center bg-indigo-50 border-t-4 border-indigo-600">
+                <div class="icon-box mx-auto bg-indigo-200 text-indigo-800">🧪</div>
+                <h3 class="text-xl font-semibold mb-2 text-indigo-700">신약 기반 확충 연구</h3>
+                <p class="text-sm text-gray-700">학·연 중심의 우수 선도물질 및 후보물질 개발 지원 (탐색 단계)</p>
+            </div>
+            
+            <!-- Connector Arrow (Desktop Only) -->
+            <div class="hidden md:flex justify-center items-center">
+                <div class="w-full h-1 bg-gray-300 relative">
+                    <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-gray-500 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Phase 2: R&D 생태계 구축 연구 -->
+            <div class="infographic-card text-center bg-green-50 border-t-4 border-green-600">
+                <div class="icon-box mx-auto bg-green-200 text-green-800">🧬</div>
+                <h3 class="text-xl font-semibold mb-2 text-green-700">신약 R&D 생태계 구축 연구</h3>
+                <p class="text-sm text-gray-700">후보물질 임상 진입, 산학연병 협력, 바이오마커 발굴 및 네트워크 지원</p>
+            </div>
+
+            <!-- Connector Arrow (Desktop Only) -->
+            <div class="hidden md:flex justify-center items-center">
+                <div class="w-full h-1 bg-gray-300 relative">
+                    <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-gray-500 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Phase 3: 신약 임상 개발 -->
+            <div class="infographic-card text-center bg-red-50 border-t-4 border-red-600">
+                <div class="icon-box mx-auto bg-red-200 text-red-800">🏥</div>
+                <h3 class="text-xl font-semibold mb-2 text-red-700">신약 임상 개발 및 사업화</h3>
+                <p class="text-sm text-gray-700">비임상, 임상 1상/2상 등 실제 임상시험 및 글로벌 실용화 성과 창출</p>
+            </div>
+        </div>
+
+        <!-- Section 2: 신약 R&D 사업화 지원 프로그램 (전략 컨설팅) -->
+        <h2 class="text-2xl font-bold text-gray-800 border-b-4 border-purple-400 pb-2 mb-6">
+            <span class="text-purple-600 mr-2">2.</span> 신약 R&D 사업화 지원 프로그램 (전략 및 컨설팅)
+        </h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            
+            <!-- ACT 프로그램 -->
+            <div class="infographic-card bg-purple-50">
+                <div class="flex items-center mb-3">
+                    <div class="icon-box bg-purple-200 text-purple-800 mr-3 text-2xl">💻</div>
+                    <h4 class="text-lg font-semibold text-purple-700">ACT 프로그램</h4>
+                </div>
+                <p class="text-sm text-gray-700">PK-PD Modeling & Simulation, R&D 전략 수립 등 실무적 지원.</p>
+            </div>
+
+            <!-- BRIDGE 프로그램 -->
+            <div class="infographic-card bg-yellow-50">
+                <div class="flex items-center mb-3">
+                    <div class="icon-box bg-yellow-200 text-yellow-800 mr-3 text-2xl">🤝</div>
+                    <h4 class="text-lg font-semibold text-yellow-700">BRIDGE 프로그램</h4>
+                </div>
+                <p class="text-sm text-gray-700">산-연-병 협력을 통한 혁신 기술의 임상/사업화 연계 지원.</p>
+            </div>
+            
+            <!-- CIDD 프로그램 -->
+            <div class="infographic-card bg-cyan-50">
+                <div class="flex items-center mb-3">
+                    <div class="icon-box bg-cyan-200 text-cyan-800 mr-3 text-2xl">💡</div>
+                    <h4 class="text-lg font-semibold text-cyan-700">CIDD 프로그램</h4>
+                </div>
+                <p class="text-sm text-gray-700">혁신 신약 R&D 컨설팅 (모든 신약 연구개발 단계에 적용).</p>
+            </div>
+
+            <!-- RA/CMC 컨설팅 -->
+            <div class="infographic-card bg-orange-50">
+                <div class="flex items-center mb-3">
+                    <div class="icon-box bg-orange-200 text-orange-800 mr-3 text-2xl">🌍</div>
+                    <h4 class="text-lg font-semibold text-orange-700">글로벌 RA/CMC 컨설팅</h4>
+                </div>
+                <p class="text-sm text-gray-700">글로벌 임상 및 인허가, CMC 역량 강화를 위한 전문 컨설팅.</p>
+            </div>
+        </div>
+        
+        <!-- Section 3: 지원 대상 및 플랫폼 (SCOPE) -->
+        <h2 class="text-2xl font-bold text-gray-800 border-b-4 border-pink-400 pb-2 mb-6">
+            <span class="text-pink-600 mr-2">3.</span> 지원 대상 및 플랫폼 (Scope)
+        </h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <!-- 지원 대상 -->
+            <div class="infographic-card bg-pink-50">
+                <h3 class="text-xl font-semibold mb-3 text-pink-700">✅ 지원 대상 (Drug Types)</h3>
+                <ul class="list-none space-y-1 text-gray-700 pl-0">
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">●</span> 합성의약품</li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">●</span> 바이오의약품 (유전자·세포치료제 등)</li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">●</span> 천연물의약품</li>
+                </ul>
+            </div>
+
+            <!-- 지원 플랫폼 -->
+            <div class="infographic-card bg-sky-50">
+                <h3 class="text-xl font-semibold mb-3 text-sky-700">🚀 핵심 플랫폼 (Cutting-Edge Platforms)</h3>
+                <p class="text-sm text-gray-700 mb-2">신약개발의 다양한 첨단 기술 지원:</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-sky-200 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">유전자·세포치료제</span>
+                    <span class="bg-sky-200 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">mRNA치료제</span>
+                    <span class="bg-sky-200 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">디지털치료제</span>
+                    <span class="bg-sky-200 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">마이크로바이옴</span>
+                    <span class="bg-sky-200 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">항체/펩타이드/단백질</span>
+                    <span class="bg-sky-200 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">엑소좀 및 바이러스치료제</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 4: 종합 및 기타 -->
+        <h2 class="text-2xl font-bold text-gray-800 border-b-4 border-gray-400 pb-2 mb-6">
+            <span class="text-gray-600 mr-2">4.</span> 종합 및 기타 지원
+        </h2>
+
+        <div class="infographic-card bg-white border-2 border-dashed border-gray-300 p-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="icon-box bg-red-100 text-red-600 mr-4 text-3xl">🎯</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-red-700">전주기 맞춤형 지원</h3>
+                        <p class="text-gray-600">후보물질 발굴부터 임상, 사업화까지 신약개발 전 과정 포괄 지원</p>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm text-gray-700 mt-4 md:mt-0 md:ml-6 border-l-2 pl-4 border-gray-200">
+                    <p>🧑‍🏫 연구자 집중 교육, R&D 파트너링, CRO 관리 워크샵 운영</p>
+                    <p>🗓️ 2025년도 제1차 국가신약개발사업 과제 선정 공고</p>
+                    <p class="text-xs text-gray-500">출처: KDDF, KDRA, BizInfo 제공 정보 종합</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-10 text-center text-sm text-gray-500">
+            <p>본 인포그래픽은 제공된 정보를 바탕으로 KDDF의 신약 R&D 지원 사업의 구조를 시각화한 것입니다.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
