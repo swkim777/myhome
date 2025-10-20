@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDDF 2025 단계별 지원 한도 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-kddf-primary: #1e3a8a; /* Indigo-900 */
+            --color-kddf-secondary: #3b82f6; /* Blue-500 */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light Gray Background */
+        }
+        .infographic-container {
+            position: relative;
+        }
+        .timeline-line {
+            width: 4px;
+            background-color: var(--color-kddf-primary);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px; /* Adjust to align with dots */
+            z-index: 0;
+        }
+        .phase-card {
+            position: relative;
+            z-index: 10;
+        }
+        .phase-dot {
+            width: 16px;
+            height: 16px;
+            background-color: var(--color-kddf-secondary);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 13px; /* Align with timeline-line center */
+            transform: translateY(-50%);
+        }
+        /* Custom budget bar animation */
+        .budget-bar {
+            transition: width 1s ease-out;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">KDDF 2025년 단계별 지원 개요</h1>
+            <p class="text-lg text-gray-600">총 연구비(정부+기관) 지원 상한 및 기간 요약 (KDDF 공식 공지 기준)</p>
+        </header>
+
+        <div class="infographic-container">
+            <!-- Timeline Line -->
+            <div class="timeline-line hidden sm:block"></div>
+
+            <div class="space-y-8 md:space-y-10">
+
+                <!-- Phase 1: 유효물질 -->
+                <div class="phase-card bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition duration-300 sm:flex sm:items-center sm:space-x-8">
+                    <div class="phase-dot hidden sm:block"></div>
+                    <div class="sm:w-1/3 mb-3 sm:mb-0">
+                        <h2 class="text-xl font-bold text-gray-800">1. 유효물질</h2>
+                        <p class="text-sm text-gray-500">(유효→선도 연계 포함)</p>
+                    </div>
+                    <div class="sm:w-2/3">
+                        <div class="text-lg font-semibold text-indigo-700 mb-1">총 12억 원 이내</div>
+                        <p class="text-sm text-gray-600 mb-2">24+12개월 이내 (연계형), 또는 12~24개월 (단독)</p>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <!-- Budget Visualization: 12억 / 91억 * 100% ≈ 13.2% -->
+                            <div class="budget-bar h-full bg-blue-400 rounded-full" style="width: 13.2%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2: 선도물질 -->
+                <div class="phase-card bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition duration-300 sm:flex sm:items-center sm:space-x-8">
+                    <div class="phase-dot hidden sm:block"></div>
+                    <div class="sm:w-1/3 mb-3 sm:mb-0">
+                        <h2 class="text-xl font-bold text-gray-800">2. 선도물질</h2>
+                    </div>
+                    <div class="sm:w-2/3">
+                        <div class="text-lg font-semibold text-indigo-700 mb-1">총 8억 원 이내</div>
+                        <p class="text-sm text-gray-600 mb-2">24개월 이내</p>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <!-- Budget Visualization: 8억 / 91억 * 100% ≈ 8.8% -->
+                            <div class="budget-bar h-full bg-blue-400 rounded-full" style="width: 8.8%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3: 후보물질 -->
+                <div class="phase-card bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition duration-300 sm:flex sm:items-center sm:space-x-8">
+                    <div class="phase-dot hidden sm:block"></div>
+                    <div class="sm:w-1/3 mb-3 sm:mb-0">
+                        <h2 class="text-xl font-bold text-gray-800">3. 후보물질</h2>
+                    </div>
+                    <div class="sm:w-2/3">
+                        <div class="text-lg font-semibold text-indigo-700 mb-1">총 12억 원 내외</div>
+                        <p class="text-sm text-gray-600 mb-2">24개월 이내</p>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <!-- Budget Visualization: 12억 / 91억 * 100% ≈ 13.2% -->
+                            <div class="budget-bar h-full bg-blue-400 rounded-full" style="width: 13.2%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 4: 비임상 -->
+                <div class="phase-card bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition duration-300 sm:flex sm:items-center sm:space-x-8">
+                    <div class="phase-dot hidden sm:block"></div>
+                    <div class="sm:w-1/3 mb-3 sm:mb-0">
+                        <h2 class="text-xl font-bold text-gray-800">4. 비임상</h2>
+                    </div>
+                    <div class="sm:w-2/3">
+                        <div class="text-lg font-semibold text-indigo-700 mb-1">총 20억 원 내외</div>
+                        <p class="text-sm text-gray-600 mb-2">24개월 이내</p>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <!-- Budget Visualization: 20억 / 91억 * 100% ≈ 22.0% -->
+                            <div class="budget-bar h-full bg-blue-500 rounded-full" style="width: 22.0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 5: 임상 1상 (Intermediate Step) -->
+                <div class="phase-card bg-white p-5 rounded-xl shadow-lg ring-2 ring-blue-200 hover:shadow-xl transition duration-300 sm:flex sm:items-center sm:space-x-8">
+                    <div class="phase-dot hidden sm:block" style="background-color: #3b82f6;"></div>
+                    <div class="sm:w-1/3 mb-3 sm:mb-0">
+                        <h2 class="text-xl font-bold text-gray-800">5. 임상 1상</h2>
+                    </div>
+                    <div class="sm:w-2/3">
+                        <div class="text-lg font-extrabold text-blue-700 mb-1">총 45.5억 원 내외</div>
+                        <p class="text-sm text-gray-600 mb-2">24개월 이내</p>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <!-- Budget Visualization: 45.5억 / 91억 * 100% ≈ 50.0% -->
+                            <div class="budget-bar h-full bg-blue-600 rounded-full" style="width: 50.0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 6: 임상 2상 (The Major Step) -->
+                <div class="phase-card bg-white p-5 rounded-xl shadow-lg ring-4 ring-indigo-500 hover:shadow-2xl transition duration-300 sm:flex sm:items-center sm:space-x-8">
+                    <div class="phase-dot hidden sm:block" style="background-color: #1e3a8a;"></div>
+                    <div class="sm:w-1/3 mb-3 sm:mb-0">
+                        <h2 class="text-2xl font-extrabold text-gray-900">6. 임상 2상</h2>
+                        <p class="text-sm text-indigo-600 font-medium">최대 지원 규모</p>
+                    </div>
+                    <div class="sm:w-2/3">
+                        <div class="text-2xl font-extrabold text-indigo-800 mb-1">총 91억 원 내외</div>
+                        <p class="text-sm text-gray-600 mb-2">24개월 내외</p>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <!-- Budget Visualization: 91억 / 91억 * 100% = 100% -->
+                            <div class="budget-bar h-full bg-indigo-700 rounded-full" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="mt-12 pt-6 border-t border-gray-200 text-center">
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">핵심 요약</h3>
+            <ul class="text-sm text-gray-500 space-y-1">
+                <li><span class="font-bold text-gray-800">지원 범위:</span> 개별 과제는 제시된 상한(또는 내외) 범위 안에서 협약 시 확정됩니다.</li>
+                <li><span class="font-bold text-gray-800">최대 규모:</span> 임상 2상 단계에서 91억 원 내외로 가장 큰 지원이 이루어집니다.</li>
+                <li><span class="font-bold text-gray-800">기간:</span> 대부분의 단계에서 지원 기간은 <span class="text-indigo-600">24개월 내외</span>입니다.</li>
+            </ul>
+        </footer>
+
+    </div>
+
+</body>
+</html>
