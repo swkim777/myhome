@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025년 국가신약개발사업 현황 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .nav-item { cursor: pointer; transition: all 0.2s ease-in-out; }
+        .nav-item.active { border-bottom-color: #2563eb; color: #2563eb; font-weight: 600; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .stat-card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+    </style>
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A tab-based SPA dashboard design was chosen to logically segment complex R&D data. This structure avoids overwhelming the user with a long, scrolling page. The flow is designed for progressive disclosure: 1. Main Dashboard (종합 현황) for a high-level overview. 2. Thematic Views (개발 단계별, 질환 영역별) for deeper analysis. 3. Project List (과제 목록) for granular, searchable details. This user flow allows both quick insights and in-depth exploration, which is more effective for data consumption than a linear report format. -->
+    <!-- Visualization & Content Choices: 
+        - Total Projects/Budget (Stat Cards): Goal: Inform. Method: Styled HTML/Tailwind. Interaction: Hover effect. Justification: Provides immediate, high-impact key metrics.
+        - Stage Distribution (Donut Chart): Goal: Compare proportions. Method: Chart.js Canvas. Interaction: Tooltip on hover. Justification: Excellent for showing part-to-whole relationships of the development pipeline at a glance.
+        - Modality Breakdown (Bar Chart): Goal: Compare categories. Method: Chart.js Canvas. Interaction: Tooltip on hover. Justification: Clearly compares the number of projects across different technology types.
+        - Disease Area Focus (Polar Area Chart): Goal: Compare categories with visual impact. Method: Chart.js Canvas. Interaction: Tooltip on hover. Justification: A visually engaging way to show distribution across therapeutic areas, highlighting key focus areas.
+        - Project Data (Interactive Table): Goal: Organize/Explore. Method: HTML Table + JS Search/Filter. Interaction: User input for filtering. Justification: Provides powerful, direct access to detailed project information.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">2025년 국가신약개발사업 현황</h1>
+            <p class="text-lg text-slate-600 mt-2">국가신약개발재단(KDDF) 지원 과제 중심</p>
+        </header>
+
+        <nav class="flex justify-center border-b border-slate-200 mb-8">
+            <div id="nav-dashboard" class="nav-item active px-4 py-3 border-b-2 border-transparent">종합 현황</div>
+            <div id="nav-stage" class="nav-item px-4 py-3 border-b-2 border-transparent">개발 단계별</div>
+            <div id="nav-disease" class="nav-item px-4 py-3 border-b-2 border-transparent">질환 영역별</div>
+            <div id="nav-list" class="nav-item px-4 py-3 border-b-2 border-transparent">과제 목록</div>
+        </nav>
+
+        <main>
+            <section id="content-dashboard" class="content-section active">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-semibold mb-2">핵심 지표 요약</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">2025년 국가신약개발사업의 주요 성과와 분포를 한눈에 파악할 수 있습니다. 각 카드는 주요 지표를 나타내며, 차트는 개발 단계 및 기술 유형별 과제 분포를 시각화합니다.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
+                        <h3 class="text-lg font-semibold text-slate-500">총 지원 과제 수</h3>
+                        <p class="text-4xl font-bold text-blue-600 mt-2">218</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
+                        <h3 class="text-lg font-semibold text-slate-500">총 지원 규모 (억원)</h3>
+                        <p class="text-4xl font-bold text-blue-600 mt-2">4,750</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
+                        <h3 class="text-lg font-semibold text-slate-500">참여 기관 (산·학·연·병)</h3>
+                        <p class="text-4xl font-bold text-blue-600 mt-2">152</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold text-center mb-4">개발 단계별 과제 분포</h3>
+                        <div class="chart-container">
+                            <canvas id="stageDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold text-center mb-4">신약 유형별 과제 분포</h3>
+                        <div class="chart-container">
+                            <canvas id="modalityDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-stage" class="content-section">
+                 <div class="text-center mb-10">
+                    <h2 class="text-2xl font-semibold mb-2">개발 단계별 상세 분석</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">신약 개발은 여러 단계를 거치는 길고 복잡한 과정입니다. 이 섹션에서는 후보물질 발굴부터 임상시험 마지막 단계까지, 각 단계에 분포된 과제들의 수를 상세히 보여주어 파이프라인의 강점과 약점을 분석할 수 있습니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                     <div class="chart-container h-96 md:h-[500px] max-h-[500px]">
+                        <canvas id="detailedStageChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-disease" class="content-section">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-semibold mb-2">주요 질환 영역별 포트폴리오</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">국가신약개발사업은 특정 질환 영역에 대한 전략적 투자를 통해 미충족 의료 수요를 해결하고자 합니다. 아래 차트는 항암, CNS, 대사성 질환 등 주요 영역별 과제 분포를 나타내며, 우리의 연구개발 집중 분야를 보여줍니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="chart-container h-96 md:h-[500px] max-h-[500px]">
+                        <canvas id="diseaseAreaChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-list" class="content-section">
+                 <div class="text-center mb-10">
+                    <h2 class="text-2xl font-semibold mb-2">전체 지원 과제 목록</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">모든 지원 과제에 대한 상세 정보를 확인하고 검색할 수 있습니다. 과제명, 개발 단계, 또는 질환 영역별로 필터링하여 원하는 정보를 신속하게 찾아보세요.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <input type="text" id="searchInput" placeholder="과제명, 기관명 검색..." class="w-full md:w-1/2 p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <select id="stageFilter" class="w-full md:w-1/4 p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            <option value="">모든 단계</option>
+                        </select>
+                        <select id="diseaseFilter" class="w-full md:w-1/4 p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            <option value="">모든 질환</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-100 text-slate-600">
+                                <tr>
+                                    <th class="p-3">과제명</th>
+                                    <th class="p-3">주관연구기관</th>
+                                    <th class="p-3">개발 단계</th>
+                                    <th class="p-3">질환 영역</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 text-slate-500 text-sm">
+            <p>본 데이터는 2025년 국가신약개발사업 현황을 기반으로 구성된 가상 자료입니다.</p>
+            <p>제작: Interactive Data Visualization</p>
+        </footer>
+    </div>
+
+<script>
+    const projectData = [
+        { id: 1, title: '차세대 면역항암제 후보물질 도출', org: 'A바이오', stage: '후보물질', disease: '항암', modality: '합성신약' },
+        { id: 2, title: '퇴행성뇌질환 치료용 펩타이드 신약 개발', org: 'B제약', stage: '전임상', disease: 'CNS', modality: '바이오신약' },
+        { id: 3, title: 'KRAS 저해 표적항암제 임상 1상', org: 'C제약', stage: '임상 1상', disease: '항암', modality: '합성신약' },
+        { id: 4, title: '자가면역질환 치료제 비임상 연구', org: 'D대학', stage: '전임상', disease: '자가면역', modality: '바이오신약' },
+        { id: 5, title: 'NASH 치료제 후보물질 최적화', org: 'E바이오', stage: '후보물질', disease: '대사성', modality: '합성신약' },
+        { id: 6, title: '급성 골수성 백혈병 치료제 임상 2상', org: 'F제약', stage: '임상 2상', disease: '항암', modality: '합성신약' },
+        { id: 7, title: '알츠하이머병 진단키트 개발', org: 'G병원', stage: '후보물질', disease: 'CNS', modality: '기타' },
+        { id: 8, title: '항체-약물 접합체(ADC) 기반 항암 신약', org: 'H바이오', stage: '전임상', disease: '항암', modality: '바이오신약' },
+        { id: 9, title: '희귀 유전질환 유전자 치료제 개발', org: 'I바이오', stage: '전임상', disease: '희귀질환', modality: '세포/유전자' },
+        { id: 10, title: '제2형 당뇨병 치료제 임상 1상', org: 'J제약', stage: '임상 1상', disease: '대사성', modality: '합성신약' },
+        { id: 11, title: '파킨슨병 치료 후보물질 발굴', org: 'K대학', stage: '물질발굴', disease: 'CNS', modality: '합성신약' },
+        { id: 12, title: '삼중음성유방암 표적치료제 전임상', org: 'L바이오', stage: '전임상', disease: '항암', modality: '바이오신약' },
+        { id: 13, title: '류마티스 관절염 치료제 임상 2상', org: 'M제약', stage: '임상 2상', disease: '자가면역', modality: '바이오신약' },
+        { id: 14, title: '만성신부전증 치료 후보물질', org: 'N바이오', stage: '후보물질', disease: '대사성', modality: '합성신약' },
+        { id: 15, title: '코로나19 변이 대응 백신 개발', org: 'O제약', stage: '임상 1상', disease: '감염성', modality: '바이오신약' }
+    ];
+
+    for(let i = 16; i <= 218; i++) {
+        const stages = ['물질발굴', '후보물질', '전임상', '임상 1상', '임상 2상', '임상 3상'];
+        const diseases = ['항암', 'CNS', '대사성', '자가면역', '희귀질환', '감염성', '기타질환'];
+        const modalities = ['합성신약', '바이오신약', '세포/유전자', '기타'];
+        const orgs = ['제약', '바이오', '대학', '병원'];
+        
+        const stageWeights = [0.2, 0.3, 0.3, 0.1, 0.08, 0.02];
+        const diseaseWeights = [0.4, 0.15, 0.1, 0.1, 0.1, 0.1, 0.05];
+        const modalityWeights = [0.5, 0.3, 0.1, 0.1];
+        
+        const weightedRandom = (items, weights) => {
+            let sum = 0;
+            const r = Math.random();
+            for (let i = 0; i < items.length; i++) {
+                sum += weights[i];
+                if (r <= sum) return items[i];
+            }
+        };
+
+        projectData.push({
+            id: i,
+            title: `신규 프로젝트 #${i}`,
+            org: `${String.fromCharCode(65 + (i % 26))}${i}${weightedRandom(orgs, [0.4, 0.4, 0.1, 0.1])}`,
+            stage: weightedRandom(stages, stageWeights),
+            disease: weightedRandom(diseases, diseaseWeights),
+            modality: weightedRandom(modalities, modalityWeights)
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        const stageDistributionCtx = document.getElementById('stageDistributionChart')?.getContext('2d');
+        const modalityDistributionCtx = document.getElementById('modalityDistributionChart')?.getContext('2d');
+        const detailedStageCtx = document.getElementById('detailedStageChart')?.getContext('2d');
+        const diseaseAreaCtx = document.getElementById('diseaseAreaChart')?.getContext('2d');
+        
+        const searchInput = document.getElementById('searchInput');
+        const stageFilter = document.getElementById('stageFilter');
+        const diseaseFilter = document.getElementById('diseaseFilter');
+        const projectTableBody = document.getElementById('projectTableBody');
+
+        const stages = [...new Set(projectData.map(p => p.stage))].sort((a, b) => ['물질발굴', '후보물질', '전임상', '임상 1상', '임상 2상', '임상 3상'].indexOf(a) - ['물질발굴', '후보물질', '전임상', '임상 1상', '임상 2상', '임상 3상'].indexOf(b));
+        const diseases = [...new Set(projectData.map(p => p.disease))].sort();
+        const modalities = [...new Set(projectData.map(p => p.modality))].sort();
+        
+        const populateFilters = () => {
+            stages.forEach(stage => {
+                const option = document.createElement('option');
+                option.value = stage;
+                option.textContent = stage;
+                stageFilter.appendChild(option);
+            });
+            diseases.forEach(disease => {
+                const option = document.createElement('option');
+                option.value = disease;
+                option.textContent = disease;
+                diseaseFilter.appendChild(option);
+            });
+        };
+        
+        const renderTable = (data) => {
+            projectTableBody.innerHTML = '';
+            if (data.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="4" class="p-4 text-center text-slate-500">검색 결과가 없습니다.</td>`;
+                projectTableBody.appendChild(row);
+                return;
+            }
+            data.forEach(p => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-slate-200 hover:bg-slate-50';
+                row.innerHTML = `
+                    <td class="p-3">${p.title}</td>
+                    <td class="p-3">${p.org}</td>
+                    <td class="p-3">${p.stage}</td>
+                    <td class="p-3">${p.disease}</td>
+                `;
+                projectTableBody.appendChild(row);
+            });
+        };
+
+        const filterData = () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedStage = stageFilter.value;
+            const selectedDisease = diseaseFilter.value;
+
+            const filtered = projectData.filter(p => {
+                const titleMatch = p.title.toLowerCase().includes(searchTerm);
+                const orgMatch = p.org.toLowerCase().includes(searchTerm);
+                const stageMatch = !selectedStage || p.stage === selectedStage;
+                const diseaseMatch = !selectedDisease || p.disease === selectedDisease;
+                return (titleMatch || orgMatch) && stageMatch && diseaseMatch;
+            });
+            renderTable(filtered);
+        };
+        
+        const switchTab = (targetId) => {
+            navItems.forEach(item => {
+                item.classList.toggle('active', item.id === `nav-${targetId}`);
+            });
+            contentSections.forEach(section => {
+                section.classList.toggle('active', section.id === `content-${targetId}`);
+            });
+            
+            if (targetId === 'dashboard') {
+                renderDashboardCharts();
+            } else if (targetId === 'stage') {
+                renderDetailedStageChart();
+            } else if (targetId === 'disease') {
+                renderDiseaseAreaChart();
+            } else if (targetId === 'list') {
+                filterData();
+            }
+        };
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.id.split('-')[1];
+                switchTab(targetId);
+            });
+        });
+
+        const CHART_COLORS = ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
+        const CHART_COLORS_EXTENDED = ['#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe', '#e0f2fe'];
+
+        let stageChart, modalityChart, detailedStageChartInstance, diseaseChart;
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 12 },
+                    padding: 10,
+                }
+            }
+        };
+        
+        function renderDashboardCharts() {
+            if (stageDistributionCtx) {
+                const clinicalStages = ['임상 1상', '임상 2상', '임상 3상'];
+                const stageSummary = {
+                    '초기 단계': projectData.filter(p => p.stage === '물질발굴' || p.stage === '후보물질').length,
+                    '전임상': projectData.filter(p => p.stage === '전임상').length,
+                    '임상': projectData.filter(p => clinicalStages.includes(p.stage)).length,
+                };
+                if(stageChart) stageChart.destroy();
+                stageChart = new Chart(stageDistributionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(stageSummary),
+                        datasets: [{
+                            data: Object.values(stageSummary),
+                            backgroundColor: CHART_COLORS,
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: chartOptions,
+                });
+            }
+
+            if (modalityDistributionCtx) {
+                const modalityData = modalities.map(m => projectData.filter(p => p.modality === m).length);
+                if(modalityChart) modalityChart.destroy();
+                modalityChart = new Chart(modalityDistributionCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: modalities,
+                        datasets: [{
+                            label: '과제 수',
+                            data: modalityData,
+                            backgroundColor: CHART_COLORS[0],
+                        }]
+                    },
+                    options: { ...chartOptions, indexAxis: 'y' }
+                });
+            }
+        }
+        
+        function renderDetailedStageChart() {
+             if (detailedStageCtx) {
+                const stageData = stages.map(s => projectData.filter(p => p.stage === s).length);
+                if(detailedStageChartInstance) detailedStageChartInstance.destroy();
+                detailedStageChartInstance = new Chart(detailedStageCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: stages,
+                        datasets: [{
+                            label: '과제 수',
+                            data: stageData,
+                            backgroundColor: CHART_COLORS_EXTENDED,
+                        }]
+                    },
+                    options: { ...chartOptions, indexAxis: 'y' }
+                });
+            }
+        }
+        
+        function renderDiseaseAreaChart() {
+            if (diseaseAreaCtx) {
+                const diseaseData = diseases.map(d => projectData.filter(p => p.disease === d).length);
+                if(diseaseChart) diseaseChart.destroy();
+                diseaseChart = new Chart(diseaseAreaCtx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: diseases,
+                        datasets: [{
+                            label: '과제 수',
+                            data: diseaseData,
+                            backgroundColor: CHART_COLORS_EXTENDED,
+                        }]
+                    },
+                    options: { ...chartOptions, scales: { r: { ticks: { backdropColor: 'transparent' }}}}
+                });
+            }
+        }
+        
+        populateFilters();
+        searchInput.addEventListener('input', filterData);
+        stageFilter.addEventListener('change', filterData);
+        diseaseFilter.addEventListener('change', filterData);
+
+        switchTab('dashboard');
+    });
+</script>
+
+</body>
+</html>
