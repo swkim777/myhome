@@ -3,170 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HnO 프로젝트 뷰어</title>
-    <!-- Tailwind CSS 로드 -->
+    <title>HnO 프로젝트 인덱스</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 스크롤바 디자인 (선택 사항) */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f7f4; /* 기존 페이지의 베이지색 배경 */
         }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+        .header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #374151; /* 진한 회색 */
         }
-        iframe {
-            /* iframe 로딩 시 깜빡임 방지 */
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+        .header .logo span {
+            color: #0d9488; /* 틸 색상 */
         }
-        iframe.loaded {
-            visibility: visible;
-            opacity: 1;
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* Card as a clickable link */
+        .file-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+            overflow: hidden;
+        }
+        .file-card-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+        /* Card title */
+        .file-card-link .title {
+            padding: 1.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #0d9488; /* 틸 색상 */
+            border-bottom: 1px solid #f3f4f6;
+        }
+        /* Card description */
+        .file-card-link .description {
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.6;
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
-    <div class="flex h-screen">
-        <!-- 1. 사이드바 네비게이션 -->
-        <nav id="navigation" class="w-64 bg-gray-900 text-white p-5 overflow-y-auto shadow-lg">
-            <h1 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-3">HnO Pages</h1>
-            
-            <ul class="space-y-2">
-                <!-- 
-                  HTML 파일 목록
-                  이 아랫부분을 복사하여 실제 파일명으로 수정하세요.
-                  data-src="여기에.html" 부분에 파일 이름을 정확히 입력해야 합니다.
-                -->
+<body>
 
-                <!-- ===== 파일 목록 시작 ===== -->
-                <li>
-                    <a href="#" 
-                       data-src="HO-1197.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       HO-1197
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="Invest-ppt.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       HO-1197 투자제안 발표 자료 
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="InvestEn-ppt.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       HO-1197 Invest PowerPoint 
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="RnD-list.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       국내 제약 공공 R&D 지원 사업 
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="clinical-invest.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       임상 자금 확보용 Dual-Track 전략 
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="cancer-rnd.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       국립 암센터 R&D 프로젝트 리스트 
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="kddf-2025list.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       KDDI R&D Project List 
-                    </a>
-                </li>
-                <li>
-                    <a href="#" 
-                       data-src="kiom-diabetes.html" 
-                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                       한국한의학연구원 한약기반 당뇨병 치료제 
-                    </a>
-                </li>
-                <!-- ===== 파일 목록 끝 ===== -->
-
-            </ul>
+    <header class="header">
+        <div class="logo">H<span>n</span>O Biosis</div>
+        <nav>
+            <span class="text-sm text-gray-500">Project Index Page</span>
         </nav>
+    </header>
 
-        <!-- 2. 메인 컨텐츠 영역 -->
-        <main class="flex-1 flex flex-col overflow-hidden">
-            <div class="flex-1 p-4 md:p-6 lg:p-8 bg-gray-200 overflow-y-auto">
-                <div class="bg-white w-full h-full rounded-lg shadow-inner">
-                    <!-- HTML 컨텐츠가 이 iframe에 표시됩니다. -->
-                    <iframe 
-                        id="contentFrame" 
-                        src="about:blank" 
-                        class="w-full h-full border-0 rounded-lg"
-                        title="Embedded Content">
-                    </iframe>
-                </div>
-            </div>
-        </main>
-    </div>
+    <main>
+        <div class="card-grid">
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const nav = document.getElementById('navigation');
-            const iframe = document.getElementById('contentFrame');
-            const links = nav.querySelectorAll('a[data-src]');
+            <!-- HO-1197.html -->
+            <a href="./HnO/HO-1197.html" target="_blank" class="file-card-link">
+                <div class="title">HO-1197 간암 치료제</div>
+                <p class="description">간세포암(HCC) 치료제 HO-1197에 대한 인터랙티브 요약. 기존 치료의 한계, 다각적 작용 기전, 표준 치료제(소라페닙)와의 효능 및 안전성 비교 차트를 제공합니다.</p>
+            </a>
 
-            // iframe 로드 완료 시 부드럽게 표시
-            iframe.addEventListener('load', () => {
-                iframe.classList.add('loaded');
-            });
+            <!-- Invest-ppt.html -->
+            <a href="./HnO/Invest-ppt.html" target="_blank" class="file-card-link">
+                <div class="title">투자 제안서 (국문)</div>
+                <p class="description">HO-1197 신약 개발을 위한 대화형 투자 제안서(IR) 국문 버전. 시장 현황, 상세 작용 기전, 임상/자금 전략, EXIT 전략을 슬라이드 형식으로 제공합니다.</p>
+            </a>
 
-            // 네비게이션 클릭 이벤트 처리 (이벤트 위임 사용)
-            nav.addEventListener('click', (e) => {
-                // 클릭된 요소가 A 태그이고 data-src 속성이 있는지 확인
-                const link = e.target.closest('a[data-src]');
-                
-                if (link) {
-                    e.preventDefault(); // 기본 링크 동작 방지
-                    
-                    const newSrc = link.getAttribute('data-src');
-                    
-                    // 현재 iframe의 src와 다를 경우에만 새로고침
-                    if (iframe.src.endsWith(newSrc) === false) {
-                        iframe.classList.remove('loaded'); // 로드 전 숨김
-                        iframe.src = newSrc;
-                    }
+            <!-- InvestEn-ppt.html -->
+            <a href="./HnO/InvestEn-ppt.html" target="_blank" class="file-card-link">
+                <div class="title">투자 제안서 (영문)</div>
+                <p class="description">HO-1197 신약 개발을 위한 대화형 투자 제안서(IR) 영문 버전. 글로벌 투자자를 대상으로 국문 버전과 동일한 구성의 정보를 제공합니다.</p>
+            </a>
 
-                    // 활성 링크 스타일링
-                    links.forEach(l => l.classList.remove('bg-blue-600', 'font-semibold'));
-                    link.classList.add('bg-blue-600', 'font-semibold');
-                }
-            });
+            <!-- RnD-list.html -->
+            <a href="./HnO/RnD-list.html" target="_blank" class="file-card-link">
+                <div class="title">R&D 파이프라인 목록</div>
+                <p class="description">H&O Biosis의 R&D 파이프라인 프로젝트 목록. 프로젝트 상태를 시각화하고, '항암', '대사', '면역' 등 카테고리별 필터링 및 검색 기능을 제공하는 동적 페이지입니다.</p>
+            </a>
 
-            // 페이지 로드 시 첫 번째 링크를 기본으로 로드
-            if (links.length > 0) {
-                links[0].click(); // 첫 번째 링크 클릭 이벤트 강제 실행
-            } else {
-                // 표시할 링크가 없을 경우
-                iframe.srcdoc = `<div style='display:flex;height:100%;align-items:center;justify-content:center;font-family:sans-serif;color:#555;'>
-                    <h2>사이드바에서 표시할 페이지를 선택하세요.</h2>
-                    <p style='position:absolute;top:20px;left:20px;'>index.html 파일을 수정하여 <b>data-src</b> 속성에 파일명을 추가하세요.</p>
-                </div>`;
-                iframe.classList.add('loaded');
-            }
-        });
-    </script>
+            <!-- affil-research.html -->
+            <a href="./HnO/affil-research.html" target="_blank" class="file-card-link">
+                <div class="title">제휴 연구기관</div>
+                <p class="description">H&O Biosis와 협력하는 주요 제휴 연구기관 목록. 국립암센터, 서울아산병원, KIST 등 핵심 파트너 기관과 협력 내용을 간략히 소개합니다.</p>
+            </a>
+
+            <!-- cancer-rnd.html -->
+            <a href="./HnO/cancer-rnd.html" target="_blank" class="file-card-link">
+                <div class="title">항암 R&D 상세</div>
+                <p class="description">주요 항암 R&D 파이프라인 상세 소개. 탭 인터페이스를 통해 간세포암(HO-1197), 췌장암(HO-1240), 비소세포폐암(HO-1305) 프로젝트의 개발 단계, 기전, 임상 전략을 제공합니다.</p>
+            </a>
+
+            <!-- clinical-invest.html -->
+            <a href="./HnO/clinical-invest.html" target="_blank" class="file-card-link">
+                <div class="title">연구자 주도 임상(IIT)</div>
+                <p class="description">H&O Biosis가 지원하는 '임상 연구자 주도 연구(IIT)' 현황. '진행중'(간암 HO-1197), '완료'(위암 NK세포), '계획중'(췌장암 HO-1240) 탭으로 구분하여 각 임상 내용을 보여줍니다.</p>
+            </a>
+
+            <!-- dev-strategy.html -->
+            <a href="./HnO/dev-strategy.html" target="_blank" class="file-card-link">
+                <div class="title">HO-1197 개발 전략</div>
+                <p class="description">HO-1197 간암 치료제 개발 전략 인포그래픽. 시리즈 A 800억 투자금 확보를 위한 '정부 R&D 매칭' 전략의 현실성을 분석하고, KDDF 프로그램을 활용한 최적의 포트폴리오를 제안합니다.</p>
+            </a>
+
+            <!-- kddf-2025list.html -->
+            <a href="./HnO/kddf-2025list.html" target="_blank" class="file-card-link">
+                <div class="title">KDDF 파이프라인 목록</div>
+                <p class="description">국가신약개발사업단(KDDF)의 2025년도 지원 파이프라인 현황 인포그래픽. 총 128개 지원 과제를 개발 단계별 및 질환 분야별로 분석한 통계와 상세 프로젝트 목록을 제공합니다.</p>
+            </a>
+
+            <!-- kddf-budget.html -->
+            <a href="./HnO/kddf-budget.html" target="_blank" class="file-card-link">
+                <div class="title">KDDF 단계별 지원금</div>
+                <p class="description">국가신약개발사업단(KDDF)의 2025년도 단계별 지원 한도 인포그래픽. 유효물질부터 임상 2상까지 각 단계별 지원 상한 금액과 기간을 시각적으로 요약합니다.</p>
+            </a>
+
+            <!-- kddf-project.html -->
+            <a href="./HnO/kddf-project.html" target="_blank" class="file-card-link">
+                <div class="title">KDDF 지원 프로그램</div>
+                <p class="description">국가신약개발사업단(KDDF)의 2025년도 지원 프로그램 인포그래픽. R&D 파이프라인 3단계 지원(기반 확충, 생태계 구축, 임상 개발)과 사업화 컨설팅 프로그램을 시각적으로 요약합니다.</p>
+            </a>
+
+            <!-- kddf2025.html -->
+            <a href="./HnO/kddf2025.html" target="_blank" class="file-card-link">
+                <div class="title">KDDF 2025 대시보드</div>
+                <p class="description">2025년 국가신약개발사업(KDDF) 현황 인터랙티브 대시보드. '종합 현황', '개발 단계별', '질환 영역별', '과제 목록' 탭으로 구성. 총 지원 과제(218개), 지원 규모, 차트, 검색 가능한 과제 목록을 제공합니다.</p>
+            </a>
+
+            <!-- kiom-diabetes.html -->
+            <a href="./HnO/kiom-diabetes.html" target="_blank" class="file-card-link">
+                <div class="title">KIOM-79 당뇨 보고서</div>
+                <p class="description">한국한의학연구원(KIOM)의 'KIOM-79' 당뇨 합병증 치료제 인터랙티브 보고서. '최종당화산물(AGEs)' 차단 기전, 신증/안구/심혈관 합병증에 대한 효능 차트 및 기술이전 성과를 요약합니다.</p>
+            </a>
+
+        </div>
+    </main>
+
 </body>
 </html>
