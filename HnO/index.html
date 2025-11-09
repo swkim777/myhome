@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HnO 프로젝트 뷰어</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 스크롤바 디자인 (선택 사항) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        iframe {
+            /* iframe 로딩 시 깜빡임 방지 */
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        iframe.loaded {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <div class="flex h-screen">
+        <!-- 1. 사이드바 네비게이션 -->
+        <nav id="navigation" class="w-64 bg-gray-900 text-white p-5 overflow-y-auto shadow-lg">
+            <h1 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-3">HnO Pages</h1>
+            
+            <ul class="space-y-2">
+                <!-- 
+                  HTML 파일 목록
+                  이 아랫부분을 복사하여 실제 파일명으로 수정하세요.
+                  data-src="여기에.html" 부분에 파일 이름을 정확히 입력해야 합니다.
+                -->
+
+                <!-- ===== 파일 목록 시작 ===== -->
+                <li>
+                    <a href="#" 
+                       data-src="HO-1197.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       HO-1197 ?
+                    </a>
+                </li>
+                <li>
+                    <a href="#" 
+                       data-src="Invest-ppt.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       HO-1197 투자제안 발표 자료 
+                    </a>
+                </li>
+                <li>
+                    <a href="#" 
+                       data-src="InvestEn-ppt.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       HO-1197 Invest PowerPoint 
+                    </a>
+                </li>
+                <li>
+                    <a href="#" 
+                       data-src="RnD-list.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       국내 제약 공공 R&D 지원 사업 
+                    </a>
+                </li>
+                <li>
+                    <a href="#" 
+                       data-src="clinical-rnd.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       임상 자금 확보용 Dual-Track 전략 
+                    </a>
+                </li>
+                <li>
+                    <a href="#" 
+                       data-src="cancer-rnd.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       국립 암센터 R&D 프로젝트 리스트 
+                    </a>
+                </li>
+                <li>
+                    <a href="#" 
+                       data-src="kddf-2025list.html" 
+                       class="nav-link block p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                       KDDI R&D Project List 
+                    </a>
+                </li>
+                <!-- 예: 
+                <li>
+                    <a href="#" data-src="my_other_file.html" class="nav-link ...">
+                       다른 파일
+                    </a>
+                </li>
+                -->
+                <!-- ===== 파일 목록 끝 ===== -->
+
+            </ul>
+        </nav>
+
+        <!-- 2. 메인 컨텐츠 영역 -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <div class="flex-1 p-4 md:p-6 lg:p-8 bg-gray-200 overflow-y-auto">
+                <div class="bg-white w-full h-full rounded-lg shadow-inner">
+                    <!-- HTML 컨텐츠가 이 iframe에 표시됩니다. -->
+                    <iframe 
+                        id="contentFrame" 
+                        src="about:blank" 
+                        class="w-full h-full border-0 rounded-lg"
+                        title="Embedded Content">
+                    </iframe>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.getElementById('navigation');
+            const iframe = document.getElementById('contentFrame');
+            const links = nav.querySelectorAll('a[data-src]');
+
+            // iframe 로드 완료 시 부드럽게 표시
+            iframe.addEventListener('load', () => {
+                iframe.classList.add('loaded');
+            });
+
+            // 네비게이션 클릭 이벤트 처리 (이벤트 위임 사용)
+            nav.addEventListener('click', (e) => {
+                // 클릭된 요소가 A 태그이고 data-src 속성이 있는지 확인
+                const link = e.target.closest('a[data-src]');
+                
+                if (link) {
+                    e.preventDefault(); // 기본 링크 동작 방지
+                    
+                    const newSrc = link.getAttribute('data-src');
+                    
+                    // 현재 iframe의 src와 다를 경우에만 새로고침
+                    if (iframe.src.endsWith(newSrc) === false) {
+                        iframe.classList.remove('loaded'); // 로드 전 숨김
+                        iframe.src = newSrc;
+                    }
+
+                    // 활성 링크 스타일링
+                    links.forEach(l => l.classList.remove('bg-blue-600', 'font-semibold'));
+                    link.classList.add('bg-blue-600', 'font-semibold');
+                }
+            });
+
+            // 페이지 로드 시 첫 번째 링크를 기본으로 로드
+            if (links.length > 0) {
+                links[0].click(); // 첫 번째 링크 클릭 이벤트 강제 실행
+            } else {
+                // 표시할 링크가 없을 경우
+                iframe.srcdoc = `<div style='display:flex;height:100%;align-items:center;justify-content:center;font-family:sans-serif;color:#555;'>
+                    <h2>사이드바에서 표시할 페이지를 선택하세요.</h2>
+                    <p style='position:absolute;top:20px;left:20px;'>index.html 파일을 수정하여 <b>data-src</b> 속성에 파일명을 추가하세요.</p>
+                </div>`;
+                iframe.classList.add('loaded');
+            }
+        });
+    </script>
+</body>
+</html>
