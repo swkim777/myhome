@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIOM-79 당뇨 합병증 치료제 보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Warm neutrals, soft greens, subtle blues) -->
+    <!-- Application Structure Plan: 
+        본 애플리케이션은 'KIOM-79'라는 특정 연구 사례를 중심으로 한 '인터랙티브 리포트' 구조를 채택했습니다. 사용자가 연구의 '배경(문제) -> 솔루션(KIOM-79) -> 과학적 근거(효능) -> 성과(기술이전)' 순서로 자연스럽게 탐색할 수 있도록 수직 스크롤링 내러티브 구조를 설계했습니다.
+        - 상단 고정 탐색 메뉴: 주요 섹션(개요, 문제, 솔루션, 효능, 기술이전)으로 부드럽게 스크롤하여 이동합니다.
+        - '문제(AGEs)' 및 '솔루션(기전)' 섹션: 복잡한 과학적 기전을 SVG나 이미지 없이 순수 HTML/Tailwind CSS를 사용한 다이어그램으로 시각화하여 명확하게 전달합니다.
+        - '핵심 효능' 섹션: 본 보고서의 핵심 영역입니다. '당뇨병성 신증', '안구 합병증', '심혈관 합병증' 등 주요 표적 질환별로 탭(Tab) 인터페이스를 구현했습니다. 사용자가 탭을 클릭하면 해당 질환에 대한 텍스트 설명과 Chart.js 기반의 동적 데이터 차트(막대, 도넛)가 즉각적으로 표시됩니다.
+        - 이 구조는 사용자가 복잡한 연구 내용을 단계별로 쉽게 소화하고, 특히 관심 있는 효능 데이터를 능동적으로 탐색할 수 있도록 유도하여 정보 전달성과 사용자 경험을 극대화하기 위해 선택되었습니다.
+    -->
+    <!-- Visualization & Content Choices:
+        - [문제] 최종당화산물(AGEs) 생성 경로:
+            - 정보: 고혈당 -> 단백질 결합 -> AGEs 생성 -> RAGE 수용체 결합 -> 염증/섬유화 -> 합병증.
+            - 목표: 조직화/정보 전달.
+            - 시각화: HTML/CSS/Tailwind 기반 순서도 (Flexbox, Borders, Unicode Arrow).
+            - 상호작용: (없음. 정적 다이어그램으로 명료성 확보).
+            - 정당성: SVG 없이 복잡한 경로를 명확하고 구조적으로 전달합니다.
+        - [솔루션] KIOM-79 작용 기전:
+            - 정보: KIOM-79가 'AGEs 생성' 단계와 'RAGE 결합' 단계를 차단함.
+            - 목표: 정보 전달/비교.
+            - 시각화: 위 '문제' 다이어그램에 '차단(X)' 표시를 추가한 HTML/CSS 다이어그램.
+            - 상호작용: 주요 차단 지점에 마우스 오버 시 관련 설명 툴팁 표시 (간단한 JS/CSS로 구현).
+            - 정당성: 문제점과 해결책을 동일한 시각적 프레임워크 내에서 직접 대비시켜 이해도를 높입니다.
+        - [효능] 당뇨병성 신증 (신장):
+            - 정보: (가상 데이터) 대조군 대비 KIOM-79 투여군의 신장 손상 지표(예: 알부민뇨) 감소.
+            - 목표: 비교.
+            - 시각화: 막대 차트 (Chart.js, 'kidneyChart' 캔버스).
+            - 상호작용: '신증' 탭 클릭 시 차트 로드. 차트 바에 마우스 오버 시 툴팁으로 정확한 수치 표시.
+            - 정당성: 두 그룹 간의 정량적 차이를 명확하게 비교/제시합니다.
+        - [효능] 안구 합병증 (눈):
+            - 정보: (가상 데이터) 대조군 대비 KIOM-79 투여군의 백내장 진행 지연 비율.
+            - 목표: 비율 표시/비교.
+            - 시각화: 도넛 차트 (Chart.js, 'eyeChart' 캔버스).
+            - 상호작용: '안구' 탭 클릭 시 차트 로드.
+            - 정당성: 전체 중 '진행 지연'이 차지하는 비율을 직관적으로 보여줍니다.
+        - [효능] 심혈관 합병증 (심장):
+            - 정보: (가상 데이터) 대조군 대비 KIOM-79 투여군의 심근 섬유화 점수 감소.
+            - 목표: 비교.
+            - 시각화: 막대 차트 (Chart.js, 'heartChart' 캔버스).
+            - 상호작용: '심혈관' 탭 클릭 시 차트 로드.
+            - 정당성: 신증 데이터와 마찬가지로 두 그룹 간의 명확한 효능 차이를 보여줍니다.
+        - [기술이전] 이전 경로:
+            - 정보: 한국한의학연구원(KIOM) -> (주)네추럴로그.
+            - 목표: 정보 전달/조직화.
+            - 시각화: HTML/CSS 기반 단순 블록 다이어그램 (Box -> Arrow -> Box).
+            - 정당성: 기술이전의 흐름을 단순 명료하게 시각화합니다.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #fdfcf9; /* Very light warm neutral */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .sticky-nav {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .tab-button.active {
+            border-bottom-color: #065f46; /* emerald-800 */
+            color: #065f46;
+            font-weight: 600;
+        }
+        .tab-button {
+            border-bottom-width: 2px;
+            border-bottom-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .diagram-box {
+            @apply border-2 border-emerald-700 bg-emerald-50 rounded-lg p-4 text-center text-sm md:text-base text-emerald-900 shadow-sm;
+        }
+        .diagram-arrow {
+            @apply text-3xl text-emerald-600 font-light;
+        }
+        .mechanism-block {
+            @apply relative border-2 border-red-500 bg-red-50 rounded-lg p-3 text-center text-sm text-red-700 shadow-lg cursor-pointer;
+        }
+        .mechanism-tooltip {
+            @apply absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 opacity-0 invisible transition-opacity duration-300;
+        }
+        .mechanism-block:hover .mechanism-tooltip {
+            @apply opacity-100 visible;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 w-full sticky-nav shadow-sm">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-xl font-bold text-emerald-800">KIOM-79 보고서</span>
+                </div>
+                <div class="hidden sm:block sm:ml-6">
+                    <div class="flex space-x-4">
+                        <a href="#summary" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-emerald-700">개요</a>
+                        <a href="#problem" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-emerald-700">문제: AGEs</a>
+                        <a href="#solution" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-emerald-700">솔루션: KIOM-79</a>
+                        <a href="#efficacy" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-emerald-700">핵심 효능</a>
+                        <a href="#transfer" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-emerald-700">기술이전</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-emerald-700">결론</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- 1. Summary Section -->
+        <section id="summary" class="py-20 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">한약 기반 당뇨 합병증 치료제</h1>
+            <h2 class="text-2xl md:text-3xl font-semibold text-emerald-600 mb-8">'KIOM-79' 개발 및 성과 보고서</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-700 mb-12">
+                본 보고서는 한국한의학연구원(KIOM) 김진숙 박사팀이 개발한 한약 복합 추출물 'KIOM-79'의
+                연구 배경, 핵심 기전, 주요 전임상 효능 및 기술이전 성과를 요약한 인터랙티브 리포트입니다.
+                KIOM-79는 혈당 강하가 아닌, '최종당화산물(AGEs)' 억제를 통해 치명적인 당뇨 합병증을 표적으로 하는 새로운 접근법을 제시합니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-emerald-100">
+                    <h3 class="text-xl font-semibold text-emerald-700 mb-2">개발 주체</h3>
+                    <p class="text-gray-600">한국한의학연구원(KIOM)<br>(연구책임자: 김진숙 박사)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-emerald-100">
+                    <h3 class="text-xl font-semibold text-emerald-700 mb-2">핵심 물질</h3>
+                    <p class="text-gray-600">KIOM-79<br>(갈근, 후박, 감초, 대극 등 복합물)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-emerald-100">
+                    <h3 class="text-xl font-semibold text-emerald-700 mb-2">핵심 기전</h3>
+                    <p class="text-gray-600">최종당화산물(AGEs) 생성 억제<br>및 관련 신호 차단</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Problem Section -->
+        <section id="problem" class="py-20 bg-white rounded-lg shadow-xl my-16 border border-gray-200">
+            <div class="px-6 lg:px-12">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">문제: 당뇨병보다 무서운 '합병증'</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 mb-12">
+                    당뇨병 관리의 핵심은 혈당 조절을 넘어 전신에 발생하는 합병증을 예방하는 데 있습니다.
+                    그 주범 중 하나가 바로 '최종당화산물(AGEs)'입니다. 고혈당 환경이 지속되면 포도당이 단백질과 결합하여
+                    변성되면서 '당 독소'인 AGEs가 생성됩니다. 이는 전신의 혈관과 조직에 축적되어 염증과 섬유화를 일으켜
+                    신장, 눈, 심장 등 주요 장기를 손상시킵니다.
+                </p>
+                <h3 class="text-2xl font-semibold text-center text-gray-800 mb-8">최종당화산물(AGEs)의 합병증 유발 경로</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="diagram-box w-full md:w-auto">
+                        <strong>고혈당</strong><br>(지속적인 고혈당 상태)
+                    </div>
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    <div class="diagram-box w-full md:w-auto">
+                        <strong>AGEs 생성</strong><br>(단백질 당화 반응)
+                    </div>
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    <div class="diagram-box w-full md:w-auto">
+                        <strong>RAGE 수용체 결합</strong><br>(세포 표면 수용체 활성화)
+                    </div>
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    <div class="diagram-box w-full md:w-auto">
+                        <strong>염증 및 섬유화</strong><br>(NF-κB 등 신호 활성화)
+                    </div>
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    <div class="diagram-box w-full md:w-auto bg-red-50 border-red-500 text-red-900">
+                        <strong>전신 합병증</strong><br>(신증, 망막병증, 심근경색)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Solution Section -->
+        <section id="solution" class="py-20">
+            <div class="px-6 lg:px-12">
+                <h2 class="text-3xl font-bold text-center text-emerald-800 mb-6">솔루션: AGEs를 차단하는 'KIOM-79'</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 mb-12">
+                    KIOM-79는 갈근, 후박, 감초, 대극 등 전통 한약재에서 유효성분을 추출한 복합물입니다.
+                    이 복합물은 당뇨 합병증의 핵심 경로인 AGEs 생성 및 신호 전달 과정을 이중으로 차단하여
+                    조직의 염증과 섬유화를 근본적으로 억제하는 것을 목표로 합니다.
+                </p>
+                <h3 class="text-2xl font-semibold text-center text-gray-800 mb-8">KIOM-79의 이중 차단 기전</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="diagram-box w-full md:w-auto">
+                        <strong>고혈당</strong>
+                    </div>
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    
+                    <div class="mechanism-block w-full md:w-auto">
+                        <div class="mechanism-tooltip">KIOM-79가 AGEs 생성을<br>직접 억제합니다.</div>
+                        <span class="text-2xl font-bold absolute -top-3 -right-3 text-red-600">X</span>
+                        <strong>AGEs 생성</strong>
+                    </div>
+
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    
+                    <div class="mechanism-block w-full md:w-auto">
+                        <div class="mechanism-tooltip">KIOM-79가 AGEs와 RAGE의<br>결합을 방해합니다.</div>
+                        <span class="text-2xl font-bold absolute -top-3 -right-3 text-red-600">X</span>
+                        <strong>RAGE 수용체 결합</strong>
+                    </div>
+
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    <div class="diagram-box w-full md:w-auto">
+                        <strong>염증/섬유화 억제</strong>
+                    </div>
+                    <div class="diagram-arrow transform md:rotate-0">↓</div>
+                    <div class="diagram-box w-full md:w-auto bg-emerald-50 border-emerald-500 text-emerald-900">
+                        <strong>합병증 예방/지연</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Efficacy Section -->
+        <section id="efficacy" class="py-20 bg-white rounded-lg shadow-xl my-16 border border-gray-200">
+            <div class="px-6 lg:px-12">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">핵심 효능: 전임상 연구 결과</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 mb-12">
+                    KIOM-79는 당뇨병 동물 모델(ZDF 랫드 등)을 이용한 다양한 전임상 연구를 통해
+                    주요 당뇨 합병증에 대한 탁월한 보호 및 지연 효과를 입증했습니다.
+                    아래 탭을 클릭하여 각 합병증에 대한 주요 연구 결과를 확인해 보세요.
+                </p>
+
+                <!-- Tabs -->
+                <div class="border-b border-gray-200 mb-8">
+                    <nav class="flex justify-center -mb-px space-x-6 md:space-x-8" aria-label="Tabs">
+                        <button id="tab-kidney" class="tab-button active whitespace-nowrap py-4 px-1 text-base font-medium text-gray-500 hover:text-emerald-600" data-tab="kidney">
+                            당뇨병성 신증 (신장)
+                        </button>
+                        <button id="tab-eye" class="tab-button whitespace-nowrap py-4 px-1 text-base font-medium text-gray-500 hover:text-emerald-600" data-tab="eye">
+                            안구 합병증 (눈)
+                        </button>
+                        <button id="tab-heart" class="tab-button whitespace-nowrap py-4 px-1 text-base font-medium text-gray-500 hover:text-emerald-600" data-tab="heart">
+                            심혈관 합병증 (심장)
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="tab-content">
+                    <!-- Kidney Content -->
+                    <div id="content-kidney" class="tab-panel">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-emerald-700 mb-4">당뇨병성 신증 억제 효과</h3>
+                                <p class="text-gray-700 mb-4">
+                                    당뇨병성 신증은 당뇨 환자의 신장 기능이 서서히 망가지는 심각한 합병증입니다.
+                                    KIOM-79는 동물실험(ZDF 랫드)에서 신장의 AGEs 축적을 억제하고 RAGE 및 NF-κB 신호를 차단함으로써
+                                    단백뇨를 감소시키고 신장 조직의 섬유화(경화) 진행을 현저하게 지연시키는 것으로 나타났습니다.
+                                </p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                    <li>신장 내 AGEs 축적량 감소</li>
+                                    <li>알부민뇨 (단백뇨) 수치 개선</li>
+                                    <li>사구체 경화 및 세뇨관 간질 섬유화 억제</li>
+                                </ul>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="kidneyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Eye Content -->
+                    <div id="content-eye" class="tab-panel hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-emerald-700 mb-4">당뇨성 백내장 및 망막병증 지연</h3>
+                                <p class="text-gray-700 mb-4">
+                                    KIOM-79는 안구 조직의 AGEs 축적을 억제하여 당뇨병의 대표적인 안구 합병증인
+                                    백내장과 망막병증의 진행을 지연시키는 효과를 보였습니다.
+                                    이는 미국당뇨병학회(ADA) 등 권위 있는 국제 학회에서도 발표되었습니다.
+                                </p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                    <li>당뇨 모델의 백내장 진행 속도 유의미하게 지연</li>
+                                    <li>망막 혈관의 염증 및 누수 감소 확인</li>
+                                    <li>안구 내 산화 스트레스 감소</li>
+                                </ul>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="eyeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Heart Content -->
+                    <div id="content-heart" class="tab-panel hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-emerald-700 mb-4">심혈관 합병증 개선 효과</h3>
+                                <p class="text-gray-700 mb-4">
+                                    당뇨병은 대동맥 염증 및 심근 섬유화를 유발하여 심혈관 질환의 위험을 크게 높입니다.
+                                    KIOM-79는 심장 및 대동맥 조직의 섬유화를 억제하고 염증 반응을 완화하여
+                                    심혈관계 합병증 예방 가능성을 제시했습니다.
+                                </p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                    <li>대동맥 내피세포 염증 반응 억제</li>
+                                    <li>심근 조직의 콜라겐 침착(섬유화) 감소</li>
+                                    <li>심장 기능 관련 지표 개선</li>
+                                </ul>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="heartChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 5. Tech Transfer Section -->
+        <section id="transfer" class="py-20">
+            <div class="px-6 lg:px-12">
+                <h2 class="text-3xl font-bold text-center text-emerald-800 mb-6">연구 성과: 기술이전 및 상용화</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 mb-12">
+                    KIOM-79의 우수한 전임상 효능과 과학적 근거를 바탕으로, 본 기술은
+                    국내 제약 및 바이오 기업에 성공적으로 기술이전되었습니다.
+                    이는 한의학 기반 연구가 현대 의약품으로 상용화될 수 있는 가능성을 입증한
+                    대표적인 성공 사례로 평가받고 있습니다.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+                    <div class="diagram-box w-full md:w-1/3">
+                        <strong class="text-lg">기술 개발</strong><br>
+                        <span class="text-2xl font-bold">KIOM</span><br>
+                        (한국한의학연구원)
+                    </div>
+                    <div class="diagram-arrow text-5xl transform md:rotate-0">→</div>
+                    <div class="diagram-box w-full md:w-1/3 bg-emerald-100 border-emerald-800">
+                        <strong class="text-lg">기술이전 (2010)</strong><br>
+                        <span class="text-2xl font-bold">(주)네추럴로그</span><br>
+                        (이후 휴메딕스에서 개발 지속)
+                    </div>
+                    <div class="diagram-arrow text-5xl transform md:rotate-0">→</div>
+                    <div class="diagram-box w-full md:w-1/3">
+                        <strong class="text-lg">개발 목표</strong><br>
+                        <span class="text-xl font-bold">당뇨병성 신증 치료제</span><br>
+                        (임상시험 및 의약품 개발)
+                    </div>
+                </div>
+                <p class="text-center text-gray-600 mt-8">
+                    * 기술이전 이후 (주)네추럴로그(NaturaLog) 및 휴메딕스(Humedix)를 통해
+                    'HL-79' 등의 프로젝트명으로 추가 개발 및 임상시험이 추진되었습니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 6. Conclusion Section -->
+        <section id="conclusion" class="py-20 bg-emerald-700 text-white rounded-lg my-16">
+            <div class="px-6 lg:px-12">
+                <h2 class="text-3xl font-bold text-center mb-6">결론 및 의의</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-emerald-100 mb-12">
+                    'KIOM-79' 사례는 전통 한약 복합 처방이 현대 과학의 엄격한 기전 규명 및 전임상 검증을 통해
+                    '근거 중심 한의학'의 모범을 보인 연구입니다.
+                    단순한 혈당 조절을 넘어, 당뇨병의 근본적인 합병증 유발 기전인 '최종당화산물(AGEs)'을
+                    표적으로 설정함으로써, 기존 치료제의 한계를 극복할 새로운 가능성을 제시했습니다.
+                    본 연구 성과는 성공적인 기술이전으로 이어져 한의학의 산업화 및 과학화에 기여한 중요한 자산입니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 border-t border-gray-200">
+        <p class="text-sm text-gray-500">
+            본 보고서는 제공된 정보를 바탕으로 생성된 인터랙티브 요약 리포트입니다. (2025)
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Smooth Scrolling for Nav
+            document.querySelectorAll('a.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            let kidneyChart, eyeChart, heartChart;
+
+            function initKidneyChart() {
+                const ctx = document.getElementById('kidneyChart')?.getContext('2d');
+                if (!ctx) return;
+                kidneyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['대조군 (당뇨)', 'KIOM-79 투여군'],
+                        datasets: [{
+                            label: '신장 손상 지표 (알부민뇨, 가상 데이터)',
+                            data: [85, 28],
+                            backgroundColor: ['#fca5a5', '#4ade80'],
+                            borderColor: ['#b91c1c', '#15803d'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        },
+                        plugins: {
+                            title: { display: true, text: '신장 손상 지표 비교' },
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            function initEyeChart() {
+                const ctx = document.getElementById('eyeChart')?.getContext('2d');
+                if (!ctx) return;
+                eyeChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['백내장 진행 지연', '정상 진행'],
+                        datasets: [{
+                            label: '백내장 진행률 (가상 데이터)',
+                            data: [65, 35],
+                            backgroundColor: ['#06b6d4', '#f0f0f0'],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: { display: true, text: 'KIOM-79 투여군 백내장 진행률' },
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            function initHeartChart() {
+                const ctx = document.getElementById('heartChart')?.getContext('2d');
+                if (!ctx) return;
+                heartChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['대조군 (당뇨)', 'KIOM-79 투여군'],
+                        datasets: [{
+                            label: '심근 섬유화 점수 (가상 데이터)',
+                            data: [78, 32],
+                            backgroundColor: ['#fca5a5', '#4ade80'],
+                            borderColor: ['#b91c1c', '#15803d'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        },
+                        plugins: {
+                            title: { display: true, text: '심근 섬유화 점수 비교' },
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            function showTab(tabId) {
+                tabPanels.forEach(panel => {
+                    panel.classList.add('hidden');
+                });
+                tabButtons.forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                document.getElementById(`content-${tabId}`)?.classList.remove('hidden');
+                document.getElementById(`tab-${tabId}`)?.classList.add('active');
+
+                // Initialize chart on first view
+                if (tabId === 'kidney' && !kidneyChart) {
+                    initKidneyChart();
+                } else if (tabId === 'eye' && !eyeChart) {
+                    initEyeChart();
+                } else if (tabId === 'heart' && !heartChart) {
+                    initHeartChart();
+                }
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    showTab(button.getAttribute('data-tab'));
+                });
+            });
+
+            // Show initial tab and create its chart
+            showTab('kidney');
+        });
+    </script>
+</body>
+</html>
