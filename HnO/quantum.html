@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>충남 양자 컴퓨팅 산업지원 센터 (2024+)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F5F5F5;
+            color: #212121;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .header-bg {
+            background-color: #004AAD;
+        }
+        .primary-text {
+            color: #004AAD;
+        }
+        .secondary-text {
+            color: #008DDA;
+        }
+        .accent-bg {
+            background-color: #41C9E2;
+        }
+        .stat-card {
+            background-color: #FFFFFF;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 5px solid #008DDA;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem;
+        }
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #008DDA;
+            border: 3px solid #41C9E2;
+            z-index: 10;
+        }
+        .timeline-item:after {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 25px;
+            width: 2px;
+            height: 100%;
+            background-color: #008DDA;
+        }
+        .timeline-item:last-child:after {
+            display: none;
+        }
+        .flowchart-box {
+            background-color: white;
+            border: 2px solid #004AAD;
+            color: #004AAD;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            margin: 0.5rem;
+            min-width: 150px;
+        }
+        .flowchart-arrow {
+            font-size: 2.5rem;
+            color: #008DDA;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <header class="header-bg text-white p-8 rounded-b-xl shadow-lg mb-12">
+        <div class="container mx-auto max-w-6xl text-center">
+            <h1 class="text-3xl md:text-5xl font-bold mb-2">충남 양자 컴퓨팅 기반 산업지원 센터</h1>
+            <p class="text-xl md:text-2xl font-light">2024년 이후 미래 전략 비전</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-6xl p-4 md:p-8">
+        
+        <section class="mb-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center mb-4 primary-text">프로젝트 개요 및 2024년 핵심 목표</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">
+                2024년을 기점으로 충청남도는 양자 기술을 미래 핵심 산업으로 육성하기 위해 단국대학 등 주요 연구기관과 협력하여 '양자 컴퓨팅 기반 산업지원 센터' 구축을 본격화합니다. 본 센터는 양자 기술 연구, 인력 양성, 및 산업 적용을 위한 핵심 허브 역할을 수행합니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card">
+                    <h3 class="text-4xl font-bold secondary-text mb-2">1,000+</h3>
+                    <p class="text-lg font-semibold text-gray-700">전문 인력 양성 (명)</p>
+                    <p class="text-gray-500">(~2028년)</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-4xl font-bold secondary-text mb-2">50+</h3>
+                    <p class="text-lg font-semibold text-gray-700">참여 기업 지원 (개)</p>
+                    <p class="text-gray-500">(~2028년)</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-4xl font-bold secondary-text mb-2">Top 5</h3>
+                    <p class="text-lg font-semibold text-gray-700">국내 양자 클러스터</p>
+                    <p class="text-gray-500">진입 목표</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-2xl font-bold primary-text text-center mb-6">2024-2028 예산 배분 계획</h3>
+                <p class="text-gray-700 mb-4 text-center">
+                    안정적인 센터 운영과 핵심 기술 개발을 위해 예산이 체계적으로 배분됩니다. 특히 R&D와 인프라 구축에 초기 투자가 집중됩니다.
+                </p>
+                <div class="chart-container">
+                    <canvas id="budgetDonutChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-2xl font-bold primary-text text-center mb-6">주요 지원 대상 산업 분야</h3>
+                <p class="text-gray-700 mb-4 text-center">
+                    충남의 주력 산업과 미래 신산업을 중심으로 양자 기술의 파급력이 큰 분야를 선정하여 집중 지원합니다.
+                </p>
+                <div class="chart-container">
+                    <canvas id="targetIndustriesChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="mb-12 bg-white rounded-lg shadow-md p-6 md:p-8 md:col-span-2">
+            <h2 class="text-3xl font-bold text-center mb-8 primary-text">핵심 추진 전략 및 파트너십</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-10">
+                충청남도, 단국대학(연구/교육), 그리고 지역 산업체가 유기적으로 협력하는 모델을 구축합니다. 산업지원 센터는 이 모든 활동을 조율하고 지원하는 컨트롤 타워 역할을 수행합니다.
+            </p>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0">
+                <div class="flowchart-box">충청남도<br>(정책/예산 지원)</div>
+                <div class="flowchart-arrow hidden md:block">→</div>
+                <div class="flowchart-arrow block md:hidden">↓</div>
+                <div class="flowchart-box bg-blue-100 border-blue-500">산업지원 센터<br>(허브/총괄)</div>
+                <div class="flowchart-arrow hidden md:block">→</div>
+                <div class="flowchart-arrow block md:hidden">↓</div>
+                
+                <div class="flex flex-col space-y-4 w-full md:w-auto">
+                    <div class="flowchart-box">단국대학 등<br>(R&D/인력양성)</div>
+                    <div class="flowchart-box">지역 산업체<br>(기술 적용/사업화)</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h3 class="text-2xl font-bold primary-text text-center mb-8">2024년 이후 핵심 로드맵</h3>
+                <p class="text-gray-700 mb-6 text-center">
+                    2024년 센터 출범을 시작으로 단계별 목표를 설정하고, 2028년까지 가시적인 성과를 도출하는 것을 목표로 합니다.
+                </p>
+                <div class="relative">
+                    <div class="timeline-item">
+                        <h4 class="font-bold text-lg secondary-text">2024년: 센터 출범</h4>
+                        <p class="text-gray-600">초기 인프라 구축 및 운영 계획 수립. 1차 참여 기업 모집.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 class="font-bold text-lg secondary-text">2025년: R&D 본격화</h4>
+                        <p class="text-gray-600">단국대학 중심 R&D 과제 시작. 양자 기초 교육 프로그램 운영.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 class="font-bold text-lg secondary-text">2026년: 산업 연계 강화</h4>
+                        <p class="text-gray-600">양자 시뮬레이션 플랫폼 개방. 산업체 맞춤형 솔루션 개발 지원.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 class="font-bold text-lg secondary-text">2027년: 성과 확산</h4>
+                        <p class="text-gray-600">우수 R&D 성과 발표 및 기술 이전. 전문 인력 500명 돌파.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 class="font-bold text-lg secondary-text">2028년: 자립화 기반</h4>
+                        <p class="text-gray-600">클러스터 자립화 모델 구축. 누적 50개 이상 기업 지원 달성.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-2xl font-bold primary-text text-center mb-6">주요 성과지표(KPI) 전망</h3>
+                <p class="text-gray-700 mb-4 text-center">
+                    프로젝트가 진행됨에 따라 핵심 성과 지표인 '지원 기업 수'와 '양자 관련 특허 출원' 건수가 기하급수적으로 증가할 것으로 예상됩니다.
+                </p>
+                <div class="chart-container">
+                    <canvas id="kpiTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center p-8 mt-12 bg-gray-200">
+        <p class="text-gray-600">본 자료는 '충남 양자 컴퓨팅 기반 산업지원 센터' 프로젝트의 2024년 이후 계획을 기반으로 생성된 인포그래픽입니다.</p>
+        <p class="text-gray-500 text-sm">최종 업데이트: 2025년 11월 17일</p>
+    </footer>
+
+    <script>
+        const chartTooltipCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const primaryColor = '#004AAD';
+        const secondaryColor = '#008DDA';
+        const accentColor = '#41C9E2';
+        const grayColor = '#E0E0E0';
+        const textColor = '#212121';
+
+        
+        const budgetCtx = document.getElementById('budgetDonutChart').getContext('2d');
+        const budgetDonutChart = new Chart(budgetCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['양자 R&D', '인프라 구축', '전문인력 양성', '기업 지원 및 운영'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: [primaryColor, secondaryColor, accentColor, grayColor],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                ...chartTooltipCallback,
+                plugins: {
+                    ...chartTooltipCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor
+                        }
+                    }
+                }
+            }
+        });
+
+        
+        const industriesCtx = document.getElementById('targetIndustriesChart').getContext('2d');
+        const targetIndustriesChart = new Chart(industriesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['바이오/헬스케어', '차세대 반도체', '미래 모빌리티', '신소재'],
+                datasets: [{
+                    label: '지원 집중도 (%)',
+                    data: [35, 30, 20, 15],
+                    backgroundColor: [primaryColor, secondaryColor, accentColor, grayColor],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                ...chartTooltipCallback,
+                scales: {
+                    x: {
+                        ticks: { color: textColor },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: textColor }
+                    }
+                },
+                plugins: {
+                    ...chartTooltipCallback.plugins,
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        
+        const kpiCtx = document.getElementById('kpiTrendChart').getContext('2d');
+        const kpiTrendChart = new Chart(kpiCtx, {
+            type: 'line',
+            data: {
+                labels: ['2024', '2025', '2026', '2027', '2028'],
+                datasets: [
+                    {
+                        label: '지원 기업 수 (누적)',
+                        data: [5, 12, 25, 40, 55],
+                        borderColor: primaryColor,
+                        backgroundColor: primaryColor + '33',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: '특허 출원 (누적)',
+                        data: [2, 8, 20, 45, 70],
+                        borderColor: secondaryColor,
+                        backgroundColor: secondaryColor + '33',
+                        fill: true,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                ...chartTooltipCallback,
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: textColor }
+                    },
+                    x: {
+                        ticks: { color: textColor }
+                    }
+                },
+                plugins: {
+                    ...chartTooltipCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
