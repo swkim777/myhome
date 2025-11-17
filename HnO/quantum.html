@@ -218,6 +218,93 @@
                     <canvas id="kpiTrendChart"></canvas>
                 </div>
             </div>
+
+                    <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 primary-text">참여 기회의 세 가지 핵심 축</h2>
+            <p class="text-center text-gray-700 max-w-4xl mx-auto mb-10">
+                양자 컴퓨팅 센터는 기업, 인력, 연구기관이 상호작용하며 시너지를 창출할 수 있도록 세 가지 명확한 진입 경로를 제공합니다. 귀하의 역할에 맞는 경로를 확인하십시오.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="pillar-card border-l-8 border-l-[#004AAD]">
+                    <div class="text-6xl mb-4" style="color: #004AAD;">🏭</div>
+                    <h3 class="text-xl font-bold secondary-text mb-2">산업체/기업</h3>
+                    <p class="text-gray-600">기술 도입, 공동 R&D, 인프라 활용, 사업화 지원</p>
+                </div>
+                <div class="pillar-card border-l-8 border-l-[#008DDA]">
+                    <div class="text-6xl mb-4" style="color: #008DDA;">👨‍🎓</div>
+                    <h3 class="text-xl font-bold secondary-text mb-2">전문 인력</h3>
+                    <p class="text-gray-600">학위/비학위 교육, 실습, 인턴십을 통한 전문가 양성</p>
+                </div>
+                <div class="pillar-card border-l-8 border-l-[#41C9E2]">
+                    <div class="text-6xl mb-4" style="color: #41C9E2;">🔬</div>
+                    <h3 class="text-xl font-bold secondary-text mb-2">연구자/기관</h3>
+                    <p class="text-gray-600">공동 연구, 자원 공유, 기술 교류를 통한 연구 협력</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 bg-white rounded-lg shadow-md p-6 md:p-8">
+            <h2 class="text-3xl font-bold text-center mb-8 primary-text">산업체 참여 4단계 로드맵 (흐름도)</h2>
+            <p class="text-center text-gray-700 max-w-4xl mx-auto mb-10">
+                기업이 양자 기술을 성공적으로 도입하고 사업화하는 과정을 네 단계로 구조화했습니다. 컨소시엄 참여부터 최종적인 기술 이전까지의 체계적인 흐름을 보여줍니다.
+            </p>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 overflow-x-auto p-4">
+                <div class="flow-box">1. 양자 컨소시엄 참여</div>
+                <div class="flow-arrow hidden md:block">▶</div>
+                <div class="flow-arrow block md:hidden">▼</div>
+                <div class="flow-box bg-blue-50 border-blue-400">2. 공동 R&D 과제 수행</div>
+                <div class="flow-arrow hidden md:block">▶</div>
+                <div class="flow-arrow block md:hidden">▼</div>
+                <div class="flow-box bg-blue-100 border-blue-500">3. 인프라 활용 및 자문</div>
+                <div class="flow-arrow hidden md:block">▶</div>
+                <div class="flow-arrow block md:hidden">▼</div>
+                <div class="flow-box bg-[#008DDA]/10 border-[#008DDA]">4. 맞춤형 솔루션 사업화</div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-2xl font-bold primary-text text-center mb-6">인력 양성 프로그램 구성 비중</h3>
+                <p class="text-gray-700 mb-4 text-center">
+                    양성 과정은 이론 중심의 학위 과정뿐만 아니라, 현장 적용력을 높이는 실습과 취업 연계 인턴십에 자원을 집중합니다.
+                </p>
+                <div class="chart-container">
+                    <canvas id="talentDonutChart"></canvas>
+                </div>
+                <div class="text-sm text-gray-500 text-center mt-4">
+                    양자 소프트웨어 전문가 양성을 목표로 실무 교육에 중점을 둔 비중입니다.
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-2xl font-bold primary-text text-center mb-6">연구 협력 중점 분야</h3>
+                <p class="text-gray-700 mb-4 text-center">
+                    연구자들에게 가장 중요한 참여 기회는 공동 연구 및 센터가 제공하는 핵심 장비 자원을 활용하는 것입니다.
+                </p>
+                <div class="chart-container">
+                    <canvas id="researchBarChart"></canvas>
+                </div>
+                <div class="text-sm text-gray-500 text-center mt-4">
+                    연구자 자원의 배분 및 활용 목표에 따른 중요도 순위입니다.
+                </div>
+            </div>
+        </div>
+
+        <section class="mb-12 bg-[#008DDA] text-white rounded-lg shadow-xl p-6 md:p-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">📢 다음 행동: 사업 공고(RFP) 확인!</h2>
+            <p class="text-xl font-light mb-6">
+                모든 공식적인 참여는 센터 및 충청남도의 정기적인 사업 공고를 통해 이루어집니다.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 bg-[#004AAD] p-4 rounded-lg">
+                <p class="text-2xl font-bold">예상 공고 시점:</p>
+                <span class="text-3xl font-extrabold accent-bg py-2 px-4 rounded-full text-black shadow-lg">2024년 하반기 ~ 2025년 초</span>
+            </div>
+            <p class="mt-4 text-sm opacity-80">
+                관련 공고 채널을 지속적으로 확인하여 핵심 기회를 놓치지 않도록 대비하십시오.
+            </p>
+        </section>
+            
         </div>
 
     </main>
@@ -366,6 +453,113 @@
                 }
             }
         });
+        const chartTooltipCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const primaryColor = '#004AAD';
+        const secondaryColor = '#008DDA';
+        const accentColor = '#41C9E2';
+        const grayColor = '#E0E0E0';
+        const textColor = '#212121';
+
+        function wrapLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) {
+                return label;
+            }
+            const words = label.split(' ');
+            let wrapped = [];
+            let currentLine = '';
+
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > 16 && currentLine !== '') {
+                    wrapped.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            wrapped.push(currentLine.trim());
+            return wrapped;
+        }
+
+        const talentCtx = document.getElementById('talentDonutChart').getContext('2d');
+        const talentDonutChart = new Chart(talentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [wrapLabel('양자 소프트웨어 개발 전문가 양성'), '학위 과정 및 기초 이론', '취업 연계형 인턴십'],
+                datasets: [{
+                    data: [50, 30, 20],
+                    backgroundColor: [secondaryColor, primaryColor, accentColor],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                ...chartTooltipCallback,
+                plugins: {
+                    ...chartTooltipCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor
+                        }
+                    }
+                }
+            }
+        });
+
+        const researchCtx = document.getElementById('researchBarChart').getContext('2d');
+        const researchBarChart = new Chart(researchCtx, {
+            type: 'bar',
+            data: {
+                labels: [wrapLabel('공동 연구 과제 제안 및 수행'), wrapLabel('연구 자원(장비) 공동 활용'), wrapLabel('기술 세미나 및 워크숍')],
+                datasets: [{
+                    label: '중요도/우선순위',
+                    data: [45, 35, 20],
+                    backgroundColor: [primaryColor, secondaryColor, accentColor],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                ...chartTooltipCallback,
+                scales: {
+                    x: {
+                        ticks: { color: textColor },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: textColor }
+                    }
+                },
+                plugins: {
+                    ...chartTooltipCallback.plugins,
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        
     </script>
 </body>
 </html>
