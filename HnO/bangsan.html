@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미래 방산의료 산업육성 인프라 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 5px solid #0066FF;
+        }
+        .process-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            padding: 1rem;
+        }
+        .process-arrow {
+            font-size: 2.5rem;
+            color: #0066FF;
+            margin: 0 1rem;
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .process-arrow {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 class="text-3xl font-bold text-center text-[#00224E]">미래 방산의료 산업육성 인프라 구축 사업</h1>
+            <p class="text-center text-lg text-[#00449E] mt-2">권역 의료기관 연계 임상·실용화 지원 현황</p>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-8">
+
+        <section id="overview" class="mb-12">
+            <h2 class="text-2xl font-bold text-[#00224E] mb-6 text-center">사업 개요: 한눈에 보기</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="stat-card">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">총 사업비</h3>
+                    <p class="text-4xl font-bold text-[#00449E]">5,000<span class="text-2xl ml-1">억원</span></p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">사업 기간</h3>
+                    <p class="text-4xl font-bold text-[#00449E]">5<span class="text-2xl ml-1">년</span></p>
+                    <p class="text-gray-500">(2024 ~ 2028)</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">4대 권역 허브</h3>
+                    <p class="text-4xl font-bold text-[#00449E]">4<span class="text-2xl ml-1">개소</span></p>
+                    <p class="text-gray-500">수도권, 중부, 영남, 호남</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-[#00224E] mb-4 text-center">4대 핵심 추진 분야</h3>
+                <p class="text-center text-gray-600 mb-6">본 사업은 4대 핵심 분야에 자원을 집중하여 방산의료 R&D 생태계를 구축합니다. 예산은 임상 인프라 구축에 가장 많이 투입됩니다.</p>
+                <div class="chart-container">
+                    <canvas id="pillarsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="status" class="mb-12">
+            <h2 class="text-2xl font-bold text-[#00224E] mb-6 text-center">주요 사업 현황 (2년차)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold text-[#00224E] mb-4 text-center">연차별 예산 집행 현황</h3>
+                    <p class="text-center text-gray-600 mb-6">사업 2년차, 계획 대비 90%의 예산이 집행되며 순조롭게 진행 중입니다. (단위: 억원)</p>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold text-[#00224E] mb-4 text-center">핵심 성과 지표 (KPI) 달성률</h3>
+                    <p class="text-center text-gray-600 mb-6">5년 목표 대비 현재 2년차 진행 상황을 보여줍니다. 임상시험이 활발히 진행 중입니다.</p>
+                    <div class="chart-container">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="mb-12 bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-2xl font-bold text-[#00224E] mb-6 text-center">임상·실용화 통합 지원 프로세스</h2>
+            <p class="text-center text-gray-600 mb-8">아이디어 발굴부터 최종 기술이전 및 상용화까지 전 주기를 원스톱으로 지원합니다.</p>
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+                <div class="process-step bg-blue-50 p-4 rounded-lg shadow">
+                    <div class="text-3xl mb-2">💡</div>
+                    <h4 class="font-bold text-[#00449E]">아이디어 발굴</h4>
+                    <p class="text-sm text-gray-600">수요 기반 R&D</p>
+                </div>
+                <div class="process-arrow md:hidden">⬇️</div>
+                <div class="process-arrow hidden md:block">➡️</div>
+                
+                <div class="process-step bg-blue-50 p-4 rounded-lg shadow">
+                    <div class="text-3xl mb-2">🔬</div>
+                    <h4 class="font-bold text-[#00449E]">R&D 기획·수행</h4>
+                    <p class="text-sm text-gray-600">산학연 공동 연구</p>
+                </div>
+                <div class="process-arrow md:hidden">⬇️</div>
+                <div class="process-arrow hidden md:block">➡️</div>
+
+                <div class="process-step bg-blue-50 p-4 rounded-lg shadow">
+                    <div class="text-3xl mb-2">🏥</div>
+                    <h4 class="font-bold text-[#00449E]">임상시험 지원</h4>
+                    <p class="text-sm text-gray-600">권역 거점병원 연계</p>
+                </div>
+                <div class="process-arrow md:hidden">⬇️</div>
+                <div class="process-arrow hidden md:block">➡️</div>
+
+                <div class="process-step bg-blue-50 p-4 rounded-lg shadow">
+                    <div class="text-3xl mb-2">📄</div>
+                    <h4 class="font-bold text-[#00449E]">인허가·특허</h4>
+                    <p class="text-sm text-gray-600">규제 컨설팅</p>
+                </div>
+                <div class="process-arrow md:hidden">⬇️</div>
+                <div class="process-arrow hidden md:block">➡️</div>
+
+                <div class="process-step bg-blue-50 p-4 rounded-lg shadow">
+                    <div class="text-3xl mb-2">🚀</div>
+                    <h4 class="font-bold text-[#00449E]">상용화·기술이전</h4>
+                    <p class="text-sm text-gray-600">시제품 제작, 마케팅</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="participation" class="mb-12">
+            <h2 class="text-2xl font-bold text-[#00224E] mb-6 text-center">참여 방법</h2>
+            <p class="text-center text-gray-600 mb-8">본 사업은 기업, 병원, 연구자의 적극적인 참여를 기다립니다.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-[#0066FF]">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-[#00449E] mb-3">🏢 의료기기 기업</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>공동 R&D 과제 신청</li>
+                            <li>시제품 제작 및 테스트베드 지원</li>
+                            <li>권역 병원 연계 임상시험</li>
+                            <li>기술이전 및 투자 연계</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-[#0066FF]">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-[#00449E] mb-3">🏥 병원·의료기관</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>권역별 임상시험 허브 참여</li>
+                            <li>방산의료 데이터 공동 활용</li>
+                            <li>의료진 아이디어 기반 R&D 제안</li>
+                            <li>특수 전문인력 교육 프로그램</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-[#0066FF]">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-[#00449E] mb-3">🧑‍🔬 대학·연구자</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>산학연 공동 연구과제 참여</li>
+                            <li>기초·원천기술 R&D 지원</li>
+                            <li>아이디어 및 특허 기술이전</li>
+                            <li>석/박사 전문인력 양성</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#00224E] text-white p-8 mt-12 text-center">
+        <p>본 인포그래픽은 가상의 데이터를 기반으로 작성되었습니다.</p>
+        <p class="mt-2">미래 방산의료 산업육성 사업단</p>
+    </footer>
+
+    <script>
+        const tooltipCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const vibrantBluePalette = ['#00449E', '#0066FF', '#5DAFFF', '#00224E', '#E6F0FF'];
+
+        
+        const pillarsCtx = document.getElementById('pillarsChart').getContext('2d');
+        new Chart(pillarsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['임상 인프라 구축', '산학연 R&D 지원', '실용화·사업화', '전문인력 양성'],
+                datasets: [{
+                    label: '예산 분배 (비율 %)',
+                    data: [40, 30, 20, 10],
+                    backgroundColor: [vibrantBluePalette[0], vibrantBluePalette[1], vibrantBluePalette[2], vibrantBluePalette[3]],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                ...tooltipCallback
+            }
+        });
+
+        
+        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'line',
+            data: {
+                labels: ['2024년', '2025년', '2026년', '2027년', '2028년'],
+                datasets: [{
+                    label: '계획 (누적)',
+                    data: [1000, 2000, 3200, 4200, 5000],
+                    borderColor: vibrantBluePalette[1],
+                    backgroundColor: vibrantBluePalette[1] + '33',
+                    fill: false,
+                    tension: 0.1
+                }, {
+                    label: '집행 (누적)',
+                    data: [800, 1800, null, null, null],
+                    borderColor: vibrantBluePalette[0],
+                    backgroundColor: vibrantBluePalette[0] + '33',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '예산 (억원)'
+                        }
+                    }
+                },
+                ...tooltipCallback
+            }
+        });
+
+        
+        const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+        new Chart(kpiCtx, {
+            type: 'bar',
+            data: {
+                labels: ['임상시험 (건)', '시제품 (개)', ['참여 기업', '(개소)'], ['전문 인력', '(명)']],
+                datasets: [{
+                    label: '목표 (5년)',
+                    data: [50, 20, 30, 100],
+                    backgroundColor: vibrantBluePalette[2],
+                    borderColor: vibrantBluePalette[2],
+                    borderWidth: 1
+                }, {
+                    label: '현재 (2년차)',
+                    data: [12, 5, 10, 25],
+                    backgroundColor: vibrantBluePalette[0],
+                    borderColor: vibrantBluePalette[0],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                    x: {
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }
+                },
+                ...tooltipCallback
+            }
+        });
+    </script>
+</body>
+</html>
