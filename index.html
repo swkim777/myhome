@@ -1,8 +1,12 @@
+<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나의 홈페이지</title>
+    <!-- Tailwind CSS 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter 폰트 로드 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Inter 폰트 적용 */
@@ -15,37 +19,49 @@
 
     <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-8">
         <header class="text-center">
+            <!-- 사용자 이름 및 타이틀 -->
             <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
                 <span id="userName" class="text-blue-600"></span>
             </h1>
             <p id="userTitle" class="text-md sm:text-lg text-gray-600"></p>
         </header>
 
+        <!-- 핵심 기능 버튼 섹션 -->
         <section class="grid grid-cols-2 gap-4" id="featureButtons">
-            </section>
+        </section>
 
+        <!-- 소개/문의 정보 섹션 -->
         <section class="text-center bg-blue-50 p-4 rounded-xl">
             <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
                 AI 기술로 더 좋은 세상이 열리길 바랍니다. swkim777@gmail.com
             </p>
         </section>
 
+        <!-- 최신 활동 섹션: 블로그 게시물 2개와 프로젝트 1개를 표시하도록 수정 -->
         <section class="space-y-4">
             <h2 class="text-xl font-semibold text-gray-800">최신 활동</h2>
+            <!-- 최신 블로그 게시물 1 -->
             <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
-                <h3 class="text-md font-medium text-gray-700 mb-1">최신 블로그 게시물</h3>
-                <a id="latestPostLink" href="#" class="text-blue-600 hover:underline text-sm sm:text-base"></a>
+                <h3 class="text-md font-medium text-gray-700 mb-1">최신 블로그 게시물 1</h3>
+                <a id="latestPostLink1" href="#" class="text-blue-600 hover:underline text-sm sm:text-base"></a>
             </div>
+            <!-- 최신 블로그 게시물 2 (새로 추가) -->
+            <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
+                <h3 class="text-md font-medium text-gray-700 mb-1">최신 블로그 게시물 2</h3>
+                <a id="latestPostLink2" href="#" class="text-blue-600 hover:underline text-sm sm:text-base"></a>
+            </div>
+            <!-- 새로운 프로젝트 -->
             <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
                 <h3 class="text-md font-medium text-gray-700 mb-1">새로운 프로젝트</h3>
                 <a id="latestProjectLink" href="#" class="text-blue-600 hover:underline text-sm sm:text-base"></a>
             </div>
         </section>
 
+        <!-- 소셜 미디어 링크 섹션 -->
         <footer class="text-center pt-4 border-t border-gray-100">
             <h2 class="text-lg font-semibold text-gray-800 mb-3">저를 만나보세요</h2>
             <div class="flex justify-center space-x-6" id="socialLinks">
-                </div>
+            </div>
         </footer>
     </div>
 
@@ -56,14 +72,18 @@
             // 사용자 정보 (예시 데이터)
             const userName = "Jowon Home";
             const userTitle = "AI & Cloud Architector";
-            const latestPost = {
+            
+            // 두 개의 최신 게시물 데이터를 별도 변수로 정의했습니다.
+            const latestPost1 = { 
                 title: "타로점치기",
                 link: "https://ai.studio/apps/drive/1eUpCxk2nCV7XTXiTBJoF7gKqCNMv2USd"
             };
-            const latestPost = {
+
+            const latestPost2 = { 
                 title: "Space Runner",
                 link: "https://ai.studio/apps/bundled/gemini_runner"
             };
+            
             const latestProject = {
                 name: "스마트 팩토리 AI 예측 시스템",
                 link: "#" // 실제 프로젝트 상세 페이지 링크로 변경
@@ -82,7 +102,7 @@
                 { icon: "📝", text: "Home", link: "myhub/index.html" },
                 { icon: "🤖", text: "AI 강의", link: "https://bit.ly/4ep80p9" }, // AI 강의 링크를 변경
                 { icon: "🔬", text: "H&O Biosis", link: "HnO/index.html" }, // HnO 정보 버튼 추가
-                { icon: "📈", text: "Korea 2025", link: "korea2025.html" } // Korea 버튼 추가   
+                { icon: "📈", text: "Korea 2025", link: "korea2025.html" } // Korea 버튼 추가    
             ];
 
             // 핵심 기능 버튼 생성 함수
@@ -102,9 +122,16 @@
             });
 
             // 최신 업데이트/활동 링크 업데이트
-            const latestPostLink = document.getElementById('latestPostLink');
-            latestPostLink.textContent = latestPost.title;
-            latestPostLink.href = latestPost.link;
+            // 첫 번째 최신 블로그 게시물 링크 업데이트
+            const latestPostLink1 = document.getElementById('latestPostLink1');
+            latestPostLink1.textContent = latestPost1.title;
+            latestPostLink1.href = latestPost1.link;
+
+            // 두 번째 최신 블로그 게시물 링크 업데이트 (새로 추가)
+            const latestPostLink2 = document.getElementById('latestPostLink2');
+            latestPostLink2.textContent = latestPost2.title;
+            latestPost2.href = latestPost2.link;
+
 
             const latestProjectLink = document.getElementById('latestProjectLink');
             latestProjectLink.textContent = latestProject.name;
@@ -142,6 +169,7 @@
     </script>
 </body>
 </html>
+
 
 
 
