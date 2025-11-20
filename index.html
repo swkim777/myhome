@@ -50,6 +50,11 @@
                 <h3 class="text-md font-medium text-gray-700 mb-1">최신 블로그 게시물 2</h3>
                 <a id="latestPostLink2" href="#" class="text-blue-600 hover:underline text-sm sm:text-base"></a>
             </div>
+            <!-- 최신 블로그 게시물 3 (새로 추가) -->
+            <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
+                <h3 class="text-md font-medium text-gray-700 mb-1">최신 블로그 게시물 3</h3>
+                <a id="latestPostLink3" href="#" class="text-blue-600 hover:underline text-sm sm:text-base"></a>
+            </div>
             <!-- 새로운 프로젝트 -->
             <div class="bg-gray-50 p-4 rounded-xl shadow-sm">
                 <h3 class="text-md font-medium text-gray-700 mb-1">새로운 프로젝트</h3>
@@ -84,6 +89,11 @@
                 link: "https://aistudio.google.com/apps/bundled/gemini_runner?showPreview=true&showAssistant=true"
             };
             
+            const latestPost3 = { 
+                title: "Image Creater",
+                link: "https://ai.studio/apps/drive/1sDeMsAPYLgn9Ehmf5bt3-0MfqAFHSpes"
+            };
+            
             const latestProject = {
                 name: "스마트 팩토리 AI 예측 시스템",
                 link: "#" // 실제 프로젝트 상세 페이지 링크로 변경
@@ -97,12 +107,12 @@
             const featureButtonsData = [
                 { icon: "O", text: "OpenAI", link: "openai/index.html" },
                 { icon: "G", text: "Google", link: "google/index.html" },
-                { icon: "📚", text: "포트폴리오", link: "port.html" },
-                { icon: "💡", text: "계산기", link: "calc.html" },
-                { icon: "📝", text: "Home", link: "myhub/index.html" },
-                { icon: "🤖", text: "AI 강의", link: "https://bit.ly/4ep80p9" }, // AI 강의 링크를 변경
-                { icon: "🔬", text: "H&O Biosis", link: "HnO/index.html" }, // HnO 정보 버튼 추가
-                { icon: "📈", text: "Korea 2025", link: "korea2025.html" } // Korea 버튼 추가    
+                { icon: "??", text: "포트폴리오", link: "port.html" },
+                { icon: "??", text: "계산기", link: "calc.html" },
+                { icon: "??", text: "Home", link: "myhub/index.html" },
+                { icon: "??", text: "AI 강의", link: "https://bit.ly/4ep80p9" }, // AI 강의 링크를 변경
+                { icon: "??", text: "H&O Biosis", link: "HnO/index.html" }, // HnO 정보 버튼 추가
+                { icon: "??", text: "Korea 2025", link: "korea2025.html" } // Korea 버튼 추가    
             ];
 
             // 핵심 기능 버튼 생성 함수
@@ -132,6 +142,11 @@
             latestPostLink2.textContent = latestPost2.title;
             latestPost2.href = latestPost2.link;
 
+            // 세 번째 최신 블로그 게시물 링크 업데이트 (새로 추가)
+            const latestPostLink3 = document.getElementById('latestPostLink3');
+            latestPostLink3.textContent = latestPost3.title;
+            latestPost3.href = latestPost3.link;
+
 
             const latestProjectLink = document.getElementById('latestProjectLink');
             latestProjectLink.textContent = latestProject.name;
@@ -139,10 +154,10 @@
 
             // 소셜 미디어 링크 데이터
             const socialLinksData = [
-                { icon: "🔗", text: "GitHub", link: "https://github.com/swkim777" },
+                { icon: "??", text: "GitHub", link: "https://github.com/swkim777" },
                 // Notion 아이콘을 이미지로 변경하고 크기 조정
                 { icon: '<img src="https://placehold.co/24x24/000000/ffffff?text=N" alt="Notion Icon" class="w-6 h-6">', text: "Notion", link: "https://notion.so/swkim777" },
-                { icon: "📧", text: "Email", link: "mailto:swkim777@gmail.com" }
+                { icon: "??", text: "Email", link: "mailto:swkim777@gmail.com" }
             ];
 
             // 소셜 미디어 링크 생성 함수
@@ -169,6 +184,7 @@
     </script>
 </body>
 </html>
+
 
 
 
