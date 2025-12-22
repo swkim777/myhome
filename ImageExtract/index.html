@@ -17,8 +17,8 @@
             min-height: 100vh;
             padding: 2rem 1rem;
         }
-        /* 숨겨진 요소들 */
-        #video-preview, #canvas-extractor {
+        /* 처리용 캔버스는 숨김 */
+        #canvas-extractor {
             display: none;
         }
     </style>
@@ -31,18 +31,30 @@
             🎥 동영상 시점별 이미지 추출기
         </h1>
 
-        <!-- 1. 파일 업로드 영역 -->
+        <!-- 1단계: 파일 업로드 및 플레이어 영역 -->
         <div class="p-6 bg-indigo-50 border border-indigo-200 rounded-lg space-y-4">
             <label for="video-file" class="block text-lg font-medium text-indigo-800">
-                1단계: 동영상 파일 업로드
+                1단계: 동영상 파일 업로드 및 확인
             </label>
             <input type="file" id="video-file" accept="video/*" 
                    class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer"/>
             
-            <p id="status-message" class="text-sm text-gray-600 mt-2">파일을 선택하면 추출 버튼이 활성화됩니다.</p>
+            <!-- 비디오 플레이어 컨테이너 (초기 숨김) -->
+            <div id="player-container" class="hidden mt-4 space-y-4">
+                <div class="bg-black rounded-lg overflow-hidden shadow-inner aspect-video flex items-center justify-center">
+                    <video id="video-preview" class="w-full h-full"></video>
+                </div>
+                <div class="flex justify-center">
+                    <button id="btn-play-pause" class="px-8 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition flex items-center gap-2">
+                        <span id="play-icon">▶️ 재생</span>
+                    </button>
+                </div>
+            </div>
+            
+            <p id="status-message" class="text-sm text-gray-600 mt-2 text-center">파일을 선택하면 플레이어와 추출 버튼이 활성화됩니다.</p>
         </div>
 
-        <!-- 2. 추출 시점 선택 영역 -->
+        <!-- 2단계: 추출 시점 선택 영역 -->
         <div class="p-6 bg-slate-50 border border-slate-200 rounded-lg space-y-4">
             <h2 class="text-xl font-semibold text-gray-800">
                 2단계: 추출할 시점 선택
@@ -61,9 +73,10 @@
                     마지막 화면
                 </button>
             </div>
+            <p class="text-xs text-gray-500 text-center">* 영상 재생 중 원하는 위치에서 버튼을 눌러보세요.</p>
         </div>
 
-        <!-- 3. 추출 결과 영역 -->
+        <!-- 3단계: 추출 결과 영역 -->
         <div class="p-6 bg-white border border-gray-200 rounded-lg space-y-4">
             <h2 class="text-xl font-semibold text-gray-800">
                 3단계: 추출 결과 확인 및 저장
@@ -73,7 +86,7 @@
                 <span id="placeholder-text" class="text-gray-500">
                     상단의 버튼을 눌러 이미지를 추출하세요.
                 </span>
-                <!-- 로딩 스피너 (추출 중 표시) -->
+                <!-- 로딩 스피너 -->
                 <div id="loader" class="hidden absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
                 </div>
@@ -84,27 +97,30 @@
                 <button id="download-button" disabled
                         class="w-full sm:w-auto px-10 py-3 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     현재 이미지 다운로드
                 </button>
             </div>
         </div>
         
-        <!-- 처리용 숨김 요소 -->
-        <video id="video-preview" preload="metadata"></video>
+        <!-- 처리용 숨김 캔버스 -->
         <canvas id="canvas-extractor"></canvas>
 
     </div>
 
     <script>
         const fileInput = document.getElementById('video-file');
+        const playerContainer = document.getElementById('player-container');
+        const videoElement = document.getElementById('video-preview');
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const playIcon = document.getElementById('play-icon');
+
         const btnStart = document.getElementById('btn-start');
         const btnMiddle = document.getElementById('btn-middle');
         const btnEnd = document.getElementById('btn-end');
         const downloadButton = document.getElementById('download-button');
         
-        const videoElement = document.getElementById('video-preview');
         const canvas = document.getElementById('canvas-extractor');
         const ctx = canvas.getContext('2d');
         const extractedImage = document.getElementById('extracted-image');
@@ -114,28 +130,44 @@
 
         let extractedImageUrl = '';
         let baseFileName = 'video_frame';
-        let currentTarget = ''; // start, middle, end 중 무엇인지 기록
+        let currentTarget = '';
 
         // 파일 선택 이벤트
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
-                // 기존 비디오 소스 정리
                 if (videoElement.src) URL.revokeObjectURL(videoElement.src);
                 
-                videoElement.src = URL.createObjectURL(file);
+                const url = URL.createObjectURL(file);
+                videoElement.src = url;
                 baseFileName = file.name.split('.').slice(0, -1).join('.');
-                statusMessage.textContent = `📂 로드됨: ${file.name} (파일 분석 중...)`;
+                
+                playerContainer.classList.remove('hidden');
+                statusMessage.textContent = `📂 파일 분석 중: ${file.name}`;
 
-                // 메타데이터 로드 대기
                 videoElement.onloadedmetadata = () => {
                     btnStart.disabled = false;
                     btnMiddle.disabled = false;
                     btnEnd.disabled = false;
-                    statusMessage.textContent = `✅ 준비 완료! 동영상 길이: ${videoElement.duration.toFixed(2)}초`;
+                    statusMessage.textContent = `✅ 준비 완료! (동영상 길이: ${videoElement.duration.toFixed(2)}초)`;
                 };
             }
         });
+
+        // 재생/일시정지 제어
+        btnPlayPause.addEventListener('click', () => {
+            if (videoElement.paused) {
+                videoElement.play();
+                playIcon.textContent = '⏸️ 일시정지';
+            } else {
+                videoElement.pause();
+                playIcon.textContent = '▶️ 재생';
+            }
+        });
+
+        // 비디오 상태에 따른 아이콘 자동 업데이트
+        videoElement.onplay = () => { playIcon.textContent = '⏸️ 일시정지'; };
+        videoElement.onpause = () => { playIcon.textContent = '▶️ 재생'; };
 
         // 공통 추출 함수
         function startExtraction(type) {
@@ -152,12 +184,14 @@
                 seekTime = Math.max(0, videoElement.duration - 0.1);
             }
 
-            // UI 상태 변경
+            // 영상이 재생 중이라면 일시정지 후 이동
+            videoElement.pause();
+            
             loader.classList.remove('hidden');
             placeholderText.classList.add('hidden');
             extractedImage.classList.add('hidden');
             downloadButton.disabled = true;
-            statusMessage.textContent = `⏳ ${type} 시점(${seekTime.toFixed(2)}s)의 프레임을 가져오는 중...`;
+            statusMessage.textContent = `⏳ ${type} 시점 이동 중...`;
 
             videoElement.currentTime = seekTime;
         }
@@ -174,31 +208,26 @@
             extractedImage.classList.remove('hidden');
             loader.classList.add('hidden');
             downloadButton.disabled = false;
-            statusMessage.textContent = `🎉 추출 성공: ${currentTarget} 프레임`;
+            statusMessage.textContent = `🎉 ${currentTarget} 장면 추출 완료!`;
         };
 
-        // 버튼 클릭 리스너 연결
         btnStart.addEventListener('click', () => startExtraction('start'));
         btnMiddle.addEventListener('click', () => startExtraction('middle'));
         btnEnd.addEventListener('click', () => startExtraction('end'));
 
-        // 다운로드 로직
         downloadButton.addEventListener('click', () => {
             if (!extractedImageUrl) return;
-
             const link = document.createElement('a');
             link.href = extractedImageUrl;
             link.download = `${baseFileName}_${currentTarget}_frame.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
             statusMessage.textContent = `⬇️ 저장 완료: ${baseFileName}_${currentTarget}_frame.png`;
         });
 
-        // 비디오 로드 에러 처리
         videoElement.onerror = () => {
-            statusMessage.textContent = '❌ 동영상을 불러올 수 없습니다. 지원하지 않는 형식이거나 파일이 손상되었습니다.';
+            statusMessage.textContent = '❌ 동영상 로드 실패';
             loader.classList.add('hidden');
         };
     </script>
