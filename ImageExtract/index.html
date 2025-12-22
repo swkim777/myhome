@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동영상 마지막 프레임 추출기</title>
+    <title>동영상 다중 프레임 추출기</title>
     <!-- Tailwind CSS CDN 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,16 +13,12 @@
             background-color: #f7f7f7;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* 상단에서 시작하도록 변경 */
+            align-items: flex-start;
             min-height: 100vh;
             padding: 2rem 1rem;
         }
-        /* 숨겨진 비디오 요소 */
-        #video-preview {
-            display: none;
-        }
-        /* Canvas 요소도 초기에는 숨김 */
-        #canvas-extractor {
+        /* 숨겨진 요소들 */
+        #video-preview, #canvas-extractor {
             display: none;
         }
     </style>
@@ -32,10 +28,10 @@
     <div class="w-full max-w-4xl bg-white shadow-xl rounded-xl p-8 space-y-8">
 
         <h1 class="text-3xl font-bold text-gray-800 text-center border-b pb-4">
-            🎥 동영상 마지막 장면 이미지 추출기
+            🎥 동영상 시점별 이미지 추출기
         </h1>
 
-        <!-- 1. 파일 업로드 및 추출 영역 -->
+        <!-- 1. 파일 업로드 영역 -->
         <div class="p-6 bg-indigo-50 border border-indigo-200 rounded-lg space-y-4">
             <label for="video-file" class="block text-lg font-medium text-indigo-800">
                 1단계: 동영상 파일 업로드
@@ -43,153 +39,168 @@
             <input type="file" id="video-file" accept="video/*" 
                    class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer"/>
             
-            <button id="extract-button" disabled
-                    class="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                추출 시작
-            </button>
-            
-            <!-- 상태 메시지 -->
-            <p id="status-message" class="text-sm text-gray-600 mt-2"></p>
+            <p id="status-message" class="text-sm text-gray-600 mt-2">파일을 선택하면 추출 버튼이 활성화됩니다.</p>
         </div>
 
-        <!-- 2. 추출 결과 및 다운로드 영역 -->
+        <!-- 2. 추출 시점 선택 영역 -->
+        <div class="p-6 bg-slate-50 border border-slate-200 rounded-lg space-y-4">
+            <h2 class="text-xl font-semibold text-gray-800">
+                2단계: 추출할 시점 선택
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button id="btn-start" disabled
+                        class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed">
+                    시작 화면 (0s)
+                </button>
+                <button id="btn-middle" disabled
+                        class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed">
+                    중간 화면
+                </button>
+                <button id="btn-end" disabled
+                        class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed">
+                    마지막 화면
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. 추출 결과 영역 -->
         <div class="p-6 bg-white border border-gray-200 rounded-lg space-y-4">
             <h2 class="text-xl font-semibold text-gray-800">
-                2단계: 추출된 마지막 프레임
+                3단계: 추출 결과 확인 및 저장
             </h2>
             
-            <!-- 이미지 표시 컨테이너 -->
-            <div id="image-container" class="min-h-[200px] flex justify-center items-center bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden">
+            <div id="image-container" class="min-h-[300px] flex justify-center items-center bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden relative">
                 <span id="placeholder-text" class="text-gray-500">
-                    여기에 추출된 이미지가 표시됩니다.
+                    상단의 버튼을 눌러 이미지를 추출하세요.
                 </span>
-                <!-- 추출된 이미지가 들어갈 곳 -->
-                <img id="extracted-image" src="" alt="추출된 마지막 프레임" class="max-w-full max-h-96 hidden rounded-lg object-contain">
+                <!-- 로딩 스피너 (추출 중 표시) -->
+                <div id="loader" class="hidden absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                </div>
+                <img id="extracted-image" src="" alt="추출된 프레임" class="max-w-full max-h-[500px] hidden rounded-lg shadow-lg object-contain">
             </div>
 
-            <button id="download-button" disabled
-                    class="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                다운로드
-            </button>
+            <div class="flex justify-center">
+                <button id="download-button" disabled
+                        class="w-full sm:w-auto px-10 py-3 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    현재 이미지 다운로드
+                </button>
+            </div>
         </div>
         
-        <!-- 숨겨진 비디오 및 캔버스 요소 (처리용) -->
+        <!-- 처리용 숨김 요소 -->
         <video id="video-preview" preload="metadata"></video>
         <canvas id="canvas-extractor"></canvas>
 
     </div>
 
     <script>
-        // DOM 요소 참조
         const fileInput = document.getElementById('video-file');
-        const extractButton = document.getElementById('extract-button');
+        const btnStart = document.getElementById('btn-start');
+        const btnMiddle = document.getElementById('btn-middle');
+        const btnEnd = document.getElementById('btn-end');
         const downloadButton = document.getElementById('download-button');
+        
         const videoElement = document.getElementById('video-preview');
         const canvas = document.getElementById('canvas-extractor');
         const ctx = canvas.getContext('2d');
         const extractedImage = document.getElementById('extracted-image');
         const placeholderText = document.getElementById('placeholder-text');
         const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
 
         let extractedImageUrl = '';
-        let fileName = 'extracted_frame';
+        let baseFileName = 'video_frame';
+        let currentTarget = ''; // start, middle, end 중 무엇인지 기록
 
-        // 1. 파일이 선택되었을 때 '추출' 버튼 활성화
+        // 파일 선택 이벤트
         fileInput.addEventListener('change', (event) => {
-            if (event.target.files.length > 0) {
-                extractButton.disabled = false;
-                downloadButton.disabled = true;
-                extractedImage.classList.add('hidden');
-                placeholderText.classList.remove('hidden');
-                statusMessage.textContent = `${event.target.files[0].name} 파일이 업로드되었습니다.`;
-                fileName = event.target.files[0].name.split('.').slice(0, -1).join('.'); // 확장자를 제외한 파일 이름 저장
-            } else {
-                extractButton.disabled = true;
-                statusMessage.textContent = '동영상 파일을 선택해주세요.';
+            const file = event.target.files[0];
+            if (file) {
+                // 기존 비디오 소스 정리
+                if (videoElement.src) URL.revokeObjectURL(videoElement.src);
+                
+                videoElement.src = URL.createObjectURL(file);
+                baseFileName = file.name.split('.').slice(0, -1).join('.');
+                statusMessage.textContent = `📂 로드됨: ${file.name} (파일 분석 중...)`;
+
+                // 메타데이터 로드 대기
+                videoElement.onloadedmetadata = () => {
+                    btnStart.disabled = false;
+                    btnMiddle.disabled = false;
+                    btnEnd.disabled = false;
+                    statusMessage.textContent = `✅ 준비 완료! 동영상 길이: ${videoElement.duration.toFixed(2)}초`;
+                };
             }
         });
 
-        // 2. '추출 시작' 버튼 클릭 핸들러
-        extractButton.addEventListener('click', () => {
-            const file = fileInput.files[0];
-            if (!file) {
-                statusMessage.textContent = '🚨 동영상 파일을 먼저 업로드해주세요.';
-                return;
+        // 공통 추출 함수
+        function startExtraction(type) {
+            if (!videoElement.src) return;
+
+            currentTarget = type;
+            let seekTime = 0;
+
+            if (type === 'start') {
+                seekTime = 0;
+            } else if (type === 'middle') {
+                seekTime = videoElement.duration / 2;
+            } else if (type === 'end') {
+                seekTime = Math.max(0, videoElement.duration - 0.1);
             }
 
-            statusMessage.textContent = '⏳ 동영상 로딩 및 마지막 프레임 찾는 중... (파일 크기에 따라 시간이 걸릴 수 있습니다)';
-            extractButton.disabled = true;
-            downloadButton.disabled = true;
+            // UI 상태 변경
+            loader.classList.remove('hidden');
+            placeholderText.classList.add('hidden');
             extractedImage.classList.add('hidden');
-            placeholderText.classList.remove('hidden');
+            downloadButton.disabled = true;
+            statusMessage.textContent = `⏳ ${type} 시점(${seekTime.toFixed(2)}s)의 프레임을 가져오는 중...`;
 
+            videoElement.currentTime = seekTime;
+        }
 
-            // 기존 URL 해제 (메모리 누수 방지)
-            if (videoElement.src) {
-                URL.revokeObjectURL(videoElement.src);
-            }
+        // 프레임 이동 완료 시 캔버스 캡처
+        videoElement.onseeked = () => {
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-            // File 객체를 video 요소의 소스로 설정
-            videoElement.src = URL.createObjectURL(file);
-
-            // 메타데이터 로딩 완료 시점 처리 (duration, videoWidth/Height 정보 획득)
-            videoElement.onloadedmetadata = () => {
-                // 동영상의 총 길이(duration)에서 아주 약간 앞선 시점(0.1초)으로 이동
-                // 이 시점이 일반적으로 동영상의 마지막 프레임을 포함합니다.
-                const seekTime = Math.max(0, videoElement.duration - 0.1); 
-                videoElement.currentTime = seekTime;
-                
-                statusMessage.textContent = `✅ 메타데이터 로딩 완료. 마지막 ${seekTime.toFixed(2)}초로 이동합니다.`;
-            };
-
-            // 프레임 이동(seek) 완료 시점 처리
-            videoElement.onseeked = () => {
-                // 3. 캔버스에 비디오 프레임 그리기
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
-                
-                // 캔버스에 현재 비디오 프레임을 그립니다.
-                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-                // 캔버스 내용을 PNG 데이터 URL로 추출
-                extractedImageUrl = canvas.toDataURL('image/png');
-                
-                // 4. 추출된 이미지 표시 및 다운로드 버튼 활성화
-                extractedImage.src = extractedImageUrl;
-                extractedImage.classList.remove('hidden');
-                placeholderText.classList.add('hidden');
-                
-                downloadButton.disabled = false;
-                extractButton.disabled = false;
-                statusMessage.textContent = '🎉 추출이 완료되었습니다! 이미지를 다운로드하거나 다시 추출할 수 있습니다.';
-            };
-
-            // 에러 처리
-            videoElement.onerror = () => {
-                statusMessage.textContent = '❌ 동영상 파일을 로드하는 중 오류가 발생했습니다. 파일이 손상되었거나 지원되지 않는 형식일 수 있습니다.';
-                extractButton.disabled = false;
-            };
-        });
-
-
-        // 5. '다운로드' 버튼 클릭 핸들러
-        downloadButton.addEventListener('click', () => {
-            if (!extractedImageUrl) {
-                statusMessage.textContent = '🚨 추출된 이미지가 없습니다.';
-                return;
-            }
-
-            // 임시 <a> 요소를 생성하여 다운로드 트리거
-            const a = document.createElement('a');
-            a.href = extractedImageUrl;
-            a.download = `${fileName}_last_frame.png`; // 파일 이름 설정
-            document.body.appendChild(a);
-            a.click(); // 클릭 이벤트 발생
-            document.body.removeChild(a); // 요소 제거
+            extractedImageUrl = canvas.toDataURL('image/png');
+            extractedImage.src = extractedImageUrl;
             
-            statusMessage.textContent = '⬇️ 이미지 다운로드를 시작합니다.';
+            extractedImage.classList.remove('hidden');
+            loader.classList.add('hidden');
+            downloadButton.disabled = false;
+            statusMessage.textContent = `🎉 추출 성공: ${currentTarget} 프레임`;
+        };
+
+        // 버튼 클릭 리스너 연결
+        btnStart.addEventListener('click', () => startExtraction('start'));
+        btnMiddle.addEventListener('click', () => startExtraction('middle'));
+        btnEnd.addEventListener('click', () => startExtraction('end'));
+
+        // 다운로드 로직
+        downloadButton.addEventListener('click', () => {
+            if (!extractedImageUrl) return;
+
+            const link = document.createElement('a');
+            link.href = extractedImageUrl;
+            link.download = `${baseFileName}_${currentTarget}_frame.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            statusMessage.textContent = `⬇️ 저장 완료: ${baseFileName}_${currentTarget}_frame.png`;
         });
 
+        // 비디오 로드 에러 처리
+        videoElement.onerror = () => {
+            statusMessage.textContent = '❌ 동영상을 불러올 수 없습니다. 지원하지 않는 형식이거나 파일이 손상되었습니다.';
+            loader.classList.add('hidden');
+        };
     </script>
 </body>
 </html>
