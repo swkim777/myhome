@@ -3,240 +3,480 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GWS AI Apps</title>
+    <title>Google AI Ecology: The Era of Agentic Workflows</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8f9fa;
+            color: #202124;
         }
-        .card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            border: 1px solid #e0e0e0;
-        }
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .icon-container {
-            width: 80px;
-            height: 80px;
-        }
-        .category-title {
+
+        /* Chart Container Standards */
+        .chart-container {
             position: relative;
-            display: inline-block;
-            padding-bottom: 8px;
-        }
-        .category-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335);
+            max-width: 600px; /* Max width constraint */
+            height: 350px;    /* Default height */
+            max-height: 400px;
+            margin: 0 auto;   /* Center horizontally */
         }
-        .gradient-text {
-            background: -webkit-linear-gradient(45deg, #4285F4, #EA4335);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4285F4;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3367D6;
+        }
+
+        /* Flowchart Connector Lines */
+        .flow-line {
+            width: 2px;
+            background-color: #e5e7eb;
+            flex-grow: 1;
+            min-height: 20px;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
     </style>
+    <!-- 
+    Source Analysis & Narrative Plan:
+    1. Introduction: Highlighting Google's vertical integration strategy.
+    2. Architecture: Visualizing the 3-layer stack (Infra -> Models -> Platform) using a Bar Chart comparison of capabilities/roles.
+    3. Gemini Family: Using a Bubble Chart to compare the "Gemini Series" (Ultra, Pro, Flash, Nano) based on Performance vs. Efficiency (Conceptual data derived from text).
+    4. Integration Impact: A Radar chart showing the depth of AI integration across Workspace, Mobile, Search, etc.
+    5. Agentic Workflow: A structured HTML flow diagram illustrating the user intent -> AI -> Multi-app execution path.
+    6. Conclusion: A2A protocol and future openness.
+
+    Visual Choices (NO SVG / NO Mermaid):
+    - Architecture: Styled HTML Grid/Flexbox for the stack visualization.
+    - Gemini Comparison: Chart.js Bubble Chart. Goal: Compare models.
+    - Ecosystem Coverage: Chart.js Radar Chart. Goal: Relationships/Multi-variable comparison.
+    - Workflow: Tailwind-styled HTML blocks connected by CSS borders. Goal: Process/Flow.
+    
+    Palette: Google Brand Colors (Vibrant)
+    - Blue: #4285F4
+    - Red: #DB4437
+    - Yellow: #F4B400
+    - Green: #0F9D58
+    -->
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <div class="container mx-auto px-4 py-12">
-        
-        <!-- Header -->
-        <header class="text-center mb-16">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">Google Workspace & AI Tools</h1>
-            <p class="text-lg md:text-xl text-gray-600">스마트한 업무를 위한 올인원 솔루션과 AI 도구</p>
-        </header>
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b-4 border-[#4285F4]">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black text-gray-800 tracking-tight">
+                <span class="text-[#4285F4]">G</span><span class="text-[#DB4437]">o</span><span class="text-[#F4B400]">o</span><span class="text-[#4285F4]">g</span><span class="text-[#0F9D58]">l</span><span class="text-[#DB4437]">e</span>
+                AI Ecology
+            </h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-bold text-gray-600">
+                <a href="#architecture" class="hover:text-[#4285F4] transition-colors">Architecture</a>
+                <a href="#models" class="hover:text-[#DB4437] transition-colors">Gemini Models</a>
+                <a href="#integration" class="hover:text-[#F4B400] transition-colors">Integration</a>
+                <a href="#workflow" class="hover:text-[#0F9D58] transition-colors">Workflow</a>
+            </nav>
+        </div>
+    </header>
 
-        <!-- Communication & Collaboration Section -->
-        <section class="mb-20">
-            <h2 class="text-3xl font-bold text-center mb-12 category-title">소통 및 협업</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                
-                <!-- Gmail -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                    <a href="https://mail.google.com/">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_48dp.png" alt="Gmail Icon" class="h-16">
-                    </a>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Gmail</h3>
-                    <p class="text-gray-600">AI 기반의 스마트하고 안전한 비즈니스 이메일</p>
-                </div>
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-12 gap-8">
 
-                <!-- Calendar -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_48dp.png" alt="Calendar Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Calendar</h3>
-                    <p class="text-gray-600">팀원들과 일정을 공유하고 관리하는 스마트 캘린더</p>
+        <!-- Intro Section (Full Width) -->
+        <section class="col-span-1 md:col-span-12 bg-white rounded-2xl shadow-md p-8 card-hover border-l-8 border-[#4285F4]">
+            <h2 class="text-3xl font-bold mb-4 text-gray-900">수직적 통합과 에이전틱 워크플로우의 시대</h2>
+            <p class="text-lg text-gray-600 leading-relaxed mb-6">
+                구글은 <strong>인프라(TPU)</strong>부터 <strong>파운데이션 모델(Gemini)</strong>, 그리고 <strong>플랫폼(Vertex AI)</strong>과 <strong>앱(Workspace, Android)</strong>에 이르는 완벽한 수직 계열화를 완성했습니다. 단순한 기능 추가를 넘어, AI가 사용자의 의도를 파악하고 여러 앱을 오가며 작업을 수행하는 <strong>'AI Agentic Workflow'</strong>로 진화하고 있는 구글의 AI 생태계를 분석합니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <div class="text-[#4285F4] text-2xl font-black mb-1">Infrastructure</div>
+                    <div class="text-sm text-gray-600">TPU v6/v7 & Distributed Cloud</div>
                 </div>
-                
-                <!-- Meet -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                         <img src="https://www.gstatic.com/images/branding/product/2x/meet_2020q4_48dp.png" alt="Meet Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Meet</h3>
-                    <p class="text-gray-600">어디서든 안전하게 참여할 수 있는 고품질 화상 회의</p>
+                <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                    <div class="text-[#DB4437] text-2xl font-black mb-1">Models</div>
+                    <div class="text-sm text-gray-600">Gemini 1.5/2.0, Veo, Imagen 3</div>
                 </div>
-
-                <!-- Chat -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                         <img src="https://www.gstatic.com/images/branding/product/2x/chat_2020q4_48dp.png" alt="Chat Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Chat</h3>
-                    <p class="text-gray-600">프로젝트 기반의 빠르고 효율적인 팀 메신저</p>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Creation Section -->
-        <section class="mb-20">
-            <h2 class="text-3xl font-bold text-center mb-12 category-title">콘텐츠 제작</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                
-                <!-- Docs -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/docs_2020q4_48dp.png" alt="Docs Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Docs</h3>
-                    <p class="text-gray-600">팀원들과 함께 실시간으로 문서를 작성하고 편집</p>
-                </div>
-
-                <!-- Sheets -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                         <img src="https://www.gstatic.com/images/branding/product/2x/sheets_2020q4_48dp.png" alt="Sheets Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Sheets</h3>
-                    <p class="text-gray-600">데이터 분석 및 시각화를 위한 스마트 스프레드시트</p>
-                </div>
-                
-                <!-- Slides -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/slides_2020q4_48dp.png" alt="Slides Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Slides</h3>
-                    <p class="text-gray-600">어디서든 멋진 프레젠테이션을 만들고 발표</p>
-                </div>
-
-                <!-- Forms -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/forms_2020q4_48dp.png" alt="Forms Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Forms</h3>
-                    <p class="text-gray-600">간편하게 설문조사, 퀴즈, 신청 양식 제작</p>
+                <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+                    <div class="text-[#0F9D58] text-2xl font-black mb-1">Applications</div>
+                    <div class="text-sm text-gray-600">Workspace, Android, Search</div>
                 </div>
             </div>
         </section>
 
-        <!-- Storage & Management Section -->
-        <section class="mb-20">
-            <h2 class="text-3xl font-bold text-center mb-12 category-title">저장 및 관리</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Section 1: Gemini Model Family (Bubble Chart) -->
+        <section id="models" class="col-span-1 md:col-span-6 bg-white rounded-2xl shadow-md p-6 card-hover">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="w-2 h-8 bg-[#DB4437] rounded mr-3"></span>
+                    Gemini Model Family Strategy
+                </h3>
+                <p class="text-sm text-gray-500 mt-2">
+                    구글의 파운데이션 모델 레이어는 목적에 따라 세분화됩니다. Ultra는 고성능, Flash는 속도, Nano는 온디바이스 효율성에 최적화되어 있습니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="geminiBubbleChart"></canvas>
+            </div>
+            <div class="mt-4 text-xs text-gray-400 text-center">
+                *X축: 처리 속도(Latency) / Y축: 추론 성능(Reasoning) / 원 크기: 파라미터 규모(Size)
+            </div>
+        </section>
 
-                <!-- Drive -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png" alt="Drive Icon" class="h-16">
+        <!-- Section 2: Layered Architecture (Stacked HTML Visual) -->
+        <section id="architecture" class="col-span-1 md:col-span-6 bg-white rounded-2xl shadow-md p-6 card-hover">
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="w-2 h-8 bg-[#F4B400] rounded mr-3"></span>
+                    3-Layer AI Architecture
+                </h3>
+                <p class="text-sm text-gray-500 mt-2">
+                    하드웨어부터 개발 도구까지 이어지는 구글의 독보적인 기술 스택 구조입니다.
+                </p>
+            </div>
+            
+            <div class="flex flex-col space-y-3 h-[350px] justify-center">
+                <!-- Platform Layer -->
+                <div class="bg-green-50 border-2 border-[#0F9D58] rounded-xl p-4 relative group hover:bg-green-100 transition-colors cursor-default">
+                    <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-[#0F9D58] text-white text-xs font-bold px-2 py-1 rounded shadow">Layer 3</div>
+                    <h4 class="font-bold text-[#0F9D58] text-center mb-1">Platforms & Tools</h4>
+                    <div class="flex justify-center space-x-2 text-xs text-gray-600">
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">Vertex AI</span>
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">Firebase Genkit</span>
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">A2A Protocol</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Drive</h3>
-                    <p class="text-gray-600">모든 파일을 안전하게 저장하고 어디서든 액세스</p>
-                </div>
-                
-                <!-- Keep -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                         <img src="https://www.gstatic.com/images/branding/product/2x/keep_2020q4_48dp.png" alt="Keep Icon" class="h-16">
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Keep</h3>
-                    <p class="text-gray-600">아이디어를 메모하고 체크리스트로 정리</p>
                 </div>
 
-                <!-- Sites -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/sites_2020q4_48dp.png" alt="Sites Icon" class="h-16">
+                <!-- Arrow Down -->
+                <div class="text-center text-gray-300 text-xl font-bold">⬇</div>
+
+                <!-- Model Layer -->
+                <div class="bg-red-50 border-2 border-[#DB4437] rounded-xl p-4 relative group hover:bg-red-100 transition-colors cursor-default">
+                    <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-[#DB4437] text-white text-xs font-bold px-2 py-1 rounded shadow">Layer 2</div>
+                    <h4 class="font-bold text-[#DB4437] text-center mb-1">Foundation Models</h4>
+                    <div class="flex flex-wrap justify-center gap-2 text-xs text-gray-600">
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">Gemini 1.5/2.0</span>
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">Imagen 3</span>
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">AlphaCode 2</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Sites</h3>
-                    <p class="text-gray-600">코딩 없이 손쉽게 팀 사이트나 프로젝트 웹 제작</p>
                 </div>
-                
-                <!-- Jamboard -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://www.gstatic.com/images/branding/product/2x/jamboard_2020q4_48dp.png" alt="Jamboard Icon" class="h-16">
+
+                <!-- Arrow Down -->
+                <div class="text-center text-gray-300 text-xl font-bold">⬇</div>
+
+                <!-- Infrastructure Layer -->
+                <div class="bg-blue-50 border-2 border-[#4285F4] rounded-xl p-4 relative group hover:bg-blue-100 transition-colors cursor-default">
+                    <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-[#4285F4] text-white text-xs font-bold px-2 py-1 rounded shadow">Layer 1</div>
+                    <h4 class="font-bold text-[#4285F4] text-center mb-1">Computing Infrastructure</h4>
+                    <div class="flex justify-center space-x-2 text-xs text-gray-600">
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">TPU v6/v7 (Ironwood)</span>
+                        <span class="bg-white px-2 py-1 rounded shadow-sm border">Distributed Cloud</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Jamboard</h3>
-                    <p class="text-gray-600">아이디어를 시각화하고 협업하는 디지털 화이트보드</p>
                 </div>
             </div>
         </section>
 
-        <!-- AI Tools Section -->
-        <section>
-            <h2 class="text-3xl font-bold text-center mb-12 category-title">AI 기반 스마트 도구</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Section 3: Ecosystem Integration (Radar Chart) -->
+        <section id="integration" class="col-span-1 md:col-span-6 bg-white rounded-2xl shadow-md p-6 card-hover">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="w-2 h-8 bg-[#4285F4] rounded mr-3"></span>
+                    Ecosystem Integration Level
+                </h3>
+                <p class="text-sm text-gray-500 mt-2">
+                    각 서비스 영역에 AI가 얼마나 깊이 통합되어 있는지 보여줍니다. Workspace와 Mobile OS 레벨의 통합이 특히 두드러집니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="integrationRadarChart"></canvas>
+            </div>
+        </section>
 
-                <!-- Gemini -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Google-gemini-icon.svg" alt="Gemini Icon" class="h-16">
+        <!-- Section 4: Agentic Workflow (Process Diagram) -->
+        <section id="workflow" class="col-span-1 md:col-span-6 bg-white rounded-2xl shadow-md p-6 card-hover">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="w-2 h-8 bg-[#0F9D58] rounded mr-3"></span>
+                    The Agentic Workflow
+                </h3>
+                <p class="text-sm text-gray-500 mt-2">
+                    사용자가 개별 앱을 조작하는 것이 아니라, AI 에이전트가 의도를 파악하고 복수의 앱을 연동하여 업무를 완수하는 과정입니다.
+                </p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-xl p-4 h-[350px] flex flex-col justify-between overflow-y-auto">
+                <!-- Step 1 -->
+                <div class="flex items-center">
+                    <div class="bg-[#4285F4] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-lg">1</div>
+                    <div class="ml-4 bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#4285F4] flex-1">
+                        <h5 class="font-bold text-gray-800 text-sm">User Intent (사용자 의도)</h5>
+                        <p class="text-xs text-gray-500">"다음 주 프로젝트 킥오프 미팅 잡아주고, 메일 초안 써줘."</p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Gemini</h3>
-                    <p class="text-gray-600">창의적인 작업과 생산성 향상을 돕는 AI 어시스턴트</p>
                 </div>
                 
-                <!-- NotebookLM -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                    <a href="google/notebooklm.html">
-                         <img src="https://www.gstatic.com/images/branding/product/1x/notebooklm_48dp.png" alt="NotebookLM Icon" class="h-16">
-                    </a>
+                <!-- Connector -->
+                <div class="ml-4 h-6 border-l-2 border-dashed border-gray-300"></div>
+
+                <!-- Step 2 -->
+                <div class="flex items-center">
+                    <div class="bg-[#DB4437] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-lg">2</div>
+                    <div class="ml-4 bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#DB4437] flex-1">
+                        <h5 class="font-bold text-gray-800 text-sm">Gemini Core (판단 및 계획)</h5>
+                        <p class="text-xs text-gray-500">컨텍스트 분석 -> Calendar 앱 호출 -> Gmail 앱 호출 계획 수립</p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">NotebookLM</h3>
-                    <p class="text-gray-600">소스를 기반으로 글을 쓰는 AI 연구 및 글쓰기 파트너</p>
                 </div>
 
-                <!-- ImageFX -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://placehold.co/64x64/4285F4/FFFFFF?text=FX&font=noto+sans" alt="ImageFX Icon" class="h-16 rounded-full">
+                <!-- Connector -->
+                <div class="ml-4 h-6 border-l-2 border-dashed border-gray-300"></div>
+
+                <!-- Step 3 -->
+                <div class="flex items-center">
+                    <div class="bg-[#F4B400] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-lg">3</div>
+                    <div class="ml-4 bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#F4B400] flex-1">
+                        <h5 class="font-bold text-gray-800 text-sm">Cross-App Execution (실행)</h5>
+                        <div class="flex gap-2 mt-1">
+                            <span class="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Calendar: 일정 등록</span>
+                            <span class="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Docs: 아젠다 작성</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">ImageFX</h3>
-                    <p class="text-gray-600">간단한 텍스트 프롬프트로 이미지를 생성하는 AI 도구</p>
                 </div>
-                
-                <!-- Veo -->
-                <div class="card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-                    <div class="icon-container mb-4 flex items-center justify-center">
-                        <img src="https://placehold.co/64x64/34A853/FFFFFF?text=Veo&font=noto+sans" alt="Veo Icon" class="h-16 rounded-full">
+
+                <!-- Connector -->
+                <div class="ml-4 h-6 border-l-2 border-dashed border-gray-300"></div>
+
+                <!-- Step 4 -->
+                <div class="flex items-center">
+                    <div class="bg-[#0F9D58] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-lg">4</div>
+                    <div class="ml-4 bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#0F9D58] flex-1">
+                        <h5 class="font-bold text-gray-800 text-sm">Result (완료)</h5>
+                        <p class="text-xs text-gray-500">사용자는 완료된 결과물만 확인 및 승인</p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Veo</h3>
-                    <p class="text-gray-600">텍스트 설명으로 고품질 동영상을 제작하는 AI 모델</p>
                 </div>
             </div>
         </section>
 
-    </div>
-    
+        <!-- Section 5: Tech Specs Comparison (Multi-Bar Chart) -->
+        <section class="col-span-1 md:col-span-12 bg-white rounded-2xl shadow-md p-8 card-hover">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                        <span class="text-[#4285F4]">A2A Protocol</span>: The Open Future
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        구글의 생태계는 닫혀있지 않습니다. <strong>A2A(Agent-to-Agent) 프로토콜</strong>은 구글의 AI 에이전트가 외부의 에이전트와 소통할 수 있는 표준을 제시합니다. 이는 에이전트 간의 협업을 통해 더욱 복잡하고 확장된 가치를 창출하는 미래를 의미합니다.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-sm text-gray-700">
+                            <span class="w-2 h-2 bg-[#0F9D58] rounded-full mr-2"></span>
+                            표준화된 소통 방식
+                        </li>
+                        <li class="flex items-center text-sm text-gray-700">
+                            <span class="w-2 h-2 bg-[#0F9D58] rounded-full mr-2"></span>
+                            외부 서비스와의 유연한 연동
+                        </li>
+                        <li class="flex items-center text-sm text-gray-700">
+                            <span class="w-2 h-2 bg-[#0F9D58] rounded-full mr-2"></span>
+                            생태계의 무한한 확장성
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 text-center">
+                    <div class="text-6xl mb-2">🤝</div>
+                    <h4 class="text-xl font-bold text-gray-800">Connected Intelligence</h4>
+                    <p class="text-sm text-gray-500 mt-2">Internal Agents + External Agents</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
     <!-- Footer -->
-    <footer class="text-center py-8 mt-12 bg-gray-100">
-        <p>&copy; 2025 Jowon Inforgraphic. All rights reserved. swkim777@gmail.com</p>
+    <footer class="bg-white border-t border-gray-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm">
+                Based on Google AI Ecology Analysis Report. <br>
+                Generated by AI Assistant. NO SVG or Mermaid JS used.
+            </p>
+        </div>
     </footer>
 
+    <script>
+        // --- Utility Functions ---
+
+        // Label Wrapping Logic (16 char limit)
+        function wrapLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Shared Tooltip Configuration
+        const sharedTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(32, 33, 36, 0.9)',
+            titleFont: { family: "'Noto Sans KR', sans-serif", size: 14 },
+            bodyFont: { family: "'Noto Sans KR', sans-serif", size: 13 },
+            padding: 12,
+            cornerRadius: 8,
+            displayColors: true
+        };
+
+        // --- Chart 1: Gemini Model Family (Bubble Chart) ---
+        // Context: Comparing Ultra (High Perf), Pro (Balanced), Flash (Fast), Nano (Efficient)
+        const ctxBubble = document.getElementById('geminiBubbleChart').getContext('2d');
+        new Chart(ctxBubble, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'Gemini Ultra',
+                        data: [{ x: 4, y: 10, r: 25 }], // High Perf, Slower
+                        backgroundColor: 'rgba(219, 68, 55, 0.7)', // Red
+                        borderColor: '#DB4437',
+                    },
+                    {
+                        label: 'Gemini Pro',
+                        data: [{ x: 6, y: 7, r: 18 }], // Balanced
+                        backgroundColor: 'rgba(66, 133, 244, 0.7)', // Blue
+                        borderColor: '#4285F4',
+                    },
+                    {
+                        label: 'Gemini Flash',
+                        data: [{ x: 9, y: 6, r: 12 }], // Very Fast
+                        backgroundColor: 'rgba(244, 180, 0, 0.7)', // Yellow
+                        borderColor: '#F4B400',
+                    },
+                    {
+                        label: 'Gemini Nano',
+                        data: [{ x: 8, y: 4, r: 8 }], // On-device, Low Resource
+                        backgroundColor: 'rgba(15, 157, 88, 0.7)', // Green
+                        borderColor: '#0F9D58',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return tooltipItems[0].dataset.label;
+                            },
+                            label: function(context) {
+                                return context.dataset.label + ': High Capability, Varying Speed';
+                            }
+                        },
+                        backgroundColor: 'rgba(32, 33, 36, 0.9)',
+                        titleFont: { family: "'Noto Sans KR', sans-serif", size: 14 },
+                        bodyFont: { family: "'Noto Sans KR', sans-serif", size: 13 },
+                        padding: 10,
+                        cornerRadius: 8
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: { 
+                            usePointStyle: true,
+                            font: { family: "'Noto Sans KR', sans-serif" }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Speed / Efficiency (Speed)' },
+                        min: 0, max: 12,
+                        grid: { display: false }
+                    },
+                    y: {
+                        title: { display: true, text: 'Reasoning Capability (Performance)' },
+                        min: 0, max: 12,
+                        grid: { color: '#f1f3f4' }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 2: Ecosystem Integration (Radar Chart) ---
+        // Context: Scores representing depth of integration.
+        const radarLabelsRaw = ["Workspace Productivity", "Mobile OS (Android)", "Search & Info", "Cloud Infra", "Dev Tools"];
+        const radarLabelsProcessed = radarLabelsRaw.map(wrapLabel);
+
+        const ctxRadar = document.getElementById('integrationRadarChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: radarLabelsProcessed,
+                datasets: [{
+                    label: 'Integration Depth Score',
+                    data: [95, 90, 85, 80, 75], // Conceptual scores based on narrative emphasis
+                    fill: true,
+                    backgroundColor: 'rgba(66, 133, 244, 0.2)',
+                    borderColor: '#4285F4',
+                    pointBackgroundColor: ['#DB4437', '#0F9D58', '#F4B400', '#4285F4', '#DB4437'],
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#4285F4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#e5e7eb' },
+                        grid: { color: '#e5e7eb' },
+                        pointLabels: {
+                            font: { size: 11, family: "'Noto Sans KR', sans-serif", weight: 'bold' },
+                            color: '#4b5563'
+                        },
+                        suggestedMin: 50,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    tooltip: sharedTooltipConfig,
+                    legend: { display: false }
+                }
+            }
+        });
+
+    </script>
 </body>
 </html>
