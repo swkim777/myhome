@@ -1,0 +1,397 @@
+import React, { useState, useCallback } from 'react';
+import { Upload, Wand2, Image as ImageIcon, Loader2, AlertCircle, Download, Sparkles, ChevronLeft } from 'lucide-react';
+
+const App = () => {
+  const [sourceImage, setSourceImage] = useState(null);
+  const [base64Source, setBase64Source] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [resultImage, setResultImage] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null); // 'background', 'style', 'accessory', 'season', 'body', 'animal', 'outfit', 'person', 'camera', 'lighting', or null
+
+  // API 키 설정 (런타임 환경에서 제공됨)
+  const apiKey = "";
+
+  // 메인 프롬프트 예제 데이터
+  const mainExamples = [
+    { id: 'bg', title: "🌅 배경 교체", detail: "배경 교체 모드" },
+    { id: 'style', title: "🎨 화풍 변환", detail: "화풍 변환 모드" },
+    { id: 'acc', title: "🕶️ 액세서리", detail: "액세서리 모드" },
+    { id: 'season', title: "❄️ 계절 변경", detail: "계절 변경 모드" },
+    { id: 'body', title: "💇 신체 변화", detail: "신체 변화 모드" },
+    { id: 'animal', title: "🐱 동물 편집", detail: "동물 편집 모드" },
+    { id: 'outfit', title: "👕 의상 교체", detail: "의상 교체 모드" },
+    { id: 'person', title: "🚶 인물 교체", detail: "인물 교체 모드" },
+    { id: 'camera', title: "📸 카메라 위치", detail: "카메라 위치 모드" },
+    { id: 'lighting', title: "✨ 조명 & 분위기", detail: "조명 & 분위기 모드" }
+  ];
+
+  // 상세 예제 데이터들
+  const backgroundSubExamples = [
+    { title: "🏝️ 몰디브 해변", detail: "배경을 에메랄드빛 바다가 펼쳐진 몰디브 해변으로 바꿔줘. 하얀 모래사장과 야자수가 보이게 해줘." },
+    { title: "🏔️ 알프스 만년설", detail: "배경을 웅장한 알프스 산맥의 눈 덮인 풍경으로 변경해줘. 맑고 푸른 하늘이 돋보이게 해줘." },
+    { title: "🗼 밤의 도쿄", detail: "배경을 화려한 네온사인과 조명이 가득한 밤의 도쿄 거리로 바꿔줘. 비가 온 뒤 젖은 거리 느낌을 살려줘." },
+    { title: "🌸 벚꽃 공원", detail: "배경을 분홍색 벚꽃이 흩날리는 평화로운 봄날의 일본 공원으로 변경해줘." },
+    { title: "🌌 신비로운 우주", detail: "배경을 수많은 별과 은하수가 소용돌이치는 신비로운 우주 공간으로 바꿔줘." },
+    { title: "📚 중세 도서관", detail: "배경을 고풍스러운 양장본 책들이 가득한 중세 유럽 스타일의 거대한 도서관으로 변경해줘." },
+    { title: "🏜️ 붉은 사막", detail: "배경을 끝없이 펼쳐진 붉은 사막과 거대한 선인장이 있는 이국적인 풍경으로 바꿔줘." },
+    { title: "☕ 아늑한 카페", detail: "배경을 비 내리는 창밖 풍경이 보이는 조용하고 아늑한 분위기의 카페 내부로 변경해줘." },
+    { title: "🌲 안개 낀 숲", detail: "배경을 이끼 낀 나무들과 안개가 자욱하게 깔린 몽환적인 숲속 풍경으로 바꿔줘." },
+    { title: "🎆 타임스퀘어", detail: "배경을 화려한 불꽃놀이가 터지는 뉴욕 타임스퀘어의 광장으로 변경해줘." }
+  ];
+
+  const styleSubExamples = [
+    { title: "🌻 고흐 유화", detail: "이 사진을 강렬한 붓터치와 소용돌이치는 질감이 특징인 빈센트 반 고흐의 유화 스타일로 변환해줘." },
+    { title: "💧 수채화", detail: "번짐 효과와 맑은 색감이 돋보이는 부드러운 수채화 풍으로 이미지를 다시 그려줘." },
+    { title: "🏮 지브리 감성", detail: "따뜻하고 서정적인 색채의 일본 스튜디오 지브리 애니메이션 배경 느낌으로 변환해줘." },
+    { title: "🥫 팝 아트", detail: "앤디 워홀 스타일처럼 강렬한 원색과 망점 효과가 들어간 현대적인 팝 아트 스타일로 바꿔줘." },
+    { title: "🐉 수묵화", detail: "먹의 농담과 여백의 미가 살아있는 전통적인 동양의 수묵화 스타일로 사진을 표현해줘." },
+    { title: "🤖 픽셀 아트", detail: "추억의 고전 게임처럼 거친 사각형 입자가 보이는 8비트 픽셀 아트 스타일로 변환해줘." },
+    { title: "🏛️ 르네상스", detail: "다빈치나 미켈란젤로의 작품처럼 부드러운 명암 대비와 고전적인 분위기의 르네상스 명화로 바꿔줘." },
+    { title: "🌃 네온 펑크", detail: "미래 도시의 네온 조명이 반사되는 강렬한 색감의 디지털 아트 스타일로 사진을 꾸며줘." },
+    { title: "🖍️ 크레파스", detail: "아이들이 크레파스로 꾹꾹 눌러 그린 듯한 귀엽고 질감이 살아있는 그림체로 바꿔줘." },
+    { title: "📷 폴라로이드", detail: "빈티지한 색감과 가장자리에 흰색 테두리가 있는 오래된 폴라로이드 사진 느낌으로 보정해줘." }
+  ];
+
+  const accessorySubExamples = [
+    { title: "🕶️ 선글라스", detail: "사진 속 인물에게 시크한 검은색 선글라스를 자연스럽게 씌워줘." },
+    { title: "👑 황금 왕관", detail: "머리 위에 반짝이는 금색 왕관을 올려서 품격 있는 분위기를 만들어줘." },
+    { title: "🧣 니트 목도리", detail: "목에 따뜻하고 부드러운 빨간색 니트 목도리를 두른 모습으로 편집해줘." },
+    { title: "👓 금테 안경", detail: "지적인 이미지를 주는 얇은 금테 안경을 인물의 얼굴에 맞춰서 추가해줘." },
+    { title: "🌸 화사한 화관", detail: "머리에 화사한 파스텔톤 꽃들로 만든 화관을 자연스럽게 씌워줘." },
+    { title: "⌚ 고급 시계", detail: "손목에 고급스러운 가죽 스트랩의 아날로그 시계를 착용한 모습으로 바꿔줘." },
+    { title: "📿 진주 목걸이", detail: "목에 심플하면서도 우아한 진주 목걸이를 자연스럽게 추가해줘." },
+    { title: "🎀 분홍 리본", detail: "머리 옆에 커다란 분홍색 실크 리본 장식을 달아줘." },
+    { title: "🎭 화려한 가면", detail: "신비로운 분위기를 연출하는 화려한 베네치아 가면을 얼굴에 씌워줘." },
+    { title: "💎 귀걸이", detail: "양쪽 귀에 반짝이는 다이아몬드 귀걸이를 추가해줘." }
+  ];
+
+  const seasonSubExamples = [
+    { title: "🌸 만개한 봄", detail: "사진 전체에 따스한 봄 기운이 느껴지도록 하고, 배경에 분홍색 벚꽃이 활짝 피어 흩날리는 풍경으로 바꿔줘." },
+    { title: "🌿 청량한 초여름", detail: "푸른 잎사귀들이 싱그럽게 빛나는 초여름 분위로 바꿔줘. 밝고 깨끗한 햇살이 나무 사이로 비치게 해줘." },
+    { title: "☀️ 한여름 무더위", detail: "강렬한 태양 광선과 짙은 녹음이 우거진 한여름의 풍경으로 변경해줘. 하늘은 아주 새파랗게 만들어줘." },
+    { title: "☔ 장마철 감성", detail: "비가 내려 촉촉하게 젖은 풍경으로 바꿔줘. 창문이나 바닥에 물방울이 맺히고 차분한 분위기를 연출해줘." },
+    { title: "🍂 단풍 든 가을", detail: "배경의 나무들을 빨갛고 노란 단풍으로 물들여줘. 바닥에는 낙엽이 쌓여 있는 가을 산책로 느낌을 줘." },
+    { title: "🌾 황금빛 들판", detail: "추수 시기의 가을처럼 황금빛으로 물든 들판과 높은 가을 하늘이 돋보이는 배경으로 변경해줘." },
+    { title: "🌫️ 쓸쓸한 늦가을", detail: "나뭇잎이 지고 안개가 살짝 낀 차분하고 쓸쓸한 느낌의 늦가을 풍경으로 보정해줘." },
+    { title: "🌨️ 눈 내리는 겨울", detail: "하늘에서 하얀 눈이 펑펑 내리는 한겨울 풍경으로 바꿔줘. 온 세상이 하얗게 덮인 느낌을 살려줘." },
+    { title: "🧊 꽁꽁 얼어붙은", detail: "강물이 꽁꽁 얼어붙고 고드름이 맺힌 아주 추운 겨울날의 차가운 분위기로 사진을 바꿔줘." },
+    { title: "🌲 눈꽃 숲", detail: "나뭇가지마다 하얀 눈꽃(상고대)이 활짝 피어 신비로운 분위기를 자아내는 겨울 숲으로 변경해줘." }
+  ];
+
+  const bodySubExamples = [
+    { title: "💇 애쉬 블루 헤어", detail: "사진 속 인물의 머리카락 색깔을 세련된 애쉬 블루 컬러로 자연스럽게 변경해줘." },
+    { title: "👁️ 에메랄드 눈동자", detail: "인물의 눈동자 색상을 신비로운 에메랄드빛으로 정교하게 바꿔줘." },
+    { title: "😊 환한 미소", detail: "인물의 표정을 입꼬리가 살짝 올라가며 환하게 웃는 표정으로 자연스럽게 수정해줘." },
+    { title: "🧔 세련된 콧수염", detail: "인물의 인중과 턱 부분에 깔끔하고 세련된 스타일의 콧수염과 턱수염을 추가해줘." },
+    { title: "👩‍🦰 긴 생머리", detail: "인물의 헤어스타일을 허리까지 내려오는 찰랑거리는 긴 생머리로 바꿔줘." },
+    { title: "👵 중후한 노년", detail: "인물을 70대 정도의 지혜롭고 중후한 모습으로 나이대가 바뀌게 편집해줘. 자연스러운 주름을 추가해줘." },
+    { title: "✨ 귀여운 주근깨", detail: "양 볼과 콧등 위에 귀엽고 발랄한 느낌을 주는 주근깨를 자연스럽게 그려넣어줘." },
+    { title: "🏾 건강한 구릿빛", detail: "피부 톤을 해변에서 건강하게 그을린 듯한 탄탄한 구릿빛 피부로 보정해줘." },
+    { title: "💄 화려한 메이크업", detail: "인물의 얼굴에 화려한 스모키 아이섀도와 레드 립스틱을 바른 듯한 풀 메이크업 효과를 줘." },
+    { title: "💇‍♂️ 짧은 크롭컷", detail: "헤어스타일을 깔끔하고 남성적인 짧은 크롭컷(포마드 스타일)으로 시원하게 변경해줘." }
+  ];
+
+  const animalSubExamples = [
+    { title: "🐱 새끼 고양이", detail: "인물 옆에 아주 귀엽고 작은 삼색 새끼 고양이 한 마리를 자연스럽게 추가해줘." },
+    { title: "🦁 사자 갈기", detail: "사진 속 고양이의 목 둘레에 위엄 있는 사자의 갈기를 풍성하게 합성해줘." },
+    { title: "🦋 코 위의 나비", detail: "강아지의 코 끝에 파랗고 영롱한 날개를 가진 나비 한 마리가 살짝 앉아 있는 모습을 연출해줘." },
+    { title: "🦜 무지개 앵무새", detail: "어깨 위에 색깔이 화려한 열대 지방의 무지개 앵무새 한 마리를 자연스럽게 올려줘." },
+    { title: "🦌 숲속의 사슴", detail: "배경에 뿔이 멋진 숫사슴 한 마리가 신비롭게 서 있는 모습을 추가해줘." },
+    { title: "🦢 우아한 백조", detail: "호수 배경에 우아하게 헤엄치는 하얀 백조 한 쌍을 자연스럽게 그려넣어줘." },
+    { title: "🦄 유니콘 뿔", detail: "말의 이마에 은하수처럼 반짝이는 신비로운 유니콘의 뿔을 추가해줘." },
+    { title: "🦝 귀여운 너구리", detail: "발치에 호기심 가득한 표정의 귀여운 너구리 한 마리가 서 있는 모습을 추가해줘." },
+    { title: "🐬 점프 돌고래", detail: "바다 배경에 수면 위로 힘차게 튀어 오르는 돌고래들의 모습을 생동감 있게 추가해줘." },
+    { title: "🐉 신비로운 용", detail: "구름 사이로 거대한 동양의 용이 신비롭게 지나가는 실루엣을 배경에 추가해줘." }
+  ];
+
+  const outfitSubExamples = [
+    { title: "👔 클래식 수트", detail: "인물의 의상을 몸에 딱 맞는 세련된 다크 그레이 색상의 클래식 비즈니스 수트와 화이트 셔츠로 바꿔줘." },
+    { title: "🎎 전통 한복", detail: "인물의 의상을 화려하고 단아한 색감의 한국 전통 한복으로 자연스럽게 교체해줘." },
+    { title: "👨‍🚀 우주복", detail: "인물에게 NASA 스타일의 육중하고 정교한 백색 우주복을 입혀서 우주비행사처럼 보이게 해줘." },
+    { title: "🏍️ 가죽 재킷", detail: "인물의 상의를 거친 질감이 살아있는 검은색 라이더 가죽 재킷으로 바꿔줘." },
+    { title: "🎩 블랙 턱시도", detail: "결혼식이나 시상식에 어울리는 고급스러운 블랙 턱시도와 보타이를 착용한 모습으로 편집해줘." },
+    { title: "🥋 무술 도복", detail: "인물의 의상을 하얀색 무술 도복(태권도나 유도복 스타일)으로 자연스럽게 변경해줘." },
+    { title: "🍕 셰프 유니폼", detail: "인물을 하얀색 조리복과 요리사 모자를 쓴 전문 셰프의 모습으로 바꿔줘." },
+    { title: "🪄 마법사 로브", detail: "판타지 영화 속 마법사처럼 신비로운 문양이 새겨진 짙은 보라색 마법사 로브를 입혀줘." },
+    { title: "🏥 의사 가운", detail: "청진기를 목에 걸고 깨끗한 하얀색 의사 가운을 입은 전문직 모습으로 편집해줘." },
+    { title: "👕 힙합 후디", detail: "인물에게 오버사이즈 힙합 스타일 후드 티셔츠와 굵은 체인 목걸이를 매치해줘." }
+  ];
+
+  const personSubExamples = [
+    { title: "🏄 서핑하는 사람", detail: "바다 배경에 서핑 보드를 타고 거대한 파도를 가르는 서퍼 한 명을 생동감 있게 추가해줘." },
+    { title: "📖 독서하는 남성", detail: "공원 벤치에 앉아 여유롭게 두꺼운 책을 읽고 있는 안경 쓴 지적인 남성을 자연스럽게 그려넣어줘." },
+    { title: "🧽 사람 모두 제거", detail: "사진 속에 찍힌 모든 인물들을 깨끗하게 지우고, 비어있는 배경만 자연스럽게 남겨줘." },
+    { title: "👨‍🚀 우주비행사로 교체", detail: "사진 속 원본 인물을 최첨단 우주복을 입고 헬멧을 쓴 우주비행사로 완전히 교체해줘." },
+    { title: "👶 뛰어노는 아이", detail: "잔디밭 위에서 환하게 웃으며 강아지와 함께 뛰어노는 어린 아이를 자연스럽게 합성해줘." },
+    { title: "🎸 거리의 악사", detail: "배경 한쪽에 빈티지한 기타를 연주하며 노래하는 버스킹 음악가를 추가해줘." },
+    { title: "🚶 특정 인물 제거", detail: "원본 이미지에서 오른쪽에 위치한 사람만 정교하게 제거하고 배경을 어색하지 않게 채워줘." },
+    { title: "📸 관광객 무리", detail: "풍경 배경에 카메라와 지도를 들고 즐겁게 구경하는 관광객 무리를 자연스럽게 배치해줘." },
+    { title: "🤖 안드로이드 로봇", detail: "사진 속 인물을 금속 질감이 느껴지는 세련된 인간형 안드로이드 로봇으로 교체해줘." },
+    { title: "👫 해변의 연인", detail: "노을 지는 해변을 배경으로 서로 손을 꼭 잡고 걷는 연인의 뒷모습을 감성적으로 추가해줘." }
+  ];
+
+  const cameraSubExamples = [
+    { title: "🛸 드론 항공샷", detail: "마치 드론이 높은 하늘 위에서 수직으로 내려다보는 듯한 웅장한 항공 촬영 뷰로 재구성해줘." },
+    { title: "🐜 로우 앵글", detail: "카메라를 지면에 가깝게 대고 위를 올려다보는 듯한 박력 있는 로우 앵글 시점으로 바꿔줘." },
+    { title: "🦅 하이 앵글", detail: "높은 곳에서 아래를 내려다보는 시점으로 변경해서 피사체가 작고 아기자기하게 보이게 해줘." },
+    { title: "📐 더치 앵글", detail: "카메라를 비스듬히 기울여서 역동적이고 긴장감 넘치는 대각선 구도로 사진을 편집해줘." },
+    { title: "👀 1인칭 시점", detail: "마치 사진 속 상황을 주인공의 눈으로 직접 보는 듯한 1인칭(POV) 시점으로 변환해줘." },
+    { title: "🐟 어안 렌즈", detail: "화면의 가장자리가 둥글게 왜곡되는 광각 어안 렌즈(Fish-eye) 효과를 주어 독특하게 연출해줘." },
+    { title: "📽️ 시네마틱 줌", detail: "멀리 있는 피사체에 바짝 다가간 듯한 망원 렌즈 느낌과 주변의 부드러운 아웃포커싱을 강조해줘." },
+    { title: "👥 어깨 너머 샷", detail: "누군가의 어깨 너머로 피사체를 바라보는 듯한 입체적인 구도로 사진을 변경해줘." },
+    { title: "🔭 초광각 파노라마", detail: "아주 넓은 시야를 한눈에 담는 시원한 초광각 파노라마 뷰 스타일로 배경을 확장해줘." },
+    { title: "🔍 초근접 매크로", detail: "피사체의 아주 작은 디테일까지 살아있는 초근접 매크로 촬영 시점으로 사진을 편집해줘." }
+  ];
+
+  // 조명 & 분위기 상세 예제 10개
+  const lightingSubExamples = [
+    { title: "🌇 골든 아워", detail: "해 질 녘의 따스하고 부드러운 오렌지빛 금색 조명을 전체적으로 추가해서 감성적인 분위기를 연출해줘." },
+    { title: "🌌 사이버 네온", detail: "화려한 핑크와 블루 네온 조명이 피사체의 윤곽에 강렬하게 반사되는 사이버펑크 무드로 바꿔줘." },
+    { title: "🎞️ 필름 누아르", detail: "강한 명암 대비와 짙은 그림자가 특징인 흑백 영화 스타일의 누아르 조명을 적용해줘." },
+    { title: "🕯️ 촛불 조명", detail: "은은하게 흔들리는 촛불 주위의 따뜻하고 어두운 조명 분위기로 사진을 아늑하게 편집해줘." },
+    { title: "🌊 깊은 바닷속", detail: "물속에서 빛이 투과되어 일렁이는 푸른빛 조명과 몽환적인 바다 밑 분위기를 만들어줘." },
+    { title: "☁️ 몽환적 안개", detail: "뿌연 안개가 자욱하게 낀 듯한 부드럽고 신비로운 조명 효과를 주어 환상적인 느낌을 살려줘." },
+    { title: "🏛️ 스튜디오 조명", detail: "그림자 하나 없이 깨끗하고 화사한 전문가용 스튜디오 조명을 받은 것처럼 밝고 선명하게 보정해줘." },
+    { title: "🌙 차가운 달빛", detail: "깊은 밤, 차갑고 푸르스름한 은빛 달빛이 피사체를 은은하게 비추는 신비로운 야경 분위기를 줘." },
+    { title: "🌈 무지개 빛", detail: "프리즘을 통과한 무지개 빛깔의 조명이 렌즈 플레어처럼 피사체 위에 아름답게 맺히도록 해줘." },
+    { title: "🥀 빈티지 레트로", detail: "오래된 필름 사진처럼 채도가 낮고 따뜻한 세피아 톤의 빈티지 조명 효과를 적용해줘." }
+  ];
+
+  // 이미지 업로드 핸들러
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSourceImage(reader.result);
+        const base64Data = reader.result.split(',')[1];
+        setBase64Source(base64Data);
+        setError(null);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const fetchWithRetry = async (url, options, maxRetries = 5) => {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await fetch(url, options);
+        if (response.ok) return await response.json();
+        if (response.status !== 429 && response.status < 500) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      } catch (err) {
+        if (i === maxRetries - 1) throw err;
+      }
+      const delay = Math.pow(2, i) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  };
+
+  const handleEditImage = async () => {
+    if (!base64Source || !prompt) {
+      setError("이미지를 업로드하고 프롬프트를 입력해 주세요.");
+      return;
+    }
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{
+          parts: [{ text: prompt }, { inlineData: { mimeType: "image/png", data: base64Source } }]
+        }],
+        generationConfig: { responseModalities: ["TEXT", "IMAGE"] }
+      };
+
+      const result = await fetchWithRetry(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const generatedBase64 = result.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+
+      if (generatedBase64) {
+        setResultImage(`data:image/png;base64,${generatedBase64}`);
+      } else {
+        throw new Error("이미지를 생성하지 못했습니다.");
+      }
+    } catch (err) {
+      setError("편집 중 오류가 발생했습니다.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleExampleClick = (ex) => {
+    if (ex.id === 'bg') setActiveSubMenu('background');
+    else if (ex.id === 'style') setActiveSubMenu('style');
+    else if (ex.id === 'acc') setActiveSubMenu('accessory');
+    else if (ex.id === 'season') setActiveSubMenu('season');
+    else if (ex.id === 'body') setActiveSubMenu('body');
+    else if (ex.id === 'animal') setActiveSubMenu('animal');
+    else if (ex.id === 'outfit') setActiveSubMenu('outfit');
+    else if (ex.id === 'person') setActiveSubMenu('person');
+    else if (ex.id === 'camera') setActiveSubMenu('camera');
+    else if (ex.id === 'lighting') setActiveSubMenu('lighting');
+    else setPrompt(ex.detail);
+  };
+
+  // 현재 렌더링할 버튼 리스트 결정
+  const getCurrentExamples = () => {
+    switch(activeSubMenu) {
+      case 'background': return backgroundSubExamples;
+      case 'style': return styleSubExamples;
+      case 'accessory': return accessorySubExamples;
+      case 'season': return seasonSubExamples;
+      case 'body': return bodySubExamples;
+      case 'animal': return animalSubExamples;
+      case 'outfit': return outfitSubExamples;
+      case 'person': return personSubExamples;
+      case 'camera': return cameraSubExamples;
+      case 'lighting': return lightingSubExamples;
+      default: return mainExamples;
+    }
+  };
+
+  const getSubMenuTitle = () => {
+    switch(activeSubMenu) {
+      case 'background': return '상세 배경 선택';
+      case 'style': return '상세 화풍 선택';
+      case 'accessory': return '상세 액세서리 선택';
+      case 'season': return '상세 계절 선택';
+      case 'body': return '상세 신체 변화 선택';
+      case 'animal': return '상세 동물 편집 선택';
+      case 'outfit': return '상세 의상 교체 선택';
+      case 'person': return '상세 인물 교체 선택';
+      case 'camera': return '상세 카메라 위치 선택';
+      case 'lighting': return '상세 조명 & 분위기 선택';
+      default: return '추천 편집 예제';
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
+      <div className="max-w-6xl mx-auto">
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center justify-center gap-2">
+            <Wand2 className="text-blue-600" /> Gemini AI Photo Editor
+          </h1>
+          <p className="text-slate-500 text-sm">카테고리를 선택하고 상세 옵션을 클릭해 사진의 분위기를 바꿔보세요.</p>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <ImageIcon size={20} className="text-blue-500" /> 원본 및 프롬프트
+              </h2>
+              
+              <div className="relative group border-2 border-dashed border-slate-300 rounded-xl overflow-hidden bg-slate-50 transition-colors hover:border-blue-400">
+                {sourceImage ? (
+                  <div className="relative aspect-video">
+                    <img src={sourceImage} alt="Source" className="w-full h-full object-contain" />
+                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer text-white">
+                      <Upload className="mr-2" /> 사진 변경
+                      <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
+                    </label>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center py-12 cursor-pointer">
+                    <Upload className="text-slate-400 mb-2" size={32} />
+                    <span className="text-slate-500 text-sm font-medium">사진 업로드</span>
+                    <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
+                  </label>
+                )}
+              </div>
+
+              {/* 예제 섹션 */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                    <Sparkles size={16} className="text-amber-500" />
+                    {getSubMenuTitle()}
+                  </label>
+                  {activeSubMenu && (
+                    <button 
+                      onClick={() => setActiveSubMenu(null)}
+                      className="text-xs text-blue-600 flex items-center gap-1 hover:underline"
+                    >
+                      <ChevronLeft size={14} /> 이전으로
+                    </button>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {getCurrentExamples().map((ex, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => activeSubMenu ? setPrompt(ex.detail) : handleExampleClick(ex)}
+                      className={`px-2 py-2 text-[11px] font-medium border rounded-lg transition-all text-center leading-tight h-12 flex items-center justify-center ${
+                        activeSubMenu 
+                          ? 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100' 
+                          : 'bg-slate-100 border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
+                      }`}
+                    >
+                      {ex.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">상세 명령어</label>
+                <textarea
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="예제 버튼을 누르거나 직접 입력하세요..."
+                  className="w-full h-24 p-4 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                />
+              </div>
+
+              <button
+                onClick={handleEditImage}
+                disabled={isGenerating || !sourceImage || !prompt}
+                className={`w-full mt-4 py-3.5 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all ${
+                  isGenerating || !sourceImage || !prompt ? 'bg-slate-300' : 'bg-blue-600 hover:bg-blue-700 shadow-lg'
+                }`}
+              >
+                {isGenerating ? <><Loader2 className="animate-spin" size={20} /> AI 작업 중...</> : <><Wand2 size={20} /> AI 편집 시작</>}
+              </button>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 flex flex-col">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex-grow flex flex-col min-h-[500px]">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Wand2 size={20} className="text-purple-500" /> 편집 결과
+              </h2>
+              <div className="flex-grow border border-slate-200 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden relative">
+                {resultImage ? (
+                  <div className="p-4 flex flex-col items-center gap-4">
+                    <img src={resultImage} alt="Result" className="max-w-full max-h-full object-contain rounded-lg shadow-xl" />
+                    <div className="flex gap-2">
+                      <button onClick={() => { setSourceImage(resultImage); setBase64Source(resultImage.split(',')[1]); setResultImage(null); }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold">연속 편집</button>
+                      <a href={resultImage} download="result.png" className="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold flex items-center gap-1"><Download size={14}/> 저장</a>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-slate-400">
+                    {isGenerating ? <div className="animate-spin w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto" /> : <ImageIcon size={48} className="mx-auto mb-2 opacity-20" />}
+                    <p className="text-sm italic">{isGenerating ? "이미지를 만들고 있어요..." : "결과물이 여기에 표시됩니다."}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
