@@ -43,36 +43,47 @@
       padding: 1rem 1.2rem;
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 1rem 1.5rem;
+      justify-content: center;
       background: rgba(13, 17, 23, 0.4);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
-      z-index: 10;
     }
 
     .market-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 0.9rem 1.1rem;
+      padding: 0.9rem 1.2rem;
       backdrop-filter: blur(10px);
-      flex: 1;
-      min-width: 160px;
-      max-width: 240px;
+      width: fit-content;
+      min-width: 180px;
+      max-width: 320px;
+      font-size: clamp(0.92rem, 2.3vw, 1.02rem);
+      line-height: 1.45;
     }
 
     .market-card div {
-      margin: 0.45rem 0;
-      font-size: clamp(0.9rem, 2.2vw, 1rem);
-      line-height: 1.35;
+      white-space: nowrap;
+      margin: 0.5rem 0;
     }
 
     .market-card strong {
       color: var(--accent);
+      font-weight: 600;
+      min-width: 5.5ch;
+      display: inline-block;
     }
 
     .change-up { color: #56d364; }
     .change-down { color: #f78166; }
+
+    .change-up, .change-down {
+      font-weight: 500;
+      min-width: 6ch;
+      display: inline-block;
+      text-align: right;
+    }
 
     /* 중앙 시계 영역 */
     .clock-wrapper {
@@ -141,17 +152,26 @@
       font-weight: 600;
     }
 
-    /* 반응형 브레이크 포인트 */
+    /* 반응형 */
     @media (max-width: 780px) {
       .market-header {
         flex-direction: column;
         align-items: center;
+        gap: 0.9rem;
       }
       
       .market-card {
-        max-width: 320px;
-        width: 100%;
+        width: 85vw;
+        max-width: 360px;
+        min-width: 240px;
         text-align: center;
+      }
+      
+      .market-card strong,
+      .change-up,
+      .change-down {
+        display: inline;
+        min-width: auto;
       }
       
       .clocks {
@@ -161,12 +181,9 @@
     }
 
     @media (max-width: 520px) {
-      body {
-        grid-template-rows: auto 1fr minmax(120px, auto);
-      }
-      
-      .market-header {
-        padding: 0.9rem 1rem;
+      .market-card {
+        padding: 0.8rem 1rem;
+        font-size: clamp(0.9rem, 3.2vw, 0.98rem);
       }
       
       .time {
@@ -200,13 +217,13 @@
     <div class="clock-item">
       <div class="clock-label">한국 시간 (KST)</div>
       <div class="time" id="kstTime">00:00:00</div>
-      <div class="date" id="kstDate">2025.10.15 (수)</div>
+      <div class="date" id="kstDate">2026.01.11 (일)</div>
     </div>
 
     <div class="clock-item">
       <div class="clock-label">뉴욕 시간 (EST)</div>
-      <div class="time" id="estTime">00:00:00</div>
-      <div class="date" id="estDate">2025.10.14 (화)</div>
+      <div class="time" id="estTime">11:19:00</div>
+      <div class="date" id="estDate">2026.01.10 (토)</div>
     </div>
   </div>
 </main>
@@ -225,16 +242,17 @@
 </footer>
 
 <script>
-// 시간 업데이트 (기존 코드 유지)
 function updateTimes() {
   const now = new Date();
   const options = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
 
   const kst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  document.getElementById('kstTime').textContent = kst.toLocaleTimeString('ko-KR', options);
+  document.getElementById('kstTime').textContent = 
+    kst.toLocaleTimeString('ko-KR', options);
 
   const est = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  document.getElementById('estTime').textContent = est.toLocaleTimeString('en-US', options);
+  document.getElementById('estTime').textContent = 
+    est.toLocaleTimeString('en-US', options);
 
   const days = ['일','월','화','수','목','금','토'];
   
