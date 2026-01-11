@@ -19,18 +19,18 @@
       overflow: hidden;
     }
 
-    /* 공통 컨테이너 스타일 */
+    /* 상단 정보 패널 */
     .info-panel {
       position: absolute;
       top: 20px;
       font-size: 0.95rem;
       background: rgba(0, 255, 0, 0.05);
-      padding: 10px 15px;
+      padding: 12px 18px;
       border-radius: 8px;
       border: 1px solid rgba(0, 255, 0, 0.2);
       backdrop-filter: blur(5px);
       z-index: 10;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     #exchange-container { left: 20px; }
@@ -49,7 +49,7 @@
       white-space: pre-line;
     }
 
-    /* 상태 표시 라벨 */
+    /* 상태 표시 라벨 (실시간/최근값) */
     .status-label {
       font-size: 0.7rem;
       margin-left: 6px;
@@ -114,91 +114,85 @@
 
     /* 하단 섹션 */
     .footer-section {
-      margin-top: 30px;
+      margin-top: 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
 
     .individual-stocks-panel {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       letter-spacing: 0.1em;
       opacity: 0.9;
-      padding: 10px 30px;
+      padding: 10px 40px;
       border-top: 1px solid rgba(0, 255, 0, 0.15);
     }
 
-    /* AI 기능 버튼 스타일 */
+    /* AI 분석 버튼 */
     .ai-button-group {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
 
     .ai-btn {
-      background: rgba(0, 255, 0, 0.1);
-      border: 1px solid #0f0;
+      background: rgba(0, 255, 0, 0.05);
+      border: 1px solid rgba(0, 255, 0, 0.5);
       color: #0f0;
-      padding: 8px 16px;
-      border-radius: 20px;
+      padding: 10px 20px;
+      border-radius: 30px;
       cursor: pointer;
       font-family: inherit;
       font-size: 0.9rem;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .ai-btn:hover {
-      background: rgba(0, 255, 0, 0.3);
-      box-shadow: 0 0 10px #0f0;
+      background: rgba(0, 255, 0, 0.2);
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
     }
 
-    /* AI 결과 모달/패널 */
+    /* 결과 패널 */
     #ai-response-panel {
       display: none;
       position: fixed;
-      bottom: 80px;
+      bottom: 90px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80%;
-      max-width: 600px;
-      background: rgba(0, 0, 0, 0.9);
+      width: 85%;
+      max-width: 650px;
+      background: rgba(10, 10, 10, 0.95);
       border: 1px solid #0f0;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+      padding: 24px;
+      border-radius: 15px;
+      box-shadow: 0 0 40px rgba(0, 255, 0, 0.15);
       z-index: 100;
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
     }
 
-    .ai-content {
-      font-size: 0.9rem;
-      line-height: 1.6;
-      color: #cfc;
-    }
+    .ai-content { font-size: 0.95rem; line-height: 1.7; color: #cfc; }
+    .ai-close { position: absolute; top: 12px; right: 18px; cursor: pointer; font-size: 1.2rem; opacity: 0.7; }
+    .ai-close:hover { opacity: 1; }
 
-    .ai-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
+    /* 에러 하단바 */
     .error-footer {
       position: absolute;
       bottom: 20px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #ffa500;
       opacity: 0;
       transition: opacity 0.5s ease;
+      width: 100%;
+      text-align: center;
+      letter-spacing: 0.05em;
     }
-
     .error-footer.visible { opacity: 1; }
 
+    /* 로딩 애니메이션 */
     .loading-dots:after {
       content: ' .';
       animation: dots 1s steps(5, end) infinite;
@@ -211,25 +205,25 @@
       80%, 100% { content: ''; }
     }
 
-    @media (max-width: 1200px) {
-      .clock { font-size: 3.5rem; }
-      .date { font-size: 1.2rem; }
-    }
-
+    /* 반응형 */
+    @media (max-width: 1200px) { .clock { font-size: 3.5rem; } .date { font-size: 1.2rem; } }
     @media (max-width: 800px) {
       .clocks-wrapper { flex-direction: column; gap: 20px; }
       .clock { font-size: 3rem; }
-      .info-panel { font-size: 0.8rem; top: 10px; position: relative; width: 90%; margin: 5px auto; text-align: center !important; }
-      #ai-response-panel { width: 95%; bottom: 100px; }
+      .info-panel { font-size: 0.8rem; position: relative; width: 92%; margin: 8px auto; text-align: center !important; top: 0; }
+      #stock-container { right: auto; left: auto; }
+      #ai-response-panel { width: 92%; bottom: 100px; }
     }
   </style>
 </head>
 <body>
+  <!-- 좌측 상단 환율 -->
   <div id="exchange-container" class="info-panel">
     <div class="info-label">USD/KRW</div>
     <div id="exchange-rate" class="info-value"><span class="loading-dots">LOADING</span></div>
   </div>
 
+  <!-- 우측 상단 지수 -->
   <div id="stock-container" class="info-panel">
     <div class="info-label">MARKET INDICES (KR/US)</div>
     <div id="stock-indices" class="info-value"><span class="loading-dots">LOADING</span></div>
@@ -254,7 +248,6 @@
         <span class="loading-dots">STOCK DATA LOADING</span>
       </div>
 
-      <!-- AI 버튼 그룹 -->
       <div class="ai-button-group">
         <button class="ai-btn" onclick="getMarketInsight()">✨ AI 시장 분석</button>
         <button class="ai-btn" onclick="getDailyNews()">✨ 오늘의 뉴스 요약</button>
@@ -262,10 +255,10 @@
     </div>
   </div>
 
-  <!-- AI 응답 패널 -->
+  <!-- AI 응답 창 -->
   <div id="ai-response-panel">
     <div class="ai-close" onclick="closeAI()">×</div>
-    <div id="ai-title" style="margin-bottom:10px; font-weight:bold; color:#0f0;"></div>
+    <div id="ai-title" style="margin-bottom:12px; font-weight:bold; color:#0f0; border-bottom: 1px solid rgba(0,255,0,0.3); padding-bottom:8px;"></div>
     <div id="ai-content" class="ai-content"></div>
   </div>
 
@@ -273,7 +266,7 @@
 
   <script>
     let lastFetchedMinute = -1;
-    const apiKey = ""; 
+    const apiKey = ""; // 실행 환경에서 주입됨
 
     let lastExchange = "";
     let lastIndices = "";
@@ -290,11 +283,15 @@
       }).format(now);
     }
 
+    /**
+     * 시간 업데이트 및 1분 정각 체크
+     */
     function updateClocks() {
       const now = new Date();
       const currentSeconds = now.getSeconds();
       const currentMinutes = now.getMinutes();
 
+      // [핵심] 매분 00초 정각에 데이터를 새로 가져옴
       if (currentSeconds === 0 && currentMinutes !== lastFetchedMinute) {
         fetchAllFinancialData();
         lastFetchedMinute = currentMinutes;
@@ -324,13 +321,14 @@
       document.getElementById('date-ny').textContent = `${nY}. ${nM}. ${nD}. ${nW}`;
     }
 
+    /**
+     * Gemini 2.5 Flash API 호출 (Google Search Grounding 포함)
+     */
     async function callGeminiAPI(prompt, useSearch = true) {
       const payload = {
-        contents: [{ parts: [{ text: prompt }] }]
+        contents: [{ parts: [{ text: prompt }] }],
+        tools: useSearch ? [{ "google_search": {} }] : []
       };
-      if (useSearch) {
-        payload.tools = [{ "google_search": {} }];
-      }
 
       let delay = 1000;
       for (let i = 0; i < 5; i++) {
@@ -340,7 +338,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          if (!response.ok) throw new Error('API failed');
+          if (!response.ok) throw new Error('API_REQUEST_FAILED');
           const result = await response.json();
           return result.candidates?.[0]?.content?.parts?.[0]?.text;
         } catch (error) {
@@ -365,7 +363,7 @@
       const el = document.getElementById('exchange-rate');
       el.style.opacity = "0.5";
       try {
-        const text = await callGeminiAPI("현재 원/달러(USD/KRW) 환율 정보를 숫자와 단위만 포함해서 짧게 알려줘.");
+        const text = await callGeminiAPI("현재 원/달러(USD/KRW) 환율 정보를 숫자와 단위만 포함해서 짧게 알려줘. 구글 검색을 활용해.");
         if (text) {
           lastExchange = text.trim();
           lastSuccessKST = getCurrentKST();
@@ -382,7 +380,7 @@
       const el = document.getElementById('stock-indices');
       el.style.opacity = "0.5";
       try {
-        const text = await callGeminiAPI("현재 한국 KOSPI, KOSDAQ 지수와 미국의 다우존스(Dow Jones), S&P 500, 나스닥(Nasdaq) 지수를 알려줘. 형식은 첫 줄에 'kospi: 수치 / kosdaq: 수치', 둘째 줄에 'Dow: 수치 / S&P 500: 수치 / Nasdaq: 수치' 형식으로 줄바꿈을 포함해서 출력해.");
+        const text = await callGeminiAPI("현재 한국 KOSPI, KOSDAQ 지수와 미국의 다우존스, S&P 500, 나스닥 지수를 가져와줘. 형식: 'kospi: 수치 / kosdaq: 수치' 한 줄, 'Dow: 수치 / S&P 500: 수치 / Nasdaq: 수치' 한 줄로 줄바꿈해서 출력.");
         if (text) {
           lastIndices = text.trim();
           lastSuccessKST = getCurrentKST();
@@ -399,7 +397,7 @@
       const el = document.getElementById('individual-stocks');
       el.style.opacity = "0.5";
       try {
-        const text = await callGeminiAPI("현재 삼성전자(005930)와 SK하이닉스(000660)의 주가를 알려줘. 형식: SAMSUNG 75,000 / HYNIX 180,000 처럼 한 줄로 짧게 출력해.");
+        const text = await callGeminiAPI("삼성전자(005930)와 SK하이닉스(000660)의 현재 주가를 구글 검색으로 확인해서 'SAMSUNG 수치 / HYNIX 수치' 형식으로 짧게 알려줘.");
         if (text) {
           lastStocks = text.trim();
           lastSuccessKST = getCurrentKST();
@@ -418,6 +416,7 @@
       fetchIndividualStocks();
     }
 
+    // AI 통찰 및 뉴스 요약
     function showAI(title, content) {
       document.getElementById('ai-title').innerText = title;
       document.getElementById('ai-content').innerText = content;
@@ -431,49 +430,31 @@
     async function getMarketInsight() {
       const btn = event.target;
       const originalText = btn.innerText;
-      btn.innerText = "분석 중...";
-      btn.disabled = true;
-
-      const prompt = `현재 시장 데이터 상황:
-      - 환율: ${lastExchange}
-      - 주요 지수: ${lastIndices}
-      - 주요 주가: ${lastStocks}
-      
-      위 데이터를 바탕으로 현재 시장의 분위기를 한 문장으로 요약하고, 투자자가 유의해야 할 점을 한 가지만 핵심적으로 짚어줘. (한국어로 짧고 전문적인 톤으로)`;
-
+      btn.innerText = "분석 중..."; btn.disabled = true;
       try {
-        const response = await callGeminiAPI(prompt, false); 
+        const response = await callGeminiAPI(`현재 시장 데이터(환율:${lastExchange}, 지수:${lastIndices}, 주가:${lastStocks})를 분석해서 시장의 흐름을 한 문장으로 진단하고 투자 조언을 짧게 덧붙여줘.`, false);
         showAI("✨ AI 시장 분석 통찰", response);
       } catch (e) {
-        showAI("오류", "분석을 가져오지 못했습니다. 다시 시도해 주세요.");
-      } finally {
-        btn.innerText = originalText;
-        btn.disabled = false;
-      }
+        showAI("오류", "분석을 가져오는 데 실패했습니다.");
+      } finally { btn.innerText = originalText; btn.disabled = false; }
     }
 
     async function getDailyNews() {
       const btn = event.target;
       const originalText = btn.innerText;
-      btn.innerText = "뉴스 찾는 중...";
-      btn.disabled = true;
-
-      const prompt = "오늘의 가장 중요한 글로벌 경제 및 금융 뉴스 3가지를 제목 위주로 짧게 요약해줘. 각 뉴스 끝에 간략한 영향 분석을 포함해줘.";
-
+      btn.innerText = "뉴스 검색 중..."; btn.disabled = true;
       try {
-        const response = await callGeminiAPI(prompt, true);
+        const response = await callGeminiAPI("오늘의 전세계 주요 금융 및 경제 뉴스 3가지를 제목과 간략한 핵심 요약으로 정리해줘.", true);
         showAI("✨ 오늘의 핵심 경제 뉴스", response);
       } catch (e) {
-        showAI("오류", "뉴스를 가져오지 못했습니다.");
-      } finally {
-        btn.innerText = originalText;
-        btn.disabled = false;
-      }
+        showAI("오류", "뉴스 정보를 가져오지 못했습니다.");
+      } finally { btn.innerText = originalText; btn.disabled = false; }
     }
 
+    // 서비스 초기화
     updateClocks();
     setInterval(updateClocks, 1000);
-    fetchAllFinancialData();
+    fetchAllFinancialData(); // 시작 시 즉시 호출
   </script>
 </body>
 </html>
