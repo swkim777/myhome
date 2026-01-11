@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JW Stock/title>
+  <title>JW Stock</title>
 
   <style>
     /* 기본 레이아웃 및 배경 */
@@ -418,8 +418,6 @@
       fetchIndividualStocks();
     }
 
-    // --- Gemini AI 신규 기능 ---
-
     function showAI(title, content) {
       document.getElementById('ai-title').innerText = title;
       document.getElementById('ai-content').innerText = content;
@@ -444,7 +442,7 @@
       위 데이터를 바탕으로 현재 시장의 분위기를 한 문장으로 요약하고, 투자자가 유의해야 할 점을 한 가지만 핵심적으로 짚어줘. (한국어로 짧고 전문적인 톤으로)`;
 
       try {
-        const response = await callGeminiAPI(prompt, false); // 데이터 기반 분석이므로 검색 생략 가능
+        const response = await callGeminiAPI(prompt, false); 
         showAI("✨ AI 시장 분석 통찰", response);
       } catch (e) {
         showAI("오류", "분석을 가져오지 못했습니다. 다시 시도해 주세요.");
