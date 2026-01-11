@@ -34,24 +34,18 @@
       color: var(--text-primary);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       overflow: hidden;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
     }
 
-    /* 상단 시장 정보 - 좌우 배치 강제 */
+    /* 상단 헤더 (지수 블록들) */
     .market-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem 1.5rem;
+      position: relative;
+      z-index: 10;
+      padding: 1rem 1.5rem 0.8rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 1rem;
-      z-index: 10;
-      flex-wrap: nowrap;
-      background: rgba(13, 17, 23, 0.35);
+      background: rgba(13, 17, 23, 0.4);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
     }
@@ -68,9 +62,6 @@
       font-size: clamp(0.9rem, 2.1vw, 0.98rem);
       line-height: 1.45;
     }
-
-    .market-card.korea { margin-right: auto; }
-    .market-card.usa   { margin-left: auto; }
 
     .market-card div {
       white-space: nowrap;
@@ -94,20 +85,20 @@
       text-align: right;
     }
 
-    /* 중앙 시계 영역 */
-    .clock-wrapper {
-      display: grid;
-      place-items: center;
-      padding: 1rem;
+    /* 시계 컨테이너 - 지수 블록 바로 아래 */
+    .clock-section {
+      padding: 1.5rem 1rem 2rem;
+      background: rgba(13, 17, 23, 0.25);
+      backdrop-filter: blur(6px);
     }
 
     .clocks {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: clamp(2.5rem, 7vw, 6rem);
-      width: 100%;
-      max-width: 1000px;
+      gap: clamp(2.5rem, 6vw, 7rem);
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
     .clock-item {
@@ -122,24 +113,27 @@
       margin-bottom: 0.7rem;
     }
 
-    /* 시계 숫자 크기 약 50% 수준으로 축소 */
     .time {
-      font-size: clamp(1.8rem, 7vw, 2.8rem);    /* ← 여기서 크게 줄임 */
+      font-size: clamp(2.2rem, 8vw, 3.4rem);
       font-weight: 700;
       letter-spacing: 0.06em;
       color: var(--text-accent);
-      text-shadow: 0 0 18px rgba(121, 192, 255, 0.35);
+      text-shadow: 0 0 20px rgba(121, 192, 255, 0.35);
       font-variant-numeric: tabular-nums;
     }
 
     .date {
-      font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+      font-size: clamp(1rem, 2.6vw, 1.2rem);
       opacity: 0.75;
       margin-top: 0.6rem;
     }
 
     /* 하단 인기 종목 */
     .bottom-stocks {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       padding: 1.2rem;
       text-align: center;
       background: var(--card-bg);
@@ -162,49 +156,48 @@
       font-weight: 600;
     }
 
-    /* 반응형 */
+    /* 반응형 조정 */
     @media (max-width: 820px) {
       .market-header {
         flex-wrap: wrap;
         justify-content: center;
-        padding: 0.9rem 1rem;
+        padding: 1rem;
       }
       
-      .market-card.korea,
-      .market-card.usa {
-        margin: 0.4rem auto;
+      .clock-section {
+        padding: 1.2rem 0.8rem 1.8rem;
       }
       
       .clocks {
         flex-direction: column;
-        gap: 3.2rem;
+        gap: 3rem;
       }
     }
 
     @media (max-width: 520px) {
       .time {
-        font-size: clamp(1.6rem, 9vw, 2.3rem);
+        font-size: clamp(1.9rem, 10vw, 2.8rem);
       }
     }
   </style>
 </head>
 <body>
 
-<header class="market-header">
-  <div class="market-card korea">
+<div class="market-header">
+  <div class="market-card">
     <div><strong>KOSPI</strong> 2,586.32 <span class="change-up">+0.75%</span></div>
     <div><strong>KOSDAQ</strong> 847.92 <span class="change-up">+0.41%</span></div>
     <div><strong>USD/KRW</strong> 1,458 <span class="change-up">+0.4%</span></div>
   </div>
 
-  <div class="market-card usa">
+  <div class="market-card">
     <div><strong>Dow Jones</strong> 42,504.07 <span class="change-up">+0.48%</span></div>
     <div><strong>S&P 500</strong> 5,966.28 <span class="change-up">+0.65%</span></div>
     <div><strong>Nasdaq</strong> 19,671.35 <span class="change-up">+0.81%</span></div>
   </div>
-</header>
+</div>
 
-<main class="clock-wrapper">
+<div class="clock-section">
   <div class="clocks">
     <div class="clock-item">
       <div class="clock-label">한국 시간 (KST)</div>
@@ -215,12 +208,12 @@
     <div class="clock-item">
       <div class="clock-label">뉴욕 시간 (EST)</div>
       <div class="time" id="estTime">03:22:45</div>
-      <div class="date" id="estDate">2026.01.11 (일)</div>
+      <div class="date" id="estDate">2026.01.10 (토)</div>
     </div>
   </div>
-</main>
+</div>
 
-<footer class="bottom-stocks">
+<div class="bottom-stocks">
   <div class="stocks-container">
     <div class="stock-item">
       <span class="stock-name">삼성전자 (005930)</span> : 139,000 KRW 
@@ -231,7 +224,7 @@
       <span class="change-down">(-1.59% 최근 종가)</span>
     </div>
   </div>
-</footer>
+</div>
 
 <script>
 function updateTimes() {
@@ -239,12 +232,10 @@ function updateTimes() {
   const options = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
 
   const kst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  document.getElementById('kstTime').textContent = 
-    kst.toLocaleTimeString('ko-KR', options);
+  document.getElementById('kstTime').textContent = kst.toLocaleTimeString('ko-KR', options);
 
   const est = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  document.getElementById('estTime').textContent = 
-    est.toLocaleTimeString('en-US', options);
+  document.getElementById('estTime').textContent = est.toLocaleTimeString('en-US', options);
 
   const days = ['일','월','화','수','목','금','토'];
   
