@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>디지털 시계 - 금융 대시보드</title>
+  <title>디지털 시계 - AI 금융 대시보드</title>
 
   <style>
     /* 기본 레이아웃 및 배경 */
@@ -19,7 +19,7 @@
       overflow: hidden;
     }
 
-    /* 공통 컨테이너 스타일 (환율 & 주식) */
+    /* 공통 컨테이너 스타일 */
     .info-panel {
       position: absolute;
       top: 20px;
@@ -33,16 +33,8 @@
       line-height: 1.4;
     }
 
-    /* 환율 정보 스타일 (좌측 상단) */
-    #exchange-container {
-      left: 20px;
-    }
-
-    /* 지수 정보 스타일 (우측 상단) */
-    #stock-container {
-      right: 20px;
-      text-align: right;
-    }
+    #exchange-container { left: 20px; }
+    #stock-container { right: 20px; text-align: right; }
 
     .info-label {
       font-size: 0.7rem;
@@ -54,10 +46,10 @@
 
     .info-value {
       font-weight: bold;
-      white-space: pre-line; /* 줄바꿈 허용 */
+      white-space: pre-line;
     }
 
-    /* 상태 표시 라벨 (실시간/최근값) */
+    /* 상태 표시 라벨 */
     .status-label {
       font-size: 0.7rem;
       margin-left: 6px;
@@ -66,14 +58,8 @@
       display: inline-block;
     }
     
-    .live-label {
-      color: #0f0;
-      opacity: 0.8;
-    }
-
-    .stale-label {
-      color: #ffa500;
-    }
+    .live-label { color: #0f0; opacity: 0.8; }
+    .stale-label { color: #ffa500; }
 
     /* 중앙 메인 컨테이너 */
     .main-container {
@@ -85,7 +71,6 @@
       align-items: center;
     }
 
-    /* 시계 좌우 배치 레이아웃 */
     .clocks-wrapper {
       display: flex;
       flex-direction: row;
@@ -95,7 +80,6 @@
       width: 100%;
     }
 
-    /* 시계 그룹 스타일 */
     .clock-group {
       display: flex;
       flex-direction: column;
@@ -114,7 +98,6 @@
       width: 60%;
     }
 
-    /* 개별 날짜 스타일 */
     .date {
       font-size: 1.5rem;
       margin-bottom: 5px;
@@ -122,7 +105,6 @@
       letter-spacing: 0.1em;
     }
 
-    /* 시계 글자 크기 조정 */
     .clock {
       font-weight: bold;
       letter-spacing: 0.05em;
@@ -130,18 +112,93 @@
       font-size: 4.5rem;
     }
 
-    /* 하단 개별 종목 주가 스타일 */
+    /* 하단 섹션 */
+    .footer-section {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
     .individual-stocks-panel {
-      margin-top: 50px;
       font-size: 1.4rem;
       letter-spacing: 0.1em;
       opacity: 0.9;
-      padding: 15px 30px;
+      padding: 10px 30px;
       border-top: 1px solid rgba(0, 255, 0, 0.15);
-      width: fit-content;
     }
 
-    /* 로딩 애니메이션 */
+    /* AI 기능 버튼 스타일 */
+    .ai-button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .ai-btn {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid #0f0;
+      color: #0f0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ai-btn:hover {
+      background: rgba(0, 255, 0, 0.3);
+      box-shadow: 0 0 10px #0f0;
+    }
+
+    /* AI 결과 모달/패널 */
+    #ai-response-panel {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid #0f0;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+      z-index: 100;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .ai-content {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #cfc;
+    }
+
+    .ai-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .error-footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.8rem;
+      color: #ffa500;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .error-footer.visible { opacity: 1; }
+
     .loading-dots:after {
       content: ' .';
       animation: dots 1s steps(5, end) infinite;
@@ -154,50 +211,37 @@
       80%, 100% { content: ''; }
     }
 
-    /* 반응형 대응 */
     @media (max-width: 1200px) {
       .clock { font-size: 3.5rem; }
       .date { font-size: 1.2rem; }
-      .clocks-wrapper { gap: 20px; }
-      .clock-group { min-width: 300px; }
-      .individual-stocks-panel { font-size: 1.1rem; }
     }
 
     @media (max-width: 800px) {
-      .clocks-wrapper {
-        flex-direction: column;
-        gap: 30px;
-      }
-      .clock { font-size: 3.8rem; }
-      .date { font-size: 1.4rem; }
+      .clocks-wrapper { flex-direction: column; gap: 20px; }
+      .clock { font-size: 3rem; }
       .info-panel { font-size: 0.8rem; top: 10px; position: relative; width: 90%; margin: 5px auto; text-align: center !important; }
-      #stock-container { right: auto; left: auto; }
-      .main-container { padding-top: 20px; }
+      #ai-response-panel { width: 95%; bottom: 100px; }
     }
   </style>
 </head>
 <body>
-  <!-- 좌측 상단 환율 -->
   <div id="exchange-container" class="info-panel">
     <div class="info-label">USD/KRW</div>
     <div id="exchange-rate" class="info-value"><span class="loading-dots">LOADING</span></div>
   </div>
 
-  <!-- 우측 상단 지수 (KOR/USA) -->
   <div id="stock-container" class="info-panel">
     <div class="info-label">MARKET INDICES (KR/US)</div>
     <div id="stock-indices" class="info-value"><span class="loading-dots">LOADING</span></div>
   </div>
 
   <div class="main-container">
-    <!-- 중앙 시계 섹션 -->
     <div class="clocks-wrapper">
       <div class="clock-group">
         <div class="city-label">SEOUL (KST)</div>
         <div class="date" id="date-seoul">0000. 00. 00. SUN</div>
         <div class="clock" id="clock-seoul">00:00:00</div>
       </div>
-
       <div class="clock-group">
         <div class="city-label">NEW YORK (EST/EDT)</div>
         <div class="date" id="date-ny">0000. 00. 00. SAT</div>
@@ -205,63 +249,88 @@
       </div>
     </div>
 
-    <!-- 하단 종목 주가 섹션 -->
-    <div id="individual-stocks" class="individual-stocks-panel">
-      <span class="loading-dots">STOCK DATA LOADING</span>
+    <div class="footer-section">
+      <div id="individual-stocks" class="individual-stocks-panel">
+        <span class="loading-dots">STOCK DATA LOADING</span>
+      </div>
+
+      <!-- AI 버튼 그룹 -->
+      <div class="ai-button-group">
+        <button class="ai-btn" onclick="getMarketInsight()">✨ AI 시장 분석</button>
+        <button class="ai-btn" onclick="getDailyNews()">✨ 오늘의 뉴스 요약</button>
+      </div>
     </div>
   </div>
+
+  <!-- AI 응답 패널 -->
+  <div id="ai-response-panel">
+    <div class="ai-close" onclick="closeAI()">×</div>
+    <div id="ai-title" style="margin-bottom:10px; font-weight:bold; color:#0f0;"></div>
+    <div id="ai-content" class="ai-content"></div>
+  </div>
+
+  <div id="error-footer" class="error-footer"></div>
 
   <script>
     let lastFetchedMinute = -1;
     const apiKey = ""; 
 
-    // 최근 데이터 저장을 위한 변수
     let lastExchange = "";
     let lastIndices = "";
     let lastStocks = "";
+    let lastSuccessKST = "";
 
-    /**
-     * 시간 업데이트 및 금융 정보 갱신 트리거
-     */
+    function getCurrentKST() {
+      const now = new Date();
+      return new Intl.DateTimeFormat('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      }).format(now);
+    }
+
     function updateClocks() {
       const now = new Date();
       const currentSeconds = now.getSeconds();
       const currentMinutes = now.getMinutes();
 
-      // 매분 0초에 데이터 갱신
       if (currentSeconds === 0 && currentMinutes !== lastFetchedMinute) {
         fetchAllFinancialData();
         lastFetchedMinute = currentMinutes;
       }
 
-      // 서울 데이터
-      const seoulDateOptions = { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
-      const seoulDateParts = new Intl.DateTimeFormat('ko-KR', seoulDateOptions).formatToParts(now);
+      document.getElementById('clock-seoul').textContent = now.toLocaleTimeString('en-GB', { hour12: false, timeZone: 'Asia/Seoul' });
+      document.getElementById('clock-ny').textContent = now.toLocaleTimeString('en-GB', { 
+        hour12: false, timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' 
+      });
+      
+      updateDates(now);
+    }
+
+    function updateDates(now) {
+      const seoulDateParts = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }).formatToParts(now);
       const sY = seoulDateParts.find(p => p.type === 'year').value;
       const sM = seoulDateParts.find(p => p.type === 'month').value;
       const sD = seoulDateParts.find(p => p.type === 'day').value;
       const sW = seoulDateParts.find(p => p.type === 'weekday').value.toUpperCase();
       document.getElementById('date-seoul').textContent = `${sY}. ${sM}. ${sD}. ${sW}`;
-      document.getElementById('clock-seoul').textContent = now.toLocaleTimeString('en-GB', { hour12: false, timeZone: 'Asia/Seoul' });
 
-      // 뉴욕 데이터
-      const nyDateOptions = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
-      const nyDateParts = new Intl.DateTimeFormat('en-GB', nyDateOptions).formatToParts(now);
+      const nyDateParts = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }).formatToParts(now);
       const nY = nyDateParts.find(p => p.type === 'year').value;
       const nM = nyDateParts.find(p => p.type === 'month').value;
       const nD = nyDateParts.find(p => p.type === 'day').value;
       const nW = nyDateParts.find(p => p.type === 'weekday').value.toUpperCase();
       document.getElementById('date-ny').textContent = `${nY}. ${nM}. ${nD}. ${nW}`;
-      document.getElementById('clock-ny').textContent = now.toLocaleTimeString('en-GB', { 
-        hour12: false, timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' 
-      });
     }
 
-    async function callGeminiAPI(prompt) {
+    async function callGeminiAPI(prompt, useSearch = true) {
       const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
-        tools: [{ "google_search": {} }]
+        contents: [{ parts: [{ text: prompt }] }]
       };
+      if (useSearch) {
+        payload.tools = [{ "google_search": {} }];
+      }
 
       let delay = 1000;
       for (let i = 0; i < 5; i++) {
@@ -271,14 +340,24 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          if (!response.ok) throw new Error('API request failed');
+          if (!response.ok) throw new Error('API failed');
           const result = await response.json();
           return result.candidates?.[0]?.content?.parts?.[0]?.text;
         } catch (error) {
           if (i === 4) throw error;
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise(r => setTimeout(r, delay));
           delay *= 2;
         }
+      }
+    }
+
+    function updateErrorFooter(isError) {
+      const footer = document.getElementById('error-footer');
+      if (isError && lastSuccessKST) {
+        footer.textContent = `데이터 확인시간: ${lastSuccessKST}`;
+        footer.classList.add('visible');
+      } else if (!isError) {
+        footer.classList.remove('visible');
       }
     }
 
@@ -289,38 +368,31 @@
         const text = await callGeminiAPI("현재 원/달러(USD/KRW) 환율 정보를 숫자와 단위만 포함해서 짧게 알려줘.");
         if (text) {
           lastExchange = text.trim();
+          lastSuccessKST = getCurrentKST();
           el.innerHTML = `${lastExchange}<span class="status-label live-label">실시간</span>`;
+          updateErrorFooter(false);
         }
       } catch (e) {
-        if (lastExchange) {
-          el.innerHTML = `${lastExchange}<span class="status-label stale-label">최근값</span>`;
-        } else {
-          el.textContent = "ERR";
-        }
-      } finally {
-        el.style.opacity = "1";
-      }
+        if (lastExchange) el.innerHTML = `${lastExchange}<span class="status-label stale-label">최근값</span>`;
+        updateErrorFooter(true);
+      } finally { el.style.opacity = "1"; }
     }
 
     async function fetchStockIndices() {
       const el = document.getElementById('stock-indices');
       el.style.opacity = "0.5";
       try {
-        // KOSPI, KOSDAQ과 함께 미국의 3대 지수를 요청
         const text = await callGeminiAPI("현재 한국 KOSPI, KOSDAQ 지수와 미국의 다우존스(Dow Jones), S&P 500, 나스닥(Nasdaq) 지수를 알려줘. 형식은 첫 줄에 'kospi: 수치 / kosdaq: 수치', 둘째 줄에 'Dow: 수치 / S&P 500: 수치 / Nasdaq: 수치' 형식으로 줄바꿈을 포함해서 출력해.");
         if (text) {
           lastIndices = text.trim();
+          lastSuccessKST = getCurrentKST();
           el.innerHTML = `${lastIndices}<span class="status-label live-label">실시간</span>`;
+          updateErrorFooter(false);
         }
       } catch (e) {
-        if (lastIndices) {
-          el.innerHTML = `${lastIndices}<span class="status-label stale-label">최근값</span>`;
-        } else {
-          el.textContent = "ERR";
-        }
-      } finally {
-        el.style.opacity = "1";
-      }
+        if (lastIndices) el.innerHTML = `${lastIndices}<span class="status-label stale-label">최근값</span>`;
+        updateErrorFooter(true);
+      } finally { el.style.opacity = "1"; }
     }
 
     async function fetchIndividualStocks() {
@@ -330,23 +402,75 @@
         const text = await callGeminiAPI("현재 삼성전자(005930)와 SK하이닉스(000660)의 주가를 알려줘. 형식: SAMSUNG 75,000 / HYNIX 180,000 처럼 한 줄로 짧게 출력해.");
         if (text) {
           lastStocks = text.trim();
+          lastSuccessKST = getCurrentKST();
           el.innerHTML = `${lastStocks}<span class="status-label live-label">실시간</span>`;
+          updateErrorFooter(false);
         }
       } catch (e) {
-        if (lastStocks) {
-          el.innerHTML = `${lastStocks}<span class="status-label stale-label">최근값</span>`;
-        } else {
-          el.textContent = "DATA ERROR";
-        }
-      } finally {
-        el.style.opacity = "1";
-      }
+        if (lastStocks) el.innerHTML = `${lastStocks}<span class="status-label stale-label">최근값</span>`;
+        updateErrorFooter(true);
+      } finally { el.style.opacity = "1"; }
     }
 
     function fetchAllFinancialData() {
       fetchExchangeRate();
       fetchStockIndices();
       fetchIndividualStocks();
+    }
+
+    // --- Gemini AI 신규 기능 ---
+
+    function showAI(title, content) {
+      document.getElementById('ai-title').innerText = title;
+      document.getElementById('ai-content').innerText = content;
+      document.getElementById('ai-response-panel').style.display = 'block';
+    }
+
+    function closeAI() {
+      document.getElementById('ai-response-panel').style.display = 'none';
+    }
+
+    async function getMarketInsight() {
+      const btn = event.target;
+      const originalText = btn.innerText;
+      btn.innerText = "분석 중...";
+      btn.disabled = true;
+
+      const prompt = `현재 시장 데이터 상황:
+      - 환율: ${lastExchange}
+      - 주요 지수: ${lastIndices}
+      - 주요 주가: ${lastStocks}
+      
+      위 데이터를 바탕으로 현재 시장의 분위기를 한 문장으로 요약하고, 투자자가 유의해야 할 점을 한 가지만 핵심적으로 짚어줘. (한국어로 짧고 전문적인 톤으로)`;
+
+      try {
+        const response = await callGeminiAPI(prompt, false); // 데이터 기반 분석이므로 검색 생략 가능
+        showAI("✨ AI 시장 분석 통찰", response);
+      } catch (e) {
+        showAI("오류", "분석을 가져오지 못했습니다. 다시 시도해 주세요.");
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    async function getDailyNews() {
+      const btn = event.target;
+      const originalText = btn.innerText;
+      btn.innerText = "뉴스 찾는 중...";
+      btn.disabled = true;
+
+      const prompt = "오늘의 가장 중요한 글로벌 경제 및 금융 뉴스 3가지를 제목 위주로 짧게 요약해줘. 각 뉴스 끝에 간략한 영향 분석을 포함해줘.";
+
+      try {
+        const response = await callGeminiAPI(prompt, true);
+        showAI("✨ 오늘의 핵심 경제 뉴스", response);
+      } catch (e) {
+        showAI("오류", "뉴스를 가져오지 못했습니다.");
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
     }
 
     updateClocks();
