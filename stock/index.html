@@ -10,7 +10,7 @@
   <meta name="background-color" content="#0d1117"/>
   <meta name="description" content="실시간 한국·미국 시간 및 주식 시장 현황"/>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="jwicon.png" />
+  <link rel="icon" href="favicon.ico" />
 
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -39,22 +39,22 @@
 
     .market-info {
       background: rgba(22, 27, 34, 0.6);
-      padding: 0.9rem 1.3rem;
-      border-radius: 12px;
+      padding: 0.7rem 1rem;          /* 패딩 줄임 */
+      border-radius: 10px;
       backdrop-filter: blur(8px);
       border: 1px solid rgba(240, 246, 252, 0.1);
-      min-width: 220px;
-    }
-
-    .market-info h3 {
-      color: #58a6ff;
-      font-size: 1.25rem;
-      margin-bottom: 0.6rem;
+      min-width: 180px;               /* 너비도 약간 줄임 */
+      font-size: 0.95rem;             /* 전체 폰트 크기 축소 */
     }
 
     .market-item {
-      margin: 0.5rem 0;
-      font-size: 1.05rem;
+      margin: 0.4rem 0;               /* 간격 줄임 */
+      font-size: 1rem;                /* 지수 값 폰트 크기 축소 */
+    }
+
+    .market-item strong {
+      font-weight: 600;
+      color: #c9d1d9;
     }
 
     .change-up { color: #56d364; }
@@ -138,23 +138,22 @@
       .clocks { flex-direction: column; gap: 2.5rem; }
       .time { font-size: 3.5rem; }
       .stocks { width: 92%; padding: 1rem; font-size: 1.1rem; }
+      .market-info { min-width: unset; width: 85%; }
     }
   </style>
 </head>
 <body>
 
 <div class="header">
-  <!-- 왼쪽: 한국 시장 -->
+  <!-- 왼쪽: 한국 시장 (제목 삭제) -->
   <div class="market-info">
-    <h3>한국 시장</h3>
     <div class="market-item"><strong>KOSPI</strong> 4,586.32 <span class="change-up">+0.75%</span></div>
     <div class="market-item"><strong>KOSDAQ</strong> 947.92 <span class="change-up">+0.41%</span></div>
     <div class="market-item"><strong>USD/KRW</strong> 1,458 <span class="change-up">+0.3~0.5%</span></div>
   </div>
 
-  <!-- 오른쪽: 미국 시장 -->
+  <!-- 오른쪽: 미국 시장 (제목 삭제) -->
   <div class="market-info">
-    <h3>미국 시장</h3>
     <div class="market-item"><strong>Dow Jones</strong> 49,504.07 <span class="change-up">+0.48%</span></div>
     <div class="market-item"><strong>S&P 500</strong> 6,966.28 <span class="change-up">+0.65%</span></div>
     <div class="market-item"><strong>Nasdaq</strong> 23,671.35 <span class="change-up">+0.81%</span></div>
@@ -213,7 +212,7 @@ function updateTimes() {
 setInterval(updateTimes, 1000);
 updateTimes();
 
-// PWA 서비스 워커 등록 (기존 그대로)
+// PWA 서비스 워커 등록
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
