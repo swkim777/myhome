@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>디지털 시계 - 금융 대시보드</title>
+
+  <style>
+    /* 기본 레이아웃 및 배경 */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #111;
+      color: #0f0;
+      overflow: hidden;
+    }
+
+    /* 공통 컨테이너 스타일 (환율 & 주식) */
+    .info-panel {
+      position: absolute;
+      top: 20px;
+      font-size: 0.95rem;
+      background: rgba(0, 255, 0, 0.05);
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 0, 0.2);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+      line-height: 1.4;
+    }
+
+    /* 환율 정보 스타일 (좌측 상단) */
+    #exchange-container {
+      left: 20px;
+    }
+
+    /* 지수 정보 스타일 (우측 상단) */
+    #stock-container {
+      right: 20px;
+      text-align: right;
+    }
+
+    .info-label {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-bottom: 4px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      font-weight: bold;
+      white-space: pre-line; /* 줄바꿈 허용 */
+    }
+
+    /* 상태 표시 라벨 (실시간/최근값) */
+    .status-label {
+      font-size: 0.7rem;
+      margin-left: 6px;
+      font-weight: normal;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    
+    .live-label {
+      color: #0f0;
+      opacity: 0.8;
+    }
+
+    .stale-label {
+      color: #ffa500;
+    }
+
+    /* 중앙 메인 컨테이너 */
+    .main-container {
+      text-align: center;
+      width: 98%;
+      max-width: 1600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 시계 좌우 배치 레이아웃 */
+    .clocks-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 4vw;
+      width: 100%;
+    }
+
+    /* 시계 그룹 스타일 */
+    .clock-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 400px;
+    }
+
+    .city-label {
+      font-size: 1.1rem;
+      opacity: 0.5;
+      margin-bottom: 15px;
+      letter-spacing: 0.2em;
+      border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+      padding-bottom: 5px;
+      width: 60%;
+    }
+
+    /* 개별 날짜 스타일 */
+    .date {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      opacity: 0.8;
+      letter-spacing: 0.1em;
+    }
+
+    /* 시계 글자 크기 조정 */
+    .clock {
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 20px #0f0;
+      font-size: 4.5rem;
+    }
+
+    /* 하단 개별 종목 주가 스타일 */
+    .individual-stocks-panel {
+      margin-top: 50px;
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      opacity: 0.9;
+      padding: 15px 30px;
+      border-top: 1px solid rgba(0, 255, 0, 0.15);
+      width: fit-content;
+    }
+
+    /* 로딩 애니메이션 */
+    .loading-dots:after {
+      content: ' .';
+      animation: dots 1s steps(5, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: ' .'; }
+      40% { content: ' ..'; }
+      60% { content: ' ...'; }
+      80%, 100% { content: ''; }
+    }
+
+    /* 반응형 대응 */
+    @media (max-width: 1200px) {
+      .clock { font-size: 3.5rem; }
+      .date { font-size: 1.2rem; }
+      .clocks-wrapper { gap: 20px; }
+      .clock-group { min-width: 300px; }
+      .individual-stocks-panel { font-size: 1.1rem; }
+    }
+
+    @media (max-width: 800px) {
+      .clocks-wrapper {
+        flex-direction: column;
+        gap: 30px;
+      }
+      .clock { font-size: 3.8rem; }
+      .date { font-size: 1.4rem; }
+      .info-panel { font-size: 0.8rem; top: 10px; position: relative; width: 90%; margin: 5px auto; text-align: center !important; }
+      #stock-container { right: auto; left: auto; }
+      .main-container { padding-top: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 좌측 상단 환율 -->
+  <div id="exchange-container" class="info-panel">
+    <div class="info-label">USD/KRW</div>
+    <div id="exchange-rate" class="info-value"><span class="loading-dots">LOADING</span></div>
+  </div>
+
+  <!-- 우측 상단 지수 (KOR/USA) -->
+  <div id="stock-container" class="info-panel">
+    <div class="info-label">MARKET INDICES (KR/US)</div>
+    <div id="stock-indices" class="info-value"><span class="loading-dots">LOADING</span></div>
+  </div>
+
+  <div class="main-container">
+    <!-- 중앙 시계 섹션 -->
+    <div class="clocks-wrapper">
+      <div class="clock-group">
+        <div class="city-label">SEOUL (KST)</div>
+        <div class="date" id="date-seoul">0000. 00. 00. SUN</div>
+        <div class="clock" id="clock-seoul">00:00:00</div>
+      </div>
+
+      <div class="clock-group">
+        <div class="city-label">NEW YORK (EST/EDT)</div>
+        <div class="date" id="date-ny">0000. 00. 00. SAT</div>
+        <div class="clock" id="clock-ny">00:00:00</div>
+      </div>
+    </div>
+
+    <!-- 하단 종목 주가 섹션 -->
+    <div id="individual-stocks" class="individual-stocks-panel">
+      <span class="loading-dots">STOCK DATA LOADING</span>
+    </div>
+  </div>
+
+  <script>
+    let lastFetchedMinute = -1;
+    const apiKey = ""; 
+
+    // 최근 데이터 저장을 위한 변수
+    let lastExchange = "";
+    let lastIndices = "";
+    let lastStocks = "";
+
+    /**
+     * 시간 업데이트 및 금융 정보 갱신 트리거
+     */
+    function updateClocks() {
+      const now = new Date();
+      const currentSeconds = now.getSeconds();
+      const currentMinutes = now.getMinutes();
+
+      // 매분 0초에 데이터 갱신
+      if (currentSeconds === 0 && currentMinutes !== lastFetchedMinute) {
+        fetchAllFinancialData();
+        lastFetchedMinute = currentMinutes;
+      }
+
+      // 서울 데이터
+      const seoulDateOptions = { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
+      const seoulDateParts = new Intl.DateTimeFormat('ko-KR', seoulDateOptions).formatToParts(now);
+      const sY = seoulDateParts.find(p => p.type === 'year').value;
+      const sM = seoulDateParts.find(p => p.type === 'month').value;
+      const sD = seoulDateParts.find(p => p.type === 'day').value;
+      const sW = seoulDateParts.find(p => p.type === 'weekday').value.toUpperCase();
+      document.getElementById('date-seoul').textContent = `${sY}. ${sM}. ${sD}. ${sW}`;
+      document.getElementById('clock-seoul').textContent = now.toLocaleTimeString('en-GB', { hour12: false, timeZone: 'Asia/Seoul' });
+
+      // 뉴욕 데이터
+      const nyDateOptions = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
+      const nyDateParts = new Intl.DateTimeFormat('en-GB', nyDateOptions).formatToParts(now);
+      const nY = nyDateParts.find(p => p.type === 'year').value;
+      const nM = nyDateParts.find(p => p.type === 'month').value;
+      const nD = nyDateParts.find(p => p.type === 'day').value;
+      const nW = nyDateParts.find(p => p.type === 'weekday').value.toUpperCase();
+      document.getElementById('date-ny').textContent = `${nY}. ${nM}. ${nD}. ${nW}`;
+      document.getElementById('clock-ny').textContent = now.toLocaleTimeString('en-GB', { 
+        hour12: false, timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' 
+      });
+    }
+
+    async function callGeminiAPI(prompt) {
+      const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        tools: [{ "google_search": {} }]
+      };
+
+      let delay = 1000;
+      for (let i = 0; i < 5; i++) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) throw new Error('API request failed');
+          const result = await response.json();
+          return result.candidates?.[0]?.content?.parts?.[0]?.text;
+        } catch (error) {
+          if (i === 4) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2;
+        }
+      }
+    }
+
+    async function fetchExchangeRate() {
+      const el = document.getElementById('exchange-rate');
+      el.style.opacity = "0.5";
+      try {
+        const text = await callGeminiAPI("현재 원/달러(USD/KRW) 환율 정보를 숫자와 단위만 포함해서 짧게 알려줘.");
+        if (text) {
+          lastExchange = text.trim();
+          el.innerHTML = `${lastExchange}<span class="status-label live-label">실시간</span>`;
+        }
+      } catch (e) {
+        if (lastExchange) {
+          el.innerHTML = `${lastExchange}<span class="status-label stale-label">최근값</span>`;
+        } else {
+          el.textContent = "ERR";
+        }
+      } finally {
+        el.style.opacity = "1";
+      }
+    }
+
+    async function fetchStockIndices() {
+      const el = document.getElementById('stock-indices');
+      el.style.opacity = "0.5";
+      try {
+        // KOSPI, KOSDAQ과 함께 미국의 3대 지수를 요청
+        const text = await callGeminiAPI("현재 한국 KOSPI, KOSDAQ 지수와 미국의 다우존스(Dow Jones), S&P 500, 나스닥(Nasdaq) 지수를 알려줘. 형식은 첫 줄에 'kospi: 수치 / kosdaq: 수치', 둘째 줄에 'Dow: 수치 / S&P 500: 수치 / Nasdaq: 수치' 형식으로 줄바꿈을 포함해서 출력해.");
+        if (text) {
+          lastIndices = text.trim();
+          el.innerHTML = `${lastIndices}<span class="status-label live-label">실시간</span>`;
+        }
+      } catch (e) {
+        if (lastIndices) {
+          el.innerHTML = `${lastIndices}<span class="status-label stale-label">최근값</span>`;
+        } else {
+          el.textContent = "ERR";
+        }
+      } finally {
+        el.style.opacity = "1";
+      }
+    }
+
+    async function fetchIndividualStocks() {
+      const el = document.getElementById('individual-stocks');
+      el.style.opacity = "0.5";
+      try {
+        const text = await callGeminiAPI("현재 삼성전자(005930)와 SK하이닉스(000660)의 주가를 알려줘. 형식: SAMSUNG 75,000 / HYNIX 180,000 처럼 한 줄로 짧게 출력해.");
+        if (text) {
+          lastStocks = text.trim();
+          el.innerHTML = `${lastStocks}<span class="status-label live-label">실시간</span>`;
+        }
+      } catch (e) {
+        if (lastStocks) {
+          el.innerHTML = `${lastStocks}<span class="status-label stale-label">최근값</span>`;
+        } else {
+          el.textContent = "DATA ERROR";
+        }
+      } finally {
+        el.style.opacity = "1";
+      }
+    }
+
+    function fetchAllFinancialData() {
+      fetchExchangeRate();
+      fetchStockIndices();
+      fetchIndividualStocks();
+    }
+
+    updateClocks();
+    setInterval(updateClocks, 1000);
+    fetchAllFinancialData();
+  </script>
+</body>
+</html>
