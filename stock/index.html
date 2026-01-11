@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>JW Stock</title>
 
-  <!-- PWA 필수 -->
   <meta name="theme-color" content="#0d1117"/>
   <meta name="background-color" content="#0d1117"/>
   <meta name="description" content="실시간 한국·미국 시간 및 주식 시장 현황"/>
@@ -13,194 +12,231 @@
   <link rel="icon" href="favicon.ico" />
 
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg-start: #0d1117;
+      --bg-end: #161b22;
+      --text-primary: #c9d1d9;
+      --text-accent: #79c0ff;
+      --accent: #58a6ff;
+      --card-bg: rgba(22, 27, 34, 0.65);
+      --border: rgba(240, 246, 252, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      height: 100vh;
-      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-      color: #c9d1d9;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100dvh;
+      background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      color: var(--text-primary);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       overflow: hidden;
-      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
     }
 
-    .header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem 1.5rem;
+    /* 상단 시장 정보 */
+    .market-header {
+      padding: 1rem 1.2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      z-index: 10;
       flex-wrap: wrap;
-    }
-
-    .market-info {
-      background: rgba(22, 27, 34, 0.6);
-      padding: 0.7rem 1rem;          /* 패딩 줄임 */
-      border-radius: 10px;
+      gap: 1rem;
+      background: rgba(13, 17, 23, 0.4);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(240, 246, 252, 0.1);
-      min-width: 180px;               /* 너비도 약간 줄임 */
-      font-size: 0.95rem;             /* 전체 폰트 크기 축소 */
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
     }
 
-    .market-item {
-      margin: 0.4rem 0;               /* 간격 줄임 */
-      font-size: 1rem;                /* 지수 값 폰트 크기 축소 */
+    .market-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      backdrop-filter: blur(10px);
+      flex: 1;
+      min-width: 160px;
+      max-width: 240px;
     }
 
-    .market-item strong {
-      font-weight: 600;
-      color: #c9d1d9;
+    .market-card div {
+      margin: 0.45rem 0;
+      font-size: clamp(0.9rem, 2.2vw, 1rem);
+      line-height: 1.35;
+    }
+
+    .market-card strong {
+      color: var(--accent);
     }
 
     .change-up { color: #56d364; }
     .change-down { color: #f78166; }
 
-    .clock-container {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      width: 95%;
-      max-width: 720px;
+    /* 중앙 시계 영역 */
+    .clock-wrapper {
+      display: grid;
+      place-items: center;
+      padding: 1rem;
     }
 
     .clocks {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 5rem;
-      margin-bottom: 1rem;
+      gap: clamp(2rem, 6vw, 5rem);
+      width: 100%;
+      max-width: 900px;
     }
 
     .clock-item {
-      flex: 1;
-      min-width: 0;
-      max-width: 320px;
+      text-align: center;
+      min-width: 260px;
+      flex: 1 1 280px;
     }
 
     .clock-label {
-      font-size: 1.35rem;
-      opacity: 0.85;
-      margin-bottom: 0.5rem;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      opacity: 0.8;
+      margin-bottom: 0.6rem;
     }
 
     .time {
-      font-size: 4.2rem;
-      font-weight: bold;
-      letter-spacing: 0.1em;
+      font-size: clamp(2.8rem, 10vw, 5.2rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text-accent);
+      text-shadow: 0 0 25px rgba(121, 192, 255, 0.3);
       font-variant-numeric: tabular-nums;
-      color: #79c0ff;
-      text-shadow: 0 0 20px rgba(121, 192, 255, 0.35);
     }
 
     .date {
-      font-size: 1.25rem;
-      opacity: 0.75;
-      margin-top: 0.4rem;
+      font-size: clamp(1rem, 2.8vw, 1.25rem);
+      opacity: 0.7;
+      margin-top: 0.5rem;
     }
 
-    .stocks {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
+    /* 하단 인기 종목 */
+    .bottom-stocks {
+      padding: 1.2rem;
       text-align: center;
-      background: rgba(22, 27, 34, 0.7);
-      padding: 1.2rem 2rem;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(240, 246, 252, 0.1);
-      font-size: 1.2rem;
-      min-width: 380px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .stocks-container {
+      max-width: 700px;
+      margin: 0 auto;
     }
 
     .stock-item {
-      margin: 0.7rem 0;
+      font-size: clamp(1.05rem, 3vw, 1.25rem);
+      margin: 0.8rem 0;
     }
 
-    .stock-name { color: #58a6ff; font-weight: 600; }
+    .stock-name {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
-    @media (max-width: 900px) {
-      .header { 
-        flex-direction: column; 
+    /* 반응형 브레이크 포인트 */
+    @media (max-width: 780px) {
+      .market-header {
+        flex-direction: column;
         align-items: center;
       }
-      .market-info { width: 90%; text-align: center; }
-      .clocks { gap: 3rem; }
+      
+      .market-card {
+        max-width: 320px;
+        width: 100%;
+        text-align: center;
+      }
+      
+      .clocks {
+        flex-direction: column;
+        gap: 3.5rem;
+      }
     }
 
-    @media (max-width: 680px) {
-      .clocks { flex-direction: column; gap: 2.5rem; }
-      .time { font-size: 3.5rem; }
-      .stocks { width: 92%; padding: 1rem; font-size: 1.1rem; }
-      .market-info { min-width: unset; width: 85%; }
+    @media (max-width: 520px) {
+      body {
+        grid-template-rows: auto 1fr minmax(120px, auto);
+      }
+      
+      .market-header {
+        padding: 0.9rem 1rem;
+      }
+      
+      .time {
+        font-size: clamp(2.4rem, 12vw, 3.8rem);
+      }
+      
+      .bottom-stocks {
+        padding: 1rem 0.8rem;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <!-- 왼쪽: 한국 시장 (제목 삭제) -->
-  <div class="market-info">
-    <div class="market-item"><strong>KOSPI</strong> 4,586.32 <span class="change-up">+0.75%</span></div>
-    <div class="market-item"><strong>KOSDAQ</strong> 947.92 <span class="change-up">+0.41%</span></div>
-    <div class="market-item"><strong>USD/KRW</strong> 1,458 <span class="change-up">+0.3~0.5%</span></div>
+<header class="market-header">
+  <div class="market-card">
+    <div><strong>KOSPI</strong> 2,586.32 <span class="change-up">+0.75%</span></div>
+    <div><strong>KOSDAQ</strong> 847.92 <span class="change-up">+0.41%</span></div>
+    <div><strong>USD/KRW</strong> 1,458 <span class="change-up">+0.4%</span></div>
   </div>
 
-  <!-- 오른쪽: 미국 시장 (제목 삭제) -->
-  <div class="market-info">
-    <div class="market-item"><strong>Dow Jones</strong> 49,504.07 <span class="change-up">+0.48%</span></div>
-    <div class="market-item"><strong>S&P 500</strong> 6,966.28 <span class="change-up">+0.65%</span></div>
-    <div class="market-item"><strong>Nasdaq</strong> 23,671.35 <span class="change-up">+0.81%</span></div>
+  <div class="market-card">
+    <div><strong>Dow Jones</strong> 42,504.07 <span class="change-up">+0.48%</span></div>
+    <div><strong>S&P 500</strong> 5,966.28 <span class="change-up">+0.65%</span></div>
+    <div><strong>Nasdaq</strong> 19,671.35 <span class="change-up">+0.81%</span></div>
   </div>
-</div>
+</header>
 
-<div class="clock-container">
+<main class="clock-wrapper">
   <div class="clocks">
     <div class="clock-item">
       <div class="clock-label">한국 시간 (KST)</div>
       <div class="time" id="kstTime">00:00:00</div>
-      <div class="date" id="kstDate">2026.01.11 (일)</div>
+      <div class="date" id="kstDate">2025.10.15 (수)</div>
     </div>
 
     <div class="clock-item">
       <div class="clock-label">뉴욕 시간 (EST)</div>
       <div class="time" id="estTime">00:00:00</div>
-      <div class="date" id="estDate">2026.01.10 (토)</div>
+      <div class="date" id="estDate">2025.10.14 (화)</div>
     </div>
   </div>
-</div>
+</main>
 
-<div class="stocks">
-  <div class="stock-item">
-    <span class="stock-name">삼성전자 (005930)</span> : 139,000 KRW 
-    <span class="change-up">(+0.14% 최근 종가)</span>
+<footer class="bottom-stocks">
+  <div class="stocks-container">
+    <div class="stock-item">
+      <span class="stock-name">삼성전자 (005930)</span> : 139,000 KRW 
+      <span class="change-up">(+0.14% 최근 종가)</span>
+    </div>
+    <div class="stock-item">
+      <span class="stock-name">SK하이닉스 (000660)</span> : 244,000 KRW 
+      <span class="change-down">(-1.59% 최근 종가)</span>
+    </div>
   </div>
-  <div class="stock-item">
-    <span class="stock-name">SK하이닉스 (000660)</span> : 744,000 KRW 
-    <span class="change-down">(-1.59% 최근 종가)</span>
-  </div>
-</div>
+</footer>
 
 <script>
-// 시간 & 날짜 업데이트 함수 (기존 그대로 유지)
+// 시간 업데이트 (기존 코드 유지)
 function updateTimes() {
   const now = new Date();
+  const options = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
 
   const kst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  document.getElementById('kstTime').textContent = 
-    kst.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('kstTime').textContent = kst.toLocaleTimeString('ko-KR', options);
 
   const est = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  document.getElementById('estTime').textContent = 
-    est.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('estTime').textContent = est.toLocaleTimeString('en-US', options);
 
-  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const days = ['일','월','화','수','목','금','토'];
   
   document.getElementById('kstDate').textContent = 
     `${kst.getFullYear()}.${String(kst.getMonth()+1).padStart(2,'0')}.${String(kst.getDate()).padStart(2,'0')} (${days[kst.getDay()]})`;
@@ -211,15 +247,6 @@ function updateTimes() {
 
 setInterval(updateTimes, 1000);
 updateTimes();
-
-// PWA 서비스 워커 등록
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker 등록 완료:', reg))
-      .catch(err => console.error('Service Worker 등록 실패:', err));
-  });
-}
 </script>
 </body>
 </html>
