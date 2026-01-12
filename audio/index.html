@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JW Audio Editor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- LameJS for MP3 Encoding -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+    <style>
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(79, 70, 229, 0.2);
+        }
+        /* 노란색 구간 선택 영역 스타일링 */
+        .wavesurfer-region {
+            border: 2px solid rgba(234, 179, 8, 0.8) !important; /* Yellow-500 border */
+            z-index: 10 !important;
+        }
+        /* 커서(빨간 바) 강조 */
+        #waveform shadow-root div {
+            cursor: crosshair !important;
+        }
+        /* 타임라인 스타일 커스텀 */
+        #timeline {
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white text-slate-900 font-sans p-4 md:p-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-6">
+            <div>
+                <h1 class="text-4xl font-black tracking-tight bg-gradient-to-br from-indigo-600 to-violet-700 bg-clip-text text-transparent">
+                    AUDIO STUDIO
+                </h1>
+                <p class="text-slate-500 font-medium">JW Audio Editor</p>
+            </div>
+            
+            <div class="flex gap-2 w-full md:w-auto relative">
+                <label class="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl cursor-pointer transition-all active:scale-95 shadow-lg shadow-indigo-100">
+                    <i data-lucide="upload" size="18"></i>
+                    <span class="font-bold">신규 업로드</span>
+                    <input type="file" id="fileUpload" accept="audio/*" multiple class="hidden">
+                </label>
+                
+                <!-- Export Button with Dropdown -->
+                <div class="relative flex-1 md:flex-none">
+                    <button id="downloadBtn" class="hidden w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all active:scale-95 shadow-lg shadow-emerald-100">
+                        <i data-lucide="download" size="18"></i>
+                        <span class="font-bold">내보내기</span>
+                        <i data-lucide="chevron-down" size="14"></i>
+                    </button>
+                    <!-- Format Menu -->
+                    <div id="formatMenu" class="hidden absolute right-0 mt-2 w-40 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                        <button id="downloadWav" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm font-bold border-b border-slate-100 flex items-center gap-2 text-slate-700">
+                            <i data-lucide="file-audio" size="14" class="text-emerald-600"></i> WAV로 저장
+                        </button>
+                        <button id="downloadMp3" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm font-bold flex items-center gap-2 text-slate-700">
+                            <i data-lucide="music" size="14" class="text-blue-600"></i> MP3로 저장
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Board -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+            
+            <!-- Insertion Instruction Panel -->
+            <div id="insertionPanel" class="hidden bg-indigo-50 border-b border-indigo-100 p-4 animate-pulse">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">!</div>
+                        <p class="text-indigo-900 font-bold text-sm">추가 위치 선택: 파형에서 삽입할 지점(빨간 바)을 클릭한 후 파일을 업로드하세요.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="flex items-center gap-2 px-4 py-1.5 bg-white border border-indigo-200 text-indigo-700 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors text-sm font-bold">
+                            <i data-lucide="file-audio" size="14"></i>
+                            <span>파일 선택</span>
+                            <input type="file" id="insertionUpload" accept="audio/*" class="hidden">
+                        </label>
+                        <button id="completeInsertBtn" class="px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors">완료</button>
+                        <button id="cancelInsertBtn" class="px-4 py-1.5 bg-slate-200 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-300 transition-colors">취소</button>
+                    </div>
+                </div>
+                <div id="selectedInsertFileTxt" class="text-[11px] text-indigo-500 mt-2 ml-11 font-medium">선택된 파일 없음</div>
+            </div>
+
+            <!-- Waveform Area -->
+            <div class="p-8 relative bg-slate-50/50">
+                <div id="dropzone" class="h-40 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 group hover:border-indigo-400/50 transition-colors bg-white">
+                    <div class="p-4 bg-slate-50 rounded-full mb-3 group-hover:bg-indigo-50 transition-colors">
+                        <i data-lucide="upload" size="32"></i>
+                    </div>
+                    <p class="font-medium">편집할 음악 파일을 선택하세요 (여러 개 선택 가능)</p>
+                </div>
+                <!-- Waveform Container -->
+                <div id="waveform-container" class="hidden">
+                    <div id="waveform"></div>
+                    <!-- Timeline Container -->
+                    <div id="timeline"></div>
+                </div>
+                
+                <!-- Loading Overlay -->
+                <div id="loadingOverlay" class="hidden absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        <p id="loadingTxt" class="text-sm font-bold text-indigo-600">처리 중...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="bg-white border-t border-slate-100 p-6 flex flex-wrap items-center gap-6">
+                <!-- Playback -->
+                <div class="flex items-center gap-3">
+                    <button id="playPauseBtn" disabled class="w-12 h-12 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-full transition-all active:scale-90 disabled:opacity-30 shadow-md shadow-indigo-100">
+                        <i data-lucide="play" fill="currentColor"></i>
+                    </button>
+                    <button id="stopBtn" disabled class="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full transition-all disabled:opacity-30">
+                        <i data-lucide="square" fill="currentColor"></i>
+                    </button>
+                </div>
+
+                <!-- Editing Tools -->
+                <div class="flex items-center gap-2 border-l border-slate-200 pl-6">
+                    <button id="undoBtn" disabled title="실행 취소 (Ctrl+Z)" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-all disabled:opacity-30 border border-slate-200">
+                        <i data-lucide="rotate-ccw" size="18"></i>
+                    </button>
+
+                    <button id="selectBtn" disabled class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-bold transition-all disabled:opacity-30 border border-slate-200">
+                        구간 편집
+                    </button>
+
+                    <button id="fadeInBtn" disabled class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-bold transition-all disabled:opacity-30 border border-slate-200 flex items-center gap-1">
+                        <i data-lucide="trending-up" size="16"></i> Fade In
+                    </button>
+
+                    <button id="fadeOutBtn" disabled class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-bold transition-all disabled:opacity-30 border border-slate-200 flex items-center gap-1">
+                        <i data-lucide="trending-down" size="16"></i> Fade Out
+                    </button>
+                    
+                    <div id="editButtons" class="hidden flex gap-2">
+                        <button id="trimBtn" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold shadow-md shadow-indigo-100 transition-all">
+                            <i data-lucide="scissors" size="16"></i> 추출 (Trim)
+                        </button>
+                        <button id="deleteBtn" class="flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-bold shadow-md shadow-rose-100 transition-all">
+                            <i data-lucide="eraser" size="16"></i> 삭제 (Delete)
+                        </button>
+                        <button id="clearSelectionBtn" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg border border-slate-200">
+                            <i data-lucide="trash-2" size="18"></i>
+                        </button>
+                    </div>
+
+                    <button id="addAudioBtn" disabled class="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-bold transition-all border border-slate-200 disabled:opacity-30">
+                        <i data-lucide="plus-circle" size="16"></i> 음원 추가
+                    </button>
+                </div>
+
+                <!-- View Settings -->
+                <div class="flex items-center gap-6 ml-auto">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="zoom-out" size="16" class="text-slate-400"></i>
+                        <input type="range" id="zoomRange" min="1" max="150" value="10" class="w-24 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                        <i data-lucide="zoom-in" size="16" class="text-slate-400"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="volume-2" size="18" class="text-slate-400"></i>
+                        <input type="range" id="volumeRange" min="0" max="1" step="0.01" value="1" class="w-24 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Area -->
+        <div id="infoArea" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">상태</p>
+                <p id="statusTxt" class="text-indigo-600 font-bold">일시 정지</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">총 길이</p>
+                <p id="durationTxt" class="text-slate-700 font-bold">0.00s</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm md:col-span-2">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">선택된 구간</p>
+                <p id="selectionTxt" class="text-slate-700 font-bold italic">구간을 선택해 편집하세요</p>
+            </div>
+        </div>
+
+        <footer class="text-center py-10 text-slate-400 text-xs font-medium space-y-2">
+            <p>지원 형식: MP3, WAV, OGG, M4A 등 (출력은 MP3 또는 WAV로 선택 가능합니다)</p>
+            <p>© 2026 JW Audio Editor | Built with WaveSurfer.js</p>
+        </footer>
+    </div>
+
+    <!-- WaveSurfer & Plugins -->
+    <script type="module">
+        import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
+        import RegionsPlugin from 'https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.esm.js'
+        import TimelinePlugin from 'https://unpkg.com/wavesurfer.js@7/dist/plugins/timeline.esm.js'
+
+        let wavesurfer, regions, timeline;
+        let selectedRegion = null;
+        let currentFileName = "audio";
+        let tempInsertionFile = null;
+        const historyStack = [];
+
+        // Elements
+        const fileUpload = document.getElementById('fileUpload');
+        const insertionUpload = document.getElementById('insertionUpload');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const formatMenu = document.getElementById('formatMenu');
+        const downloadWav = document.getElementById('downloadWav');
+        const downloadMp3 = document.getElementById('downloadMp3');
+        const selectBtn = document.getElementById('selectBtn');
+        const fadeInBtn = document.getElementById('fadeInBtn');
+        const fadeOutBtn = document.getElementById('fadeOutBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const addAudioBtn = document.getElementById('addAudioBtn');
+        const trimBtn = document.getElementById('trimBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+        const zoomRange = document.getElementById('zoomRange');
+        const volumeRange = document.getElementById('volumeRange');
+        const waveformEl = document.getElementById('waveform');
+        const waveformContainer = document.getElementById('waveform-container');
+        const dropzone = document.getElementById('dropzone');
+        const editButtons = document.getElementById('editButtons');
+        const infoArea = document.getElementById('infoArea');
+        const statusTxt = document.getElementById('statusTxt');
+        const durationTxt = document.getElementById('durationTxt');
+        const selectionTxt = document.getElementById('selectionTxt');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingTxt = document.getElementById('loadingTxt');
+        
+        const insertionPanel = document.getElementById('insertionPanel');
+        const completeInsertBtn = document.getElementById('completeInsertBtn');
+        const cancelInsertBtn = document.getElementById('cancelInsertBtn');
+        const selectedInsertFileTxt = document.getElementById('selectedInsertFileTxt');
+
+        lucide.createIcons();
+
+        const initWaveSurfer = () => {
+            wavesurfer = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: '#cbd5e1',
+                progressColor: '#4f46e5',
+                cursorColor: '#f43f5e',
+                barWidth: 2,
+                barRadius: 3,
+                responsive: true,
+                height: 150,
+                normalize: true,
+                minPxPerSec: 10,
+            });
+
+            wavesurfer.registerPlugin(TimelinePlugin.create({
+                container: '#timeline',
+                height: 25,
+                style: { fontSize: '10px', color: '#64748b' },
+            }));
+
+            regions = wavesurfer.registerPlugin(RegionsPlugin.create());
+
+            wavesurfer.on('play', () => { statusTxt.textContent = '재생 중'; updateIcons('pause'); });
+            wavesurfer.on('pause', () => { statusTxt.textContent = '일시 정지'; updateIcons('play'); });
+            wavesurfer.on('ready', () => {
+                durationTxt.textContent = wavesurfer.getDuration().toFixed(2) + 's';
+                loadingOverlay.classList.add('hidden');
+                updateUndoButton();
+            });
+
+            regions.on('region-updated', (region) => { selectedRegion = region; updateSelectionUI(); });
+            regions.on('region-created', (region) => {
+                regions.getRegions().forEach(r => { if (r !== region) r.remove(); });
+                selectedRegion = region;
+                editButtons.classList.remove('hidden');
+                updateSelectionUI();
+            });
+        };
+
+        const updateIcons = (iconName) => {
+            playPauseBtn.innerHTML = `<i data-lucide="${iconName}" fill="currentColor"></i>`;
+            lucide.createIcons();
+        };
+
+        const updateSelectionUI = () => {
+            if (selectedRegion) {
+                selectionTxt.textContent = `${selectedRegion.start.toFixed(3)}s ~ ${selectedRegion.end.toFixed(3)}s (총 ${(selectedRegion.end - selectedRegion.start).toFixed(3)}초)`;
+                selectBtn.textContent = '편집 해제';
+                selectBtn.classList.replace('bg-slate-100', 'bg-yellow-100');
+                selectBtn.classList.replace('text-slate-700', 'text-yellow-700');
+                selectBtn.classList.replace('border-slate-200', 'border-yellow-300');
+            } else {
+                selectionTxt.textContent = '구간을 선택해 편집하세요';
+                editButtons.classList.add('hidden');
+                selectBtn.textContent = '구간 편집';
+                selectBtn.classList.replace('bg-yellow-100', 'bg-slate-100');
+                selectBtn.classList.replace('text-yellow-700', 'text-slate-700');
+                selectBtn.classList.replace('border-yellow-300', 'border-slate-200');
+            }
+        };
+
+        const saveToHistory = () => {
+            if (wavesurfer) {
+                const currentBuffer = wavesurfer.getDecodedData();
+                if (currentBuffer) {
+                    historyStack.push(currentBuffer);
+                    if (historyStack.length > 20) historyStack.shift();
+                    updateUndoButton();
+                }
+            }
+        };
+
+        const updateUndoButton = () => {
+            undoBtn.disabled = historyStack.length === 0;
+        };
+
+        const performUndo = () => {
+            if (historyStack.length > 0) {
+                const previousBuffer = historyStack.pop();
+                updateWaveform(previousBuffer, false);
+            }
+        };
+
+        fileUpload.onchange = async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            loadingTxt.textContent = "음원 로드 중...";
+            loadingOverlay.classList.remove('hidden');
+            currentFileName = files.length > 1 ? `${files[0].name.split('.')[0]}_외_${files.length - 1}건` : files[0].name.split('.')[0];
+
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const decodePromises = files.map(file => 
+                    file.arrayBuffer().then(buffer => audioCtx.decodeAudioData(buffer))
+                );
+
+                const buffers = await Promise.all(decodePromises);
+                const totalLength = buffers.reduce((acc, b) => acc + b.length, 0);
+                const combinedBuffer = audioCtx.createBuffer(buffers[0].numberOfChannels, totalLength, buffers[0].sampleRate);
+
+                for (let channel = 0; channel < buffers[0].numberOfChannels; channel++) {
+                    const combinedData = combinedBuffer.getChannelData(channel);
+                    let offset = 0;
+                    for (const buffer of buffers) {
+                        combinedData.set(buffer.getChannelData(channel), offset);
+                        offset += buffer.length;
+                    }
+                }
+
+                if (!wavesurfer) initWaveSurfer();
+                const blob = bufferToWav(combinedBuffer);
+                wavesurfer.load(URL.createObjectURL(blob));
+                
+                dropzone.classList.add('hidden');
+                waveformContainer.classList.remove('hidden');
+                playPauseBtn.disabled = false;
+                stopBtn.disabled = false;
+                downloadBtn.classList.remove('hidden');
+                selectBtn.disabled = false;
+                fadeInBtn.disabled = false;
+                fadeOutBtn.disabled = false;
+                addAudioBtn.disabled = false;
+                undoBtn.disabled = true;
+                historyStack.length = 0;
+                infoArea.classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                alert("음원 로드 중 오류가 발생했습니다.");
+                loadingOverlay.classList.add('hidden');
+            }
+        };
+
+        addAudioBtn.onclick = () => {
+            insertionPanel.classList.remove('hidden');
+            addAudioBtn.disabled = true;
+            tempInsertionFile = null;
+            selectedInsertFileTxt.textContent = "선택된 파일 없음";
+        };
+
+        insertionUpload.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                tempInsertionFile = file;
+                selectedInsertFileTxt.textContent = `준비됨: ${file.name}`;
+            }
+        };
+
+        completeInsertBtn.onclick = async () => {
+            if (!tempInsertionFile) return alert("추가할 음원 파일을 먼저 선택해주세요.");
+            saveToHistory();
+            loadingTxt.textContent = "음원 삽입 중...";
+            loadingOverlay.classList.remove('hidden');
+            try {
+                const arrayBuffer = await tempInsertionFile.arrayBuffer();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const newBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                const currentBuffer = wavesurfer.getDecodedData();
+                const insertTime = wavesurfer.getCurrentTime();
+                const insertSampleIdx = Math.floor(insertTime * currentBuffer.sampleRate);
+                const combinedBuffer = audioCtx.createBuffer(currentBuffer.numberOfChannels, currentBuffer.length + newBuffer.length, currentBuffer.sampleRate);
+
+                for (let i = 0; i < currentBuffer.numberOfChannels; i++) {
+                    const combinedData = combinedBuffer.getChannelData(i);
+                    const originalData = currentBuffer.getChannelData(i);
+                    combinedData.set(originalData.subarray(0, insertSampleIdx));
+                    combinedData.set(newBuffer.getChannelData(i), insertSampleIdx);
+                    combinedData.set(originalData.subarray(insertSampleIdx), insertSampleIdx + newBuffer.length);
+                }
+                updateWaveform(combinedBuffer, false);
+                closeInsertionPanel();
+            } catch (err) {
+                console.error(err);
+                loadingOverlay.classList.add('hidden');
+            }
+        };
+
+        cancelInsertBtn.onclick = () => closeInsertionPanel();
+        const closeInsertionPanel = () => {
+            insertionPanel.classList.add('hidden');
+            addAudioBtn.disabled = false;
+            tempInsertionFile = null;
+            insertionUpload.value = "";
+        };
+
+        playPauseBtn.onclick = () => wavesurfer.playPause();
+        stopBtn.onclick = () => wavesurfer.stop();
+        undoBtn.onclick = () => performUndo();
+        zoomRange.oninput = (e) => wavesurfer.zoom(Number(e.target.value));
+        volumeRange.oninput = (e) => wavesurfer.setVolume(Number(e.target.value));
+
+        // Create or Toggle selection at playhead
+        const createSelectionAtPlayhead = () => {
+            if (selectedRegion) {
+                regions.clearRegions();
+                selectedRegion = null;
+                updateSelectionUI();
+                return false;
+            } else {
+                const currentTime = wavesurfer.getCurrentTime();
+                const duration = wavesurfer.getDuration();
+                const regionWidth = Math.min(2, duration - currentTime);
+                regions.addRegion({
+                    start: currentTime,
+                    end: currentTime + regionWidth,
+                    color: 'rgba(255, 235, 59, 0.4)',
+                    drag: true, resize: true
+                });
+                return true;
+            }
+        };
+
+        selectBtn.onclick = () => createSelectionAtPlayhead();
+
+        // Effect: Fade In/Out
+        const applyFade = (type) => {
+            if (!selectedRegion) {
+                // If no region, create one at playhead
+                createSelectionAtPlayhead();
+                return;
+            }
+
+            saveToHistory();
+            const buffer = wavesurfer.getDecodedData();
+            const startIdx = Math.floor(selectedRegion.start * buffer.sampleRate);
+            const endIdx = Math.floor(selectedRegion.end * buffer.sampleRate);
+            const durationSamples = endIdx - startIdx;
+
+            // Create a clone of the buffer to modify
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+
+            for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+                const data = buffer.getChannelData(channel);
+                const newData = newBuffer.getChannelData(channel);
+                newData.set(data); // Copy whole data
+
+                for (let i = 0; i < durationSamples; i++) {
+                    const progress = i / durationSamples;
+                    const gain = (type === 'in') ? progress : (1 - progress);
+                    newData[startIdx + i] *= gain;
+                }
+            }
+
+            updateWaveform(newBuffer, false);
+            alert(`${type === 'in' ? 'Fade In' : 'Fade Out'} 효과가 적용되었습니다.`);
+        };
+
+        fadeInBtn.onclick = () => applyFade('in');
+        fadeOutBtn.onclick = () => applyFade('out');
+
+        clearSelectionBtn.onclick = () => { regions.clearRegions(); selectedRegion = null; updateSelectionUI(); };
+
+        trimBtn.onclick = () => {
+            if (!selectedRegion) return;
+            saveToHistory();
+            const buffer = wavesurfer.getDecodedData();
+            const start = Math.floor(selectedRegion.start * buffer.sampleRate);
+            const end = Math.floor(selectedRegion.end * buffer.sampleRate);
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, end - start, buffer.sampleRate);
+            for (let i = 0; i < buffer.numberOfChannels; i++) newBuffer.getChannelData(i).set(buffer.getChannelData(i).subarray(start, end));
+            updateWaveform(newBuffer, false);
+        };
+
+        deleteBtn.onclick = () => {
+            if (!selectedRegion) return;
+            saveToHistory();
+            const buffer = wavesurfer.getDecodedData();
+            const start = Math.floor(selectedRegion.start * buffer.sampleRate);
+            const end = Math.floor(selectedRegion.end * buffer.sampleRate);
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, buffer.length - (end - start), buffer.sampleRate);
+            for (let i = 0; i < buffer.numberOfChannels; i++) {
+                const oldData = buffer.getChannelData(i);
+                const newData = newBuffer.getChannelData(i);
+                newData.set(oldData.subarray(0, start));
+                newData.set(oldData.subarray(end), start);
+            }
+            updateWaveform(newBuffer, false);
+        };
+
+        // Export Functionality
+        downloadBtn.onclick = (e) => {
+            e.stopPropagation();
+            formatMenu.classList.toggle('hidden');
+        };
+
+        window.addEventListener('click', () => formatMenu.classList.add('hidden'));
+
+        downloadWav.onclick = () => {
+            const buffer = wavesurfer.getDecodedData();
+            const blob = bufferToWav(buffer);
+            downloadBlob(blob, 'wav');
+        };
+
+        downloadMp3.onclick = async () => {
+            loadingTxt.textContent = "MP3 인코딩 중...";
+            loadingOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                const buffer = wavesurfer.getDecodedData();
+                const blob = bufferToMp3(buffer);
+                downloadBlob(blob, 'mp3');
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        };
+
+        const downloadBlob = (blob, ext) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentFileName}_edited.${ext}`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'z') { e.preventDefault(); performUndo(); }
+        });
+
+        const updateWaveform = (buffer, shouldSave = true) => {
+            if (shouldSave) saveToHistory();
+            const blob = bufferToWav(buffer);
+            wavesurfer.load(URL.createObjectURL(blob));
+            if (regions) regions.clearRegions();
+            selectedRegion = null;
+            updateSelectionUI();
+        };
+
+        // Utility: Buffer to WAV
+        const bufferToWav = (buffer) => {
+            const numOfChan = buffer.numberOfChannels,
+                length = buffer.length * numOfChan * 2 + 44,
+                buffer_out = new ArrayBuffer(length),
+                view = new DataView(buffer_out),
+                sampleRate = buffer.sampleRate;
+            let pos = 0;
+            const setUint16 = (data) => { view.setUint16(pos, data, true); pos += 2; };
+            const setUint32 = (data) => { view.setUint32(pos, data, true); pos += 4; };
+            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157); setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan); setUint32(sampleRate); setUint32(sampleRate * 2 * numOfChan); setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
+            for (let i = 0; i < buffer.length; i++) {
+                for (let channel = 0; channel < numOfChan; channel++) {
+                    let sample = buffer.getChannelData(channel)[i];
+                    sample = Math.max(-1, Math.min(1, sample));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true); pos += 2;
+                }
+            }
+            return new Blob([buffer_out], { type: 'audio/wav' });
+        };
+
+        // Utility: Buffer to MP3
+        const bufferToMp3 = (buffer) => {
+            const channels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+            let mp3Data = [];
+            const sampleBlockSize = 1152;
+            const left = buffer.getChannelData(0);
+            const right = channels > 1 ? buffer.getChannelData(1) : new Float32Array(left.length);
+            
+            const leftInt16 = new Int16Array(left.length);
+            const rightInt16 = new Int16Array(right.length);
+            for (let i = 0; i < left.length; i++) {
+                leftInt16[i] = left[i] < 0 ? left[i] * 0x8000 : left[i] * 0x7FFF;
+                rightInt16[i] = right[i] < 0 ? right[i] * 0x8000 : right[i] * 0x7FFF;
+            }
+
+            for (let i = 0; i < leftInt16.length; i += sampleBlockSize) {
+                const leftChunk = leftInt16.subarray(i, i + sampleBlockSize);
+                const rightChunk = rightInt16.subarray(i, i + sampleBlockSize);
+                const mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+                if (mp3buf.length > 0) mp3Data.push(mp3buf);
+            }
+            const mp3buf = mp3encoder.flush();
+            if (mp3buf.length > 0) mp3Data.push(mp3buf);
+            return new Blob(mp3Data, { type: 'audio/mp3' });
+        };
+    </script>
+</body>
+</html>
