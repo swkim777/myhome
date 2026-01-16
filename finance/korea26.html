@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 대한민국 경제 전망 | Premium Report</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Pretendard Variable"', 'Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a',
+                        },
+                        secondary: '#64748b',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-slate-50 text-slate-900 leading-relaxed; }
+        }
+        @layer components {
+            .card { @apply bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow; }
+            .badge-up { @apply bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-1 rounded text-xs font-bold; }
+            .badge-down { @apply bg-rose-50 text-rose-700 border border-rose-100 px-2 py-1 rounded text-xs font-bold; }
+            .section-title { @apply text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2; }
+            .summary-label { @apply text-sm text-slate-500 font-medium mb-1; }
+            .summary-value { @apply text-2xl font-bold tracking-tight text-slate-900; }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Global Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold">E</div>
+                    <span class="font-bold text-lg tracking-tight text-slate-800">EconInsights 2026</span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
+                    <a href="#dashboard" class="hover:text-primary-600 transition-colors">대시보드</a>
+                    <a href="#macro" class="hover:text-primary-600 transition-colors">거시전망</a>
+                    <a href="#industry" class="hover:text-primary-600 transition-colors">산업동향</a>
+                    <a href="#risks" class="hover:text-primary-600 transition-colors">리스크</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        
+        <!-- Header Section -->
+        <header class="mb-12 text-center md:text-left">
+            <div class="inline-flex items-center px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-bold mb-4">
+                ANNUAL ECONOMIC OUTLOOK
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-4 tracking-tight">
+                2026년 대한민국 경제 전망:<br>
+                <span class="gradient-text">구조적 전환과 복합 위기의 항로</span>
+            </h1>
+            <p class="text-lg text-slate-600 max-w-2xl">
+                통계적 회복세 진입에도 불구하고 실체적 체감 경기와의 괴리가 지속되는 2026년, 주요 지표와 산업별 핵심 이슈를 분석합니다.
+            </p>
+        </header>
+
+        <!-- Dashboard: Key Performance Indicators -->
+        <section id="dashboard" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-16">
+            <div class="card bg-gradient-to-br from-white to-primary-50">
+                <p class="summary-label">GDP 성장률 전망</p>
+                <div class="flex items-end gap-2">
+                    <p class="summary-value text-primary-700">2.0%</p>
+                    <span class="text-xs text-primary-600 mb-1 font-bold">▲ 1.1%p</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2">한은/OECD 평균 전망치</p>
+            </div>
+            <div class="card">
+                <p class="summary-label">소비자물가(CPI)</p>
+                <div class="flex items-end gap-2">
+                    <p class="summary-value">2.1%</p>
+                    <span class="text-xs text-emerald-600 mb-1 font-bold">안정화</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2">한은 목표치 2.0% 수렴 중</p>
+            </div>
+            <div class="card text-rose-600 border-rose-100">
+                <p class="summary-label">평균 환율 (USD)</p>
+                <div class="flex items-end gap-2 text-rose-700">
+                    <p class="summary-value text-rose-700">1,350</p>
+                    <span class="text-xs mb-1 font-bold">뉴노멀</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2">고착화된 원화 약세 국면</p>
+            </div>
+            <div class="card">
+                <p class="summary-label">기준 금리</p>
+                <div class="flex items-end gap-2 text-slate-700">
+                    <p class="summary-value">2.5%</p>
+                    <span class="text-xs mb-1 font-bold">신중</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2">가계부채 관리를 위한 동결 기조</p>
+            </div>
+        </section>
+
+        <!-- Long-form Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            <!-- Left: Main Article -->
+            <div class="lg:col-span-2 space-y-16">
+                
+                <!-- Macro Section -->
+                <section id="macro">
+                    <h2 class="section-title">
+                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        1. 거시경제: 완만한 회복의 명과 암
+                    </h2>
+                    <div class="prose prose-slate max-w-none prose-p:text-slate-600 prose-strong:text-slate-900">
+                        <p>
+                            2026년 대한민국 경제는 거시지표 상으로는 고물가와 고금리의 긴 터널을 지나 완만한 회복세로 진입하는 전환점에 서 있습니다. IMF와 OECD 등 주요 기관들은 잠재성장률 수준인 <strong>2.0% 내외</strong>로의 복귀를 예측하고 있습니다.
+                        </p>
+                        <div class="bg-slate-100 rounded-xl p-6 border-l-4 border-primary-500 my-6">
+                            <p class="italic text-slate-700 mb-2">"반도체 부문을 제외한 성장률은 1.4% 수준에 그칠 것이며, 통계적 착시 현상을 경계해야 합니다."</p>
+                            <p class="text-sm font-bold text-slate-900">— 이창용 한국은행 총재</p>
+                        </div>
+                        <p>
+                            가장 우려되는 대목은 <strong>'반도체 착시'</strong>입니다. 전체 성장률 중 반도체 기여도가 압도적이며, 이를 제외한 내수 및 전통 제조업은 상대적 박탈감을 느끼는 양극화된 성장을 보일 전망입니다.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Industry Section -->
+                <section id="industry">
+                    <h2 class="section-title">
+                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        2. 산업별 동향: K자형 양극화
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-5 rounded-xl border border-emerald-100 bg-emerald-50/30">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="badge-up">호조 (Growth)</span>
+                                <span class="text-emerald-500 font-bold">+4.7% ~ +7.8%</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 mb-2">반도체 & 바이오</h4>
+                            <p class="text-sm text-slate-600">AI 수요 지속에 따른 안정적 성장 궤도 진입 및 바이오헬스 수출 확대</p>
+                        </div>
+                        <div class="p-5 rounded-xl border border-rose-100 bg-rose-50/30">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="badge-down">부진 (Down)</span>
+                                <span class="text-rose-500 font-bold">-12.0%</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 mb-2">이차전지</h4>
+                            <p class="text-sm text-slate-600">전기차 캐즘(Chasm) 현상 지속과 해외 생산 확대로 인한 국내 수출 감소</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Risk Section -->
+                <section id="risks">
+                    <h2 class="section-title">
+                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        3. 주요 리스크 및 통상 변화
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="card p-0 overflow-hidden">
+                            <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-slate-700">트럼프 2.0 및 보호무역주의</div>
+                            <div class="p-5 text-sm text-slate-600 leading-relaxed">
+                                모든 수입품에 대한 보편 관세 도입 가능성이 최대 리스크로 부상하고 있습니다. 공급망의 무기화로 인해 한국 기업들의 중복 투자 위험이 상시화될 전망입니다.
+                            </div>
+                        </div>
+                        <div class="card p-0 overflow-hidden">
+                            <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-slate-700">인구 절벽과 가계 부채</div>
+                            <div class="p-5 text-sm text-slate-600 leading-relaxed">
+                                인구 고령화 가속으로 실질 소비력이 감소하고 있으며, 자산 지니계수 0.625를 기록하는 등 자산 양극화에 따른 사회적 불안 요소가 심화되고 있습니다.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right: Sidebar Data -->
+            <div class="lg:col-span-1 space-y-8">
+                <div class="card sticky top-24">
+                    <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100">기관별 지표 비교</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">
+                                <span>기관 (Organization)</span>
+                                <span>성장률 (GDP)</span>
+                            </div>
+                            <ul class="space-y-3">
+                                <li class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-600">한국은행 (BOK)</span>
+                                    <span class="font-bold text-slate-900">1.8% ~ 2.0%</span>
+                                </li>
+                                <li class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-600">IMF</span>
+                                    <span class="font-bold text-slate-900">1.8%</span>
+                                </li>
+                                <li class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-600">OECD</span>
+                                    <span class="font-bold text-primary-600">2.1%</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-slate-100">
+                            <p class="text-xs text-slate-400 leading-snug font-medium mb-4">
+                                * 경상수지는 1,150억 달러 상회 전망 (반도체 수출 호조 기반)
+                            </p>
+                            <button class="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors">
+                                상세 데이터 다운로드 (.PDF)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-primary-600 text-white border-none">
+                    <h3 class="font-bold mb-2">분석가 인사이트</h3>
+                    <p class="text-sm text-primary-100 leading-relaxed mb-4 italic">
+                        "2026년은 과거의 추격자 모델에서 벗어나, 성숙한 선진 경제로 진화할 수 있는지를 시험받는 결정적 시기입니다."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-400 border-2 border-primary-300"></div>
+                        <div>
+                            <p class="text-sm font-bold">에코노믹 리서치 팀</p>
+                            <p class="text-xs text-primary-200">전략 분석 담당</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-20 py-12">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm mb-2">&copy; 2026 Economic Outlook Report. All rights reserved.</p>
+            <p class="text-slate-400 text-xs">
+                데이터 출처: 한국은행, IMF, OECD, 산업연구원(KIET) 등 주요 전망 기관 자료 재구성
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
