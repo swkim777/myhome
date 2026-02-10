@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>봄을 기다리며 - 감성 블로그</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans+KR:wght@300;400;500;700&family=Song+Myung&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spring-green': '#88a47c',
+                        'soft-petal': '#f4e0e0',
+                        'warm-gray': '#fdfcfb',
+                        'deep-charcoal': '#2d3436',
+                        'accent-terracotta': '#d68060'
+                    },
+                    fontFamily: {
+                        'display': ['Song Myung', 'serif'],
+                        'serif-body': ['Lora', 'serif'],
+                        'sans-body': ['Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfcfb;
+            color: #2d3436;
+            line-height: 1.8;
+            word-break: keep-all;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #fdfcfb 0%, #f4e0e0 100%);
+        }
+        .content-shadow {
+            box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.05);
+        }
+        .reading-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #d68060;
+            z-index: 100;
+            transition: width 0.1s ease;
+        }
+        ::selection {
+            background: #f4e0e0;
+            color: #d68060;
+        }
+    </style>
+</head>
+<body class="font-sans-body">
+
+    <!-- Reading Progress Bar -->
+    <div id="readingProgress" class="reading-line" style="width: 0%"></div>
+
+    <!-- Header Section -->
+    <header class="relative overflow-hidden pt-24 pb-16 md:pt-32 md:pb-24 hero-gradient">
+        <div class="max-w-screen-md mx-auto px-6 text-center">
+            <span class="inline-block px-4 py-1 mb-6 text-xs font-semibold tracking-widest text-accent-terracotta uppercase border border-accent-terracotta/30 rounded-full animate-fade-in">
+                Season & Reflection
+            </span>
+            <h1 class="font-display text-4xl md:text-6xl text-deep-charcoal mb-8 leading-tight">
+                봄을 기다리며: <br/> 
+                <span class="italic text-spring-green/80">겨울 끝자락에서 쓰는 편지</span>
+            </h1>
+            <div class="flex items-center justify-center space-x-4 text-sm text-gray-500">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    2024년 2월의 어느 날
+                </span>
+                <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                <span>Reading time: 5 mins</span>
+            </div>
+        </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-spring-green/5 rounded-full blur-3xl"></div>
+        <div class="absolute -top-10 -right-10 w-60 h-60 bg-soft-petal/20 rounded-full blur-3xl"></div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-screen-md mx-auto px-6 py-16">
+        <article class="prose prose-lg lg:prose-xl mx-auto">
+            
+            <!-- Intro -->
+            <p class="text-xl md:text-2xl font-light text-gray-600 mb-12 leading-relaxed italic border-l-4 border-soft-petal pl-6">
+                차가운 창가에 서서 입김을 불어봅니다. 아직은 투명한 유리창 너머로 시린 바람이 불고 있지만, 마음속 한구석에는 벌써부터 연둣빛 새싹이 돋아나고 있는 것만 같습니다.
+            </p>
+
+            <p class="mb-10">
+                유난히 길고 매서웠던 올해의 겨울이었습니다. 두꺼운 코트 깃을 여미며 종종걸음으로 집으로 향하던 밤들, 그리고 앙상한 나뭇가지들이 서로를 부둥켜안고 떨던 그 계절의 한복판에서 우리는 모두 따스한 무언가를 그리워하고 있었습니다.
+            </p>
+
+            <!-- Section 1 -->
+            <h2 class="font-display text-3xl md:text-4xl mt-16 mb-8 text-deep-charcoal border-b border-gray-100 pb-4">
+                01. 침묵 속에 깃든 생동감
+            </h2>
+            <p class="mb-6">
+                겨울은 죽어있는 계절처럼 보이지만, 사실은 가장 치열하게 생명을 준비하는 시간입니다. 겉으로 보기엔 메마른 대지 아래에서 수만 개의 씨앗들이 봄의 전령을 기다리며 숨죽이고 있습니다. 우리는 그 인고의 시간을 '기다림'이라고 부릅니다.
+            </p>
+            <p class="mb-10">
+                봄을 기다리는 마음은 단순히 추위를 피하고 싶은 욕망만이 아닙니다. 그것은 다시 시작할 수 있다는 용기, 그리고 얼어붙었던 우리의 마음도 다시금 말랑해질 수 있다는 희망에 대한 믿음입니다.
+            </p>
+
+            <!-- Section 2 -->
+            <h2 class="font-display text-3xl md:text-4xl mt-16 mb-8 text-deep-charcoal border-b border-gray-100 pb-4">
+                02. 우리가 만날 찬란한 변화들
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8 my-12">
+                <div class="p-8 bg-warm-gray rounded-2xl border border-gray-50 content-shadow hover:translate-y-[-5px] transition-transform duration-300">
+                    <h3 class="font-display text-xl mb-4 text-accent-terracotta">시각의 변화</h3>
+                    <p class="text-sm leading-relaxed text-gray-600">회색빛 도시가 파스텔 톤으로 물드는 순간을 상상해 봅니다. 벚꽃 잎이 눈처럼 날리고, 개나리가 담장 너머로 고개를 내미는 그 찬란한 색채의 향연을 말이죠.</p>
+                </div>
+                <div class="p-8 bg-warm-gray rounded-2xl border border-gray-50 content-shadow hover:translate-y-[-5px] transition-transform duration-300">
+                    <h3 class="font-display text-xl mb-4 text-spring-green">후각의 기억</h3>
+                    <p class="text-sm leading-relaxed text-gray-600">어느 날 문득 코끝을 스치는 달콤한 흙내음과 풀향기. '아, 이제 정말 봄이구나'라고 직감하게 만드는 그 생명의 냄새는 우리를 다시 설레게 합니다.</p>
+                </div>
+            </div>
+
+            <p class="mb-10">
+                봄이 오면 사람들의 옷차림만큼이나 표정도 한결 가벼워질 것입니다. 공원 벤치에 앉아 아무 이유 없이 햇살을 쬐고, 길가에 핀 이름 모를 들꽃에 시선을 멈추는 여유. 그런 사소하지만 소중한 변화들이 우리를 기다리고 있습니다.
+            </p>
+
+            <!-- Section 3 -->
+            <h2 class="font-display text-3xl md:text-4xl mt-16 mb-8 text-deep-charcoal border-b border-gray-100 pb-4">
+                03. 당신의 마음에도 꽃이 피기를
+            </h2>
+            <p class="mb-6">
+                봄은 누구에게나 공평하게 찾아옵니다. 하지만 그 봄을 온전히 누리는 것은 오직 '기다리는 자'들의 몫입니다. 지금 겪고 있는 차가운 현실이나 마음의 겨울도, 결국은 지나가기 위해 존재하는 과정일 뿐입니다.
+            </p>
+            <ul class="space-y-4 my-10 pl-4 border-l-2 border-accent-terracotta/20">
+                <li class="flex items-start">
+                    <span class="text-accent-terracotta mr-3">✦</span>
+                    <span>두껍게 닫혀있던 마음의 창문을 조금씩 열어보기</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-accent-terracotta mr-3">✦</span>
+                    <span>나에게 건네는 따뜻한 위로 한 마디 준비하기</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-accent-terracotta mr-3">✦</span>
+                    <span>새로운 시작을 위한 아주 작은 계획 세워보기</span>
+                </li>
+            </ul>
+
+            <!-- Conclusion -->
+            <div class="mt-20 p-10 bg-deep-charcoal text-white rounded-3xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="font-display text-2xl mb-6 text-soft-petal">마치며: 곧 만나요, 우리의 봄</h2>
+                    <p class="text-gray-300 leading-relaxed font-light">
+                        아직은 바람이 찹니다. 하지만 분명 어제보다 해는 길어졌고, 공기 속에는 아주 미세한 온기가 섞여 있습니다. 봄은 결코 서두르지 않지만, 단 한 번도 약속을 어긴 적이 없습니다. <br/><br/>
+                        조금만 더 힘을 내어 이 겨울의 끝자락을 견뎌내기로 해요. 당신의 삶에 찾아올 가장 눈부신 봄을 위해, 지금 이 순간의 기다림마저 아름다운 기억이 되길 진심으로 바랍니다.
+                    </p>
+                </div>
+                <!-- Decoration inside dark box -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-accent-terracotta/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+            </div>
+
+        </article>
+
+        <!-- Navigation / Share (Optional UI element) -->
+        <div class="mt-24 pt-12 border-t border-gray-100 flex flex-col items-center">
+            <p class="text-sm text-gray-400 mb-6">이 글이 마음에 드셨다면 따뜻한 온기를 나눠주세요.</p>
+            <div class="flex space-x-6">
+                <button class="w-12 h-12 rounded-full flex items-center justify-center border border-gray-200 hover:bg-soft-petal hover:border-soft-petal transition-all duration-300 text-gray-600 hover:text-accent-terracotta">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
+                <button class="w-12 h-12 rounded-full flex items-center justify-center border border-gray-200 hover:bg-spring-green/10 hover:border-spring-green/10 transition-all duration-300 text-gray-600 hover:text-spring-green">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Reading Progress Script
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("readingProgress").style.width = scrolled + "%";
+        };
+
+        // Subtle animation for heading entry
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('h2, .content-shadow').forEach(el => {
+            el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
