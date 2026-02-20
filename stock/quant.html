@@ -46,7 +46,7 @@
                         QuantMind AI
                     </span>
                 </div>
-                <!-- API Key Input in Nav -->
+                <!-- API Key Input with Save to LocalStorage -->
                 <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
                     <i data-lucide="key" class="w-4 h-4 text-slate-400 ml-2"></i>
                     <input 
@@ -54,6 +54,7 @@
                         id="apiKeyInputField" 
                         placeholder="Gemini API Key 입력" 
                         class="bg-transparent text-xs outline-none w-32 md:w-48 py-1.5 pr-2 placeholder:text-slate-400"
+                        onchange="saveApiKey(this.value)"
                     >
                 </div>
             </div>
@@ -67,7 +68,7 @@
                 AI <span class="text-indigo-600">퀀트 리서치</span> 대시보드
             </h1>
             <p class="text-slate-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-                상단에 API 키를 입력한 후 종목을 검색하세요.<br>
+                Gemini API 키는 브라우저 로컬 저장소에 안전하게 보관됩니다.<br>
                 4건의 전문 퀀트 방법론을 기반으로 실시간 시황을 분석합니다.
             </p>
         </div>
@@ -98,7 +99,7 @@
         <div id="errorMessage" class="hidden max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-3 animate-fade-in">
             <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i>
             <div>
-                <p class="font-bold">분석 중 에러가 발생했습니다</p>
+                <p class="font-bold">에러 발생</p>
                 <p id="errorDetail" class="mt-1 opacity-90"></p>
             </div>
         </div>
@@ -106,14 +107,14 @@
         <!-- Loading State -->
         <div id="loadingState" class="hidden flex flex-col items-center justify-center py-16 animate-fade-in">
             <div class="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-            <h3 class="font-bold text-slate-800">문서 데이터를 기반으로 퀀트 연산 중...</h3>
+            <h3 class="font-bold text-slate-800">퀀트 데이터 연산 중...</h3>
         </div>
 
         <!-- Result Section -->
         <div id="resultSection" class="hidden space-y-8 animate-fade-in">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                <!-- Sidebar Analysis Card -->
+                <!-- Sidebar -->
                 <div class="lg:col-span-1 space-y-6">
                     <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 sticky top-24">
                         <div class="flex justify-between items-center mb-6">
@@ -129,21 +130,17 @@
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs py-2 border-b border-slate-100">
                                 <span class="text-slate-400">기술 지표 (Apis)</span>
-                                <span class="text-slate-900 font-bold">224일선 분석 완료</span>
+                                <span class="text-slate-900 font-bold text-right">224일선 분석 완료</span>
                             </div>
                             <div class="flex justify-between text-xs py-2 border-b border-slate-100">
                                 <span class="text-slate-400">밸류 (Smart Beta)</span>
-                                <span class="text-slate-900 font-bold">Relative Valuation</span>
-                            </div>
-                            <div class="flex justify-between text-xs py-2 border-b border-slate-100">
-                                <span class="text-slate-400">타이밍 (AAI)</span>
-                                <span class="text-slate-900 font-bold">Long-horizon View</span>
+                                <span class="text-slate-900 font-bold text-right">Relative Valuation</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Analysis & Chat Area -->
+                <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="flex gap-2 p-1.5 bg-slate-200/50 rounded-2xl w-fit">
                         <button onclick="showMainTab('analysis')" id="tabMainAn" class="px-6 py-2 rounded-xl text-sm font-bold bg-white text-indigo-600 shadow-sm transition-all">리포트</button>
@@ -181,11 +178,11 @@
                                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                                 <span class="text-xs font-bold text-slate-600 uppercase" id="chatTitle">TICKER AI CHAT</span>
                             </div>
-                            <button onclick="clearChat()" class="text-[10px] text-slate-400 hover:text-red-500 font-bold uppercase transition-colors">대화 초기화</button>
+                            <button onclick="clearChat()" class="text-[10px] text-slate-400 hover:text-red-500 font-bold uppercase">대화 초기화</button>
                         </div>
                         
                         <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4 chat-scroll bg-slate-50/30">
-                            <div class="flex gap-3 max-w-[85%]">
+                            <div class="flex gap-3 max-w-[85%] animate-fade-in">
                                 <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 text-white">
                                     <i data-lucide="bot" class="w-4 h-4"></i>
                                 </div>
@@ -198,7 +195,7 @@
                         <div class="p-4 bg-white border-t border-slate-100">
                             <form id="chatForm" class="flex gap-2">
                                 <input type="text" id="chatInput" placeholder="질문을 입력하세요..." class="flex-1 px-4 py-3 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm outline-none" autocomplete="off">
-                                <button type="submit" id="chatSubmitBtn" class="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100">
+                                <button type="submit" id="chatSubmitBtn" class="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 shadow-md">
                                     <i data-lucide="send" class="w-5 h-5"></i>
                                 </button>
                             </form>
@@ -212,7 +209,21 @@
     <script>
         lucide.createIcons();
         
-        // 하드코딩된 변수 대신, 입력 필드에서 값을 가져오는 함수를 정의합니다.
+        const KEY_STORAGE_ID = "QUANTMIND_GEMINI_API_KEY";
+        
+        // 페이지 로드 시 로컬 저장소에서 키를 가져와 입력창에 채움
+        window.onload = () => {
+            const savedKey = localStorage.getItem(KEY_STORAGE_ID);
+            if (savedKey) {
+                document.getElementById('apiKeyInputField').value = savedKey;
+            }
+        };
+
+        // 키 입력 시 로컬 저장소에 저장
+        function saveApiKey(val) {
+            localStorage.setItem(KEY_STORAGE_ID, val.trim());
+        }
+
         const getApiKey = () => document.getElementById('apiKeyInputField').value.trim();
         
         let chatHistory = [];
@@ -279,15 +290,13 @@
                 chatHistory.push({ role: "user", parts: [{ text: message }] });
                 chatHistory.push({ role: "model", parts: [{ text: response }] });
             } catch (err) {
-                typingMsg.innerText = "답변을 가져오는 중 에러가 발생했습니다: " + err.message;
+                typingMsg.innerText = "에러: " + err.message;
             }
         });
 
         async function callGemini(prompt, systemPrompt, history = [], retries = 5) {
-            const key = getApiKey(); // API 호출 시점에 현재 입력된 키를 가져옵니다.
-            if (!key) {
-                throw new Error("API 키가 입력되지 않았습니다.");
-            }
+            const key = getApiKey();
+            if (!key) throw new Error("API 키가 입력되지 않았습니다.");
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
             const payload = {
@@ -310,9 +319,7 @@
                     }
 
                     const data = await res.json();
-                    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (!content) throw new Error("API가 빈 응답을 반환했습니다.");
-                    return content;
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
                 } catch (e) {
                     if (i === retries - 1) throw e;
                     await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
@@ -323,7 +330,6 @@
         function showError(msg) {
             errorDetail.innerText = msg;
             errorMessage.classList.remove('hidden');
-            window.scrollTo({ top: errorMessage.offsetTop - 100, behavior: 'smooth' });
         }
 
         function toggleLoading(isLoading) {
