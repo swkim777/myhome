@@ -1,0 +1,302 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Search, 
+  BarChart2, 
+  PieChart, 
+  AlertTriangle, 
+  Clock, 
+  Briefcase, 
+  ChevronRight,
+  Info,
+  ArrowRightLeft,
+  Settings,
+  ShieldCheck
+} from 'lucide-react';
+
+const apiKey = ""; // API Key는 환경에서 자동으로 주입됩니다.
+
+const App = () => {
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [stockInfo, setStockInfo] = useState({
+    ticker: '',
+    isHolding: null,
+    avgPrice: '',
+    shares: ''
+  });
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [error, setError] = useState(null);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [step, analysisResult]);
+
+  const handleInitialSubmit = (e) => {
+    e.preventDefault();
+    if (stockInfo.ticker.trim()) {
+      setStep(2);
+    }
+  };
+
+  const handleHoldingDecision = (decision) => {
+    setStockInfo(prev => ({ ...prev, isHolding: decision }));
+    if (decision) {
+      setStep(3);
+    } else {
+      runAnalysis();
+    }
+  };
+
+  const handleHoldingSubmit = (e) => {
+    e.preventDefault();
+    runAnalysis();
+  };
+
+  const runAnalysis = async () => {
+    setLoading(true);
+    setStep(4);
+    setError(null);
+
+    // 사용자 제공 4개 파일의 핵심 로직을 시스템 프롬프트에 명시적으로 주입
+    const systemPrompt = `당신은 퀀트 에쿼티 전략가입니다. 다음 4개 참조 문서의 방법론을 엄격히 준수하여 스윙 트레이딩 분석을 수행하세요:
+1. '주식 매매의 정석(kospi-trading.pdf)': 지지선 매수, 전고점/저항선 매도, 지수 상태에 따른 유연한 매도 전략 적용.
+2. 'Timing Smart Beta(541-timing-smart-beta.pdf)': 역사적 평균 대비 저평가된 시점의 역발상(Contrarian) 타이밍 강조.
+3. 'Market Timing: Opportunities and Risks(market_timing_open.pdf)': 무분별한 타이밍 매매의 비용과 리스크 관리, 전략적 자산 배분 중요성 반영.
+4. 'RA Capital Market Expectations(aai-methodology-1124.pdf)': 장기 예측 모델 및 인플레이션/GDP 등 거시 지표 기반의 수치적 분석.
+
+분석 필수 포함 사항:
+- 실시간 가격 및 기술적 지표(RSI, MACD, EMA, 거래량).
+- 매수/매도/관망 판단 및 근거 (문서의 지지/저항 로직 반영).
+- 구체적인 진입/청산가 및 손절가.
+- 예상 보유 기간(3~20일).
+
+형식: JSON 응답만 하세요.
+{
+  "summary": "종합 의견",
+  "status": "BUY | SELL | WAIT",
+  "currentPrice": "주가",
+  "indicators": {"rsi": "값", "macd": "상태", "ema": "추세"},
+  "marketAnalysis": {"index": "지수 분석", "sector": "섹터 분석"},
+  "strategy": {"entryRange": "범위", "exitRange": "범위", "stopLoss": "가격", "duration": "기간"},
+  "detailedAnalysis": "참조 문서의 방법론이 적용된 상세 분석 내용",
+  "risks": ["위험요소1", "위험요소2"]
+}`;
+
+    const userQuery = `분석 종목: ${stockInfo.ticker}
+보유 여부: ${stockInfo.isHolding ? '예' : '아니오'}
+${stockInfo.isHolding ? `평균단가: ${stockInfo.avgPrice}, 보유수량: ${stockInfo.shares}` : ''}
+제공된 4개의 전문 투자 문서를 참고하여, 현재 시장 상황과 종목의 기술적 위치를 스윙 관점에서 분석해줘. 구글 검색으로 실시간 데이터를 활용할 것.`;
+
+    try {
+      let retryCount = 0;
+      const maxRetries = 5;
+      let response;
+
+      while (retryCount < maxRetries) {
+        try {
+          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: userQuery }] }],
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              tools: [{ google_search: {} }],
+              generationConfig: { responseMimeType: "application/json" }
+            })
+          });
+
+          if (response.ok) break;
+          retryCount++;
+          await new Promise(res => setTimeout(res, Math.pow(2, retryCount) * 1000));
+        } catch (e) {
+          retryCount++;
+          if (retryCount === maxRetries) throw e;
+        }
+      }
+
+      const data = await response.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      setAnalysisResult(JSON.parse(rawText));
+    } catch (err) {
+      setError("데이터를 분석하는 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reset = () => {
+    setStep(1);
+    setStockInfo({ ticker: '', isHolding: null, avgPrice: '', shares: '' });
+    setAnalysisResult(null);
+    setError(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-white text-slate-900 font-sans p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <header className="flex items-center justify-between mb-12 border-b border-slate-200 pb-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded-lg shadow-md shadow-blue-200">
+              <TrendingUp size={28} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900">AI QUANT STRATEGIST</h1>
+              <p className="text-slate-500 text-sm">Professional Swing Trading Analysis</p>
+            </div>
+          </div>
+          <button onClick={reset} className="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-600 transition-colors border border-slate-200">
+            초기화
+          </button>
+        </header>
+
+        {step >= 1 && (
+          <div className={`mb-8 transition-all duration-500 ${step > 1 ? 'opacity-40' : 'opacity-100'}`}>
+            <div className="flex items-center gap-2 mb-4 text-blue-600">
+              <Search size={20} />
+              <span className="font-bold text-sm uppercase tracking-wider">Step 01. 종목 선택</span>
+            </div>
+            <h2 className="text-xl mb-4 font-semibold">분석하고 싶은 종목명이나 티커를 입력해 주세요.</h2>
+            <form onSubmit={handleInitialSubmit} className="flex gap-2">
+              <input
+                type="text"
+                value={stockInfo.ticker}
+                onChange={(e) => setStockInfo({ ...stockInfo, ticker: e.target.value })}
+                placeholder="예: 삼성전자, NVDA, KOSPI..."
+                disabled={step > 1}
+                className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:bg-slate-100"
+              />
+              {step === 1 && (
+                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition-all flex items-center gap-2">
+                  다음 <ChevronRight size={18} />
+                </button>
+              )}
+            </form>
+          </div>
+        )}
+
+        {step >= 2 && (
+          <div className={`mb-8 transition-all duration-500 ${step > 2 ? 'opacity-40' : 'opacity-100'}`}>
+            <div className="flex items-center gap-2 mb-4 text-blue-600">
+              <Briefcase size={20} />
+              <span className="font-bold text-sm uppercase tracking-wider">Step 02. 보유 현황</span>
+            </div>
+            <h2 className="text-xl mb-4 font-semibold">현재 <span className="text-blue-600 font-bold">{stockInfo.ticker}</span> 종목을 보유 중이신가요?</h2>
+            {stockInfo.isHolding === null ? (
+              <div className="flex gap-4">
+                <button onClick={() => handleHoldingDecision(true)} className="flex-1 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 py-4 rounded-xl font-bold transition-all">보유 중</button>
+                <button onClick={() => handleHoldingDecision(false)} className="flex-1 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 py-4 rounded-xl font-bold transition-all">미보유</button>
+              </div>
+            ) : (
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-between items-center">
+                <span className="font-medium">{stockInfo.isHolding ? '보유 중' : '미보유'}</span>
+                {step === 2 && <button onClick={() => setStockInfo({...stockInfo, isHolding: null})} className="text-blue-600 text-sm font-bold underline underline-offset-4">변경</button>}
+              </div>
+            )}
+          </div>
+        )}
+
+        {step >= 3 && stockInfo.isHolding && (
+          <div className={`mb-8 transition-all duration-500 ${step > 3 ? 'opacity-40' : 'opacity-100'}`}>
+            <div className="flex items-center gap-2 mb-4 text-blue-600">
+              <Info size={20} />
+              <span className="font-bold text-sm uppercase tracking-wider">Step 03. 상세 정보</span>
+            </div>
+            <h2 className="text-xl mb-4 font-semibold">평균 매수 단가와 수량을 입력해 주세요.</h2>
+            <form onSubmit={handleHoldingSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="number" value={stockInfo.avgPrice} onChange={(e) => setStockInfo({ ...stockInfo, avgPrice: e.target.value })} placeholder="평균 단가" disabled={step > 3} className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" />
+              <input type="number" value={stockInfo.shares} onChange={(e) => setStockInfo({ ...stockInfo, shares: e.target.value })} placeholder="보유 수량" disabled={step > 3} className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" />
+              {step === 3 && <button type="submit" className="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg transition-all">전략 분석 시작 (4개 전문 문서 로직 적용)</button>}
+            </form>
+          </div>
+        )}
+
+        <div ref={scrollRef}>
+          {loading && (
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-12 text-center animate-pulse">
+              <BarChart2 size={64} className="text-blue-600 mx-auto mb-4 animate-bounce" />
+              <h3 className="text-xl font-bold mb-2">전문가 데이터 분석 중...</h3>
+              <p className="text-slate-500">업로드하신 4개 참조 문서의 전략에 맞춰 실시간 데이터를 진단하고 있습니다.</p>
+            </div>
+          )}
+
+          {analysisResult && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className={`p-8 rounded-2xl border-2 flex flex-col md:flex-row items-center gap-8 ${
+                analysisResult.status === 'BUY' ? 'bg-green-50 border-green-200' : 
+                analysisResult.status === 'SELL' ? 'bg-red-50 border-red-200' : 
+                'bg-blue-50 border-blue-200'
+              }`}>
+                <div className={`p-5 rounded-full shadow-lg ${
+                  analysisResult.status === 'BUY' ? 'bg-green-600 text-white' : 
+                  analysisResult.status === 'SELL' ? 'bg-red-600 text-white' : 
+                  'bg-blue-600 text-white'
+                }`}>
+                  {analysisResult.status === 'BUY' ? <TrendingUp size={40} /> : analysisResult.status === 'SELL' ? <TrendingDown size={40} /> : <Clock size={40} />}
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <div className="text-xs uppercase font-black tracking-widest mb-1 text-slate-500">Document-Based Verdict</div>
+                  <h2 className="text-3xl font-black italic tracking-tighter mb-2">
+                    {analysisResult.status === 'BUY' ? '매수 적기 (LONG ENTRY)' : analysisResult.status === 'SELL' ? '매도/익절 (LIQUIDATION)' : '관망 및 대기 (WAIT & SEE)'}
+                  </h2>
+                  <p className="text-slate-600 font-medium leading-relaxed">{analysisResult.summary}</p>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-w-[160px] text-center">
+                  <div className="text-xs text-slate-400 font-bold mb-1">현재가/기준가</div>
+                  <div className="text-2xl font-mono font-black text-slate-900">{analysisResult.currentPrice}</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                  <span className="text-xs font-black text-slate-400 uppercase">기술적 지표</span>
+                  <div className="mt-4 space-y-2 text-sm font-bold">
+                    <div className="flex justify-between"><span>RSI</span><span>{analysisResult.indicators.rsi}</span></div>
+                    <div className="flex justify-between"><span>MACD</span><span>{analysisResult.indicators.macd}</span></div>
+                    <div className="flex justify-between"><span>EMA</span><span>{analysisResult.indicators.ema}</span></div>
+                  </div>
+                </div>
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                  <span className="text-xs font-black text-slate-400 uppercase">전략적 범위</span>
+                  <div className="mt-4 space-y-2 text-sm font-bold">
+                    <div className="flex justify-between text-green-600"><span>진입</span><span>{analysisResult.strategy.entryRange}</span></div>
+                    <div className="flex justify-between text-blue-600"><span>목표</span><span>{analysisResult.strategy.exitRange}</span></div>
+                    <div className="flex justify-between text-red-600"><span>손절</span><span>{analysisResult.strategy.stopLoss}</span></div>
+                  </div>
+                </div>
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                  <span className="text-xs font-black text-slate-400 uppercase">시장 환경</span>
+                  <p className="mt-4 text-xs font-medium text-slate-600 leading-tight">{analysisResult.marketAnalysis.index}</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
+                <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-blue-600" />
+                  <span className="font-black text-sm uppercase text-slate-700">참조 파일 기반 상세 분석 리포트</span>
+                </div>
+                <div className="p-8">
+                  <div className="prose prose-slate max-w-none">
+                    <div className="whitespace-pre-wrap text-slate-700 text-base leading-relaxed">
+                      {analysisResult.detailedAnalysis}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center pb-12">
+                <button onClick={reset} className="bg-slate-900 hover:bg-black text-white px-10 py-4 rounded-xl font-black transition-all shadow-xl">다른 종목 분석하기</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
