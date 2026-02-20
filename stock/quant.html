@@ -46,6 +46,16 @@
                         QuantMind AI
                     </span>
                 </div>
+                <!-- API Key Input in Nav -->
+                <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <i data-lucide="key" class="w-4 h-4 text-slate-400 ml-2"></i>
+                    <input 
+                        type="password" 
+                        id="apiKeyInputField" 
+                        placeholder="Gemini API Key 입력" 
+                        class="bg-transparent text-xs outline-none w-32 md:w-48 py-1.5 pr-2 placeholder:text-slate-400"
+                    >
+                </div>
             </div>
         </div>
     </nav>
@@ -57,13 +67,13 @@
                 AI <span class="text-indigo-600">퀀트 리서치</span> 대시보드
             </h1>
             <p class="text-slate-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-                4건의 전문 퀀트 방법론을 학습한 AI가 실시간 시황을 분석합니다.<br>
-                분석 후 채팅을 통해 더 자세한 이야기를 나눠보세요.
+                상단에 API 키를 입력한 후 종목을 검색하세요.<br>
+                4건의 전문 퀀트 방법론을 기반으로 실시간 시황을 분석합니다.
             </p>
         </div>
 
         <!-- Search Form -->
-        <div class="max-w-2xl mx-auto mb-12">
+        <div class="max-w-2xl mx-auto mb-8">
             <form id="searchForm" class="relative group">
                 <input
                     type="text"
@@ -82,6 +92,15 @@
                     <div id="btnLoader" class="loader hidden"></div>
                 </button>
             </form>
+        </div>
+
+        <!-- Error Message Display -->
+        <div id="errorMessage" class="hidden max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-3 animate-fade-in">
+            <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i>
+            <div>
+                <p class="font-bold">분석 중 에러가 발생했습니다</p>
+                <p id="errorDetail" class="mt-1 opacity-90"></p>
+            </div>
         </div>
 
         <!-- Loading State -->
@@ -126,7 +145,6 @@
 
                 <!-- Main Analysis & Chat Area -->
                 <div class="lg:col-span-2 space-y-6">
-                    <!-- Tab Navigation -->
                     <div class="flex gap-2 p-1.5 bg-slate-200/50 rounded-2xl w-fit">
                         <button onclick="showMainTab('analysis')" id="tabMainAn" class="px-6 py-2 rounded-xl text-sm font-bold bg-white text-indigo-600 shadow-sm transition-all">리포트</button>
                         <button onclick="showMainTab('chat')" id="tabMainChat" class="px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2">
@@ -134,7 +152,6 @@
                         </button>
                     </div>
 
-                    <!-- Report View -->
                     <div id="viewAnalysis" class="space-y-6 animate-fade-in">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="bg-white p-5 rounded-2xl border border-slate-200">
@@ -158,7 +175,6 @@
                         </div>
                     </div>
 
-                    <!-- Chat View -->
                     <div id="viewChat" class="hidden flex flex-col h-[600px] bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-lg animate-fade-in">
                         <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                             <div class="flex items-center gap-2">
@@ -169,37 +185,25 @@
                         </div>
                         
                         <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4 chat-scroll bg-slate-50/30">
-                            <!-- Messages will appear here -->
                             <div class="flex gap-3 max-w-[85%]">
                                 <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 text-white">
                                     <i data-lucide="bot" class="w-4 h-4"></i>
                                 </div>
-                                <div class="bg-white border border-slate-200 p-3.5 rounded-2xl rounded-tl-none shadow-sm">
-                                    <p class="text-sm text-slate-700 leading-relaxed">분석 결과에 대해 궁금한 점이 있으신가요? 매매 타점, 리스크 요인 등 무엇이든 물어보세요!</p>
+                                <div class="bg-white border border-slate-200 p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-slate-700">
+                                    분석 결과에 대해 궁금한 점이 있으신가요? 매매 타점, 리스크 요인 등 무엇이든 물어보세요!
                                 </div>
                             </div>
                         </div>
 
                         <div class="p-4 bg-white border-t border-slate-100">
                             <form id="chatForm" class="flex gap-2">
-                                <input
-                                    type="text"
-                                    id="chatInput"
-                                    placeholder="질문을 입력하세요..."
-                                    class="flex-1 px-4 py-3 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm outline-none"
-                                    autocomplete="off"
-                                >
-                                <button
-                                    type="submit"
-                                    id="chatSubmitBtn"
-                                    class="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
-                                >
+                                <input type="text" id="chatInput" placeholder="질문을 입력하세요..." class="flex-1 px-4 py-3 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm outline-none" autocomplete="off">
+                                <button type="submit" id="chatSubmitBtn" class="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100">
                                     <i data-lucide="send" class="w-5 h-5"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -207,98 +211,85 @@
 
     <script>
         lucide.createIcons();
-        const apiKey = ""; 
-        let chatHistory = []; // 대화 문맥 저장용
+        
+        // 하드코딩된 변수 대신, 입력 필드에서 값을 가져오는 함수를 정의합니다.
+        const getApiKey = () => document.getElementById('apiKeyInputField').value.trim();
+        
+        let chatHistory = [];
         let currentTicker = "";
 
         const searchForm = document.getElementById('searchForm');
         const tickerInput = document.getElementById('tickerInput');
         const loadingState = document.getElementById('loadingState');
         const resultSection = document.getElementById('resultSection');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorDetail = document.getElementById('errorDetail');
         const chatForm = document.getElementById('chatForm');
         const chatInput = document.getElementById('chatInput');
         const chatMessages = document.getElementById('chatMessages');
 
-        // 초기 분석 실행
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const ticker = tickerInput.value.trim();
+            const key = getApiKey();
+
+            if (!key) {
+                showError("상단 입력창에 Gemini API 키를 먼저 입력해 주세요.");
+                return;
+            }
             if (!ticker) return;
 
             currentTicker = ticker;
             toggleLoading(true);
             resultSection.classList.add('hidden');
-            chatHistory = []; // 새로운 종목 분석 시 히스토리 초기화
+            errorMessage.classList.add('hidden');
+            chatHistory = [];
 
-            const systemPrompt = `
-                너는 주식 분석 전문 퀀트야. 다음 4개 문서의 방법론을 엄격히 따져서 분석해:
-                1. '코스피 트레이딩 정석 (Apis)': 224일 장기 이평선 돌파 여부, 거래량 체크.
-                2. 'Smart Beta Timing': 팩터 저평가(Cheap) 여부 판단.
-                3. 'Market Timing': 타이밍의 위험성 고려.
-                4. 'AAI Methodology': 거시 지표 연계 분석.
-
-                첫 응답은 반드시 마크다운 없이 순수 JSON 구조로만 응답해:
-                {
-                    "summary": "핵심 요약",
-                    "technical": "기술적 분석",
-                    "fundamental": "밸류에이션 분석",
-                    "timing": "타이밍 조언",
-                    "score": 1~100 점수,
-                    "strategy": "매매 가이드"
-                }
-            `;
+            const systemPrompt = `너는 주식 분석 전문 퀀트야. 다음 4개 문서의 방법론(Apis 224일선, Smart Beta Factor, Market Timing, AAI Methodology)을 기반으로 분석해. 첫 응답은 반드시 순수 JSON 구조로만 응답해: {"summary": "요약", "technical": "기술분석", "fundamental": "밸류분석", "timing": "타이밍", "score": 점수, "strategy": "전략"}`;
 
             try {
-                const text = await callGemini(`${ticker} 종목에 대해 구글 검색 결과를 포함하여 위 문서 방법론으로 심층 분석해줘.`, systemPrompt);
+                const text = await callGemini(`${ticker} 종목에 대해 구글 검색 결과를 포함하여 심층 분석해줘.`, systemPrompt);
                 const cleanJson = JSON.parse(text.replace(/```json|```/g, "").trim());
                 
-                // 히스토리에 분석 결과 저장 (문맥 유지용)
                 chatHistory.push({ role: "user", parts: [{ text: `${ticker} 분석 시작` }] });
                 chatHistory.push({ role: "model", parts: [{ text: JSON.stringify(cleanJson) }] });
 
                 renderResult(ticker, cleanJson);
                 document.getElementById('chatTitle').innerText = `${ticker} AI 대화`;
             } catch (err) {
-                console.error(err);
-                alert("분석 중 오류가 발생했습니다.");
+                showError(err.message);
             } finally {
                 toggleLoading(false);
             }
         });
 
-        // 채팅 메시지 전송
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = chatInput.value.trim();
             if (!message) return;
 
-            // UI에 사용자 메시지 추가
             addMessageToUI('user', message);
             chatInput.value = '';
-            
             const typingMsg = addMessageToUI('model', '<div class="loader"></div>');
 
             try {
-                const systemPrompt = `너는 앞서 분석한 ${currentTicker} 종목에 대해 사용자와 대화하는 퀀트 애널리스트야. 제공된 4개의 퀀트 문서 방법론을 바탕으로 답변하고, 친절하면서도 전문적인 어조를 유지해.`;
-                
+                const systemPrompt = `너는 분석된 ${currentTicker} 종목에 대해 대화하는 퀀트야. 전문적이고 친절하게 답변해.`;
                 const response = await callGemini(message, systemPrompt, chatHistory);
-                
-                // 타이핑 효과 대신 즉시 업데이트
-                typingMsg.innerHTML = `<p class="text-sm text-slate-700 leading-relaxed">${response.replace(/\n/g, '<br>')}</p>`;
-                
-                // 히스토리 업데이트
+                typingMsg.innerHTML = response.replace(/\n/g, '<br>');
                 chatHistory.push({ role: "user", parts: [{ text: message }] });
                 chatHistory.push({ role: "model", parts: [{ text: response }] });
-                
-                lucide.createIcons();
             } catch (err) {
-                typingMsg.innerText = "답변을 가져오는 중 오류가 발생했습니다.";
+                typingMsg.innerText = "답변을 가져오는 중 에러가 발생했습니다: " + err.message;
             }
         });
 
         async function callGemini(prompt, systemPrompt, history = [], retries = 5) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            
+            const key = getApiKey(); // API 호출 시점에 현재 입력된 키를 가져옵니다.
+            if (!key) {
+                throw new Error("API 키가 입력되지 않았습니다.");
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
             const payload = {
                 contents: [...history, { role: "user", parts: [{ text: prompt }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -312,8 +303,16 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
+
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.error?.message || `HTTP 에러 ${res.status}`);
+                    }
+
                     const data = await res.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!content) throw new Error("API가 빈 응답을 반환했습니다.");
+                    return content;
                 } catch (e) {
                     if (i === retries - 1) throw e;
                     await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
@@ -321,13 +320,17 @@
             }
         }
 
+        function showError(msg) {
+            errorDetail.innerText = msg;
+            errorMessage.classList.remove('hidden');
+            window.scrollTo({ top: errorMessage.offsetTop - 100, behavior: 'smooth' });
+        }
+
         function toggleLoading(isLoading) {
             document.getElementById('submitBtn').disabled = isLoading;
             document.getElementById('btnLoader').classList.toggle('hidden', !isLoading);
             document.getElementById('btnText').classList.toggle('hidden', isLoading);
             loadingState.classList.toggle('hidden', !isLoading);
-            if (isLoading) document.getElementById('heroSection').classList.add('opacity-50');
-            else document.getElementById('heroSection').classList.remove('opacity-50');
         }
 
         function renderResult(ticker, data) {
@@ -337,7 +340,6 @@
             document.getElementById('resTechnical').innerText = data.technical;
             document.getElementById('resFundamental').innerText = data.fundamental;
             document.getElementById('resStrategy').innerText = data.strategy;
-
             resultSection.classList.remove('hidden');
             showMainTab('analysis');
             window.scrollTo({ top: resultSection.offsetTop - 100, behavior: 'smooth' });
@@ -347,17 +349,14 @@
             const isAn = tab === 'analysis';
             document.getElementById('viewAnalysis').classList.toggle('hidden', !isAn);
             document.getElementById('viewChat').classList.toggle('hidden', isAn);
-            
             const btnAn = document.getElementById('tabMainAn');
             const btnChat = document.getElementById('tabMainChat');
-            
             if (isAn) {
                 btnAn.className = "px-6 py-2 rounded-xl text-sm font-bold bg-white text-indigo-600 shadow-sm transition-all";
                 btnChat.className = "px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2";
             } else {
                 btnChat.className = "px-6 py-2 rounded-xl text-sm font-bold bg-white text-indigo-600 shadow-sm transition-all flex items-center gap-2";
                 btnAn.className = "px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 transition-all";
-                // 채팅창으로 전환 시 스크롤 하단으로
                 setTimeout(() => { chatMessages.scrollTop = chatMessages.scrollHeight; }, 100);
             }
         }
@@ -366,17 +365,13 @@
             const isUser = role === 'user';
             const wrapper = document.createElement('div');
             wrapper.className = `flex gap-3 ${isUser ? 'flex-row-reverse' : ''} animate-fade-in`;
-            
-            const content = `
+            wrapper.innerHTML = `
                 <div class="w-8 h-8 rounded-full ${isUser ? 'bg-slate-200 text-slate-600' : 'bg-indigo-600 text-white'} flex items-center justify-center shrink-0">
                     <i data-lucide="${isUser ? 'user' : 'bot'}" class="w-4 h-4"></i>
                 </div>
-                <div class="${isUser ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-700 rounded-tl-none'} p-3.5 rounded-2xl shadow-sm max-w-[85%]">
-                    <div class="text-sm leading-relaxed">${text}</div>
-                </div>
-            `;
-            
-            wrapper.innerHTML = content;
+                <div class="${isUser ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-700 rounded-tl-none'} p-3.5 rounded-2xl shadow-sm max-w-[85%] text-sm leading-relaxed">
+                    ${text}
+                </div>`;
             chatMessages.appendChild(wrapper);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             lucide.createIcons();
@@ -384,9 +379,9 @@
         }
 
         function clearChat() {
-            chatMessages.innerHTML = '';
-            chatHistory = chatHistory.slice(0, 2); // 초기 분석 결과만 남김
-            addMessageToUI('model', '대화 기록이 초기화되었습니다. 분석된 종목에 대해 다시 질문해 주세요.');
+            chatMessages.innerHTML = '<div class="flex gap-3 max-w-[85%]"><div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 text-white"><i data-lucide="bot" class="w-4 h-4"></i></div><div class="bg-white border border-slate-200 p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-slate-700">대화가 초기화되었습니다.</div></div>';
+            chatHistory = chatHistory.slice(0, 2);
+            lucide.createIcons();
         }
     </script>
 </body>
