@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Samsung AI Analyst</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">SAMSUNG <span>AI Analyst</span></div>
+            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+        </header>
+
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <h3>⚙️ API & 알림 설정</h3>
+                <input type="password" id="gemini-key" placeholder="Gemini API Key">
+                <input type="password" id="stock-api-key" placeholder="Finnhub API Key">
+                <hr>
+                <h4>🔔 가격 알림</h4>
+                <input type="number" id="target-price" placeholder="목표가 (예: 80000)">
+                <button onclick="requestNotificationPermission()" id="noti-btn" class="sub-btn">알림 권한 요청</button>
+                <button onclick="toggleSettings()" class="save-btn">닫기 및 저장</button>
+            </div>
+        </div>
+
+        <main class="content">
+            <div class="price-card">
+                <div class="stock-info">
+                    <h2>005930.KS</h2>
+                    <p id="current-time">실시간 데이터 수집 중...</p>
+                </div>
+                <div class="price-display">
+                    <h1 id="price">---</h1>
+                    <span id="change">-- (--%)</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div id="main-chart"></div>
+            </div>
+
+            <button id="analyze-btn" class="action-btn">🤖 AI 전문가 분석 실행</button>
+
+            <div class="report-section">
+                <h3>📋 분석 리포트</h3>
+                <div id="report-content" class="report-box">
+                    API 키를 설정하고 분석을 시작하세요.
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active">📈<span>차트</span></div>
+            <div class="nav-item">📰<span>뉴스</span></div>
+            <div class="nav-item">💰<span>자산</span></div>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
