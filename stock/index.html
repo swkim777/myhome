@@ -18,14 +18,30 @@
 
         <div id="settings-modal" class="modal">
             <div class="modal-content">
-                <h3>⚙️ API & 알림 설정</h3>
-                <input type="password" id="gemini-key" placeholder="Gemini API Key">
-                <input type="password" id="stock-api-key" placeholder="Finnhub API Key">
+                <h3>⚙️ 설정 및 보안</h3>
+                <p class="setting-desc">키는 브라우저 로컬 저장소(LocalStorage)에 저장됩니다.</p>
+                
+                <div class="input-field">
+                    <label>Gemini API Key</label>
+                    <input type="password" id="gemini-key" placeholder="AI 분석용 키 입력">
+                </div>
+
+                <div class="input-field">
+                    <label>Finnhub API Key</label>
+                    <input type="password" id="stock-api-key" placeholder="주가 데이터용 키 입력">
+                </div>
+
                 <hr>
-                <h4>🔔 가격 알림</h4>
-                <input type="number" id="target-price" placeholder="목표가 (예: 80000)">
-                <button onclick="requestNotificationPermission()" id="noti-btn" class="sub-btn">알림 권한 요청</button>
-                <button onclick="toggleSettings()" class="save-btn">닫기 및 저장</button>
+                <h4>🔔 가격 알림 설정</h4>
+                <div class="input-field">
+                    <input type="number" id="target-price" placeholder="목표가 (예: 80000)">
+                    <button onclick="requestNotificationPermission()" id="noti-btn" class="sub-btn">알림 권한 요청</button>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="saveSettingsToStorage()" class="save-btn">✅ 저장 후 닫기</button>
+                    <button onclick="clearSettings()" class="clear-btn">🗑️ 초기화</button>
+                </div>
             </div>
         </div>
 
@@ -33,7 +49,7 @@
             <div class="price-card">
                 <div class="stock-info">
                     <h2>005930.KS</h2>
-                    <p id="current-time">실시간 데이터 수집 중...</p>
+                    <p id="current-time">데이터 로딩 중...</p>
                 </div>
                 <div class="price-display">
                     <h1 id="price">---</h1>
@@ -50,7 +66,7 @@
             <div class="report-section">
                 <h3>📋 분석 리포트</h3>
                 <div id="report-content" class="report-box">
-                    API 키를 설정하고 분석을 시작하세요.
+                    오른쪽 상단 설정(⚙️) 버튼을 눌러 API 키를 먼저 등록해 주세요.
                 </div>
             </div>
         </main>
