@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
 
+    X-Finnhub-Secret": "d6cgh71r01qsiik25s3g
+
     <style>
         /* [CSS 영역] */
         :root {
@@ -255,7 +257,7 @@
             reportBox.innerHTML = "<div style='text-align:center;'>🧠 AI가 시장 데이터를 분석 중입니다...</div>";
             
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=${geminiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
