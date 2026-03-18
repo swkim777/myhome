@@ -1,5 +1,5 @@
 {
-  "name": "US Economic Insights Generator",
-  "description": "최근 24시간 미국 경제 동향, 연준 금리, 나스닥 흐름을 분석하여 블로그 포스트를 생성하는 웹앱",
+  "name": "US Economic Pulse",
+  "description": "최근 24시간 미국 경제, 연준 금리, 나스닥 동향을 분석하여 블로그 포스트를 생성하는 AI 기반 경제 뉴스 대시보드",
   "requestFramePermissions": []
 }

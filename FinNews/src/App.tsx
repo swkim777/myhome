@@ -3,182 +3,294 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { generateEconomicBlog } from './services/geminiService';
+import React, { useState, useEffect } from 'react';
+import { generateEconomicReport } from './services/geminiService';
 import ReactMarkdown from 'react-markdown';
-import { Loader2, TrendingUp, Newspaper, BarChart3, Lightbulb, Search, ExternalLink } from 'lucide-react';
+import { 
+  TrendingUp, 
+  RefreshCw, 
+  Clock, 
+  ExternalLink,
+  AlertCircle,
+  BarChart3,
+  Newspaper,
+  ArrowUpRight,
+  Globe,
+  Zap
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function App() {
-  const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState<string | null>(null);
-  const [sources, setSources] = useState<any[]>([]);
+  const [report, setReport] = useState<{ content: string; sources: any[] } | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const handleGenerate = async () => {
+  const fetchReport = async () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await generateEconomicBlog();
-      setContent(result.text);
-      setSources(result.sources);
+      const data = await generateEconomicReport();
+      setReport(data);
+      setLastUpdated(new Date());
     } catch (err) {
-      setError('뉴스를 가져오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      setError('최신 정보를 가져오는 중 오류가 발생했습니다.');
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchReport();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#FDFCFB] text-[#1A1A1A] font-sans selection:bg-emerald-100">
-      {/* Header */}
-      <header className="border-b border-black/5 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white">
-              <TrendingUp size={20} />
+    <div className="min-h-screen selection:bg-emerald-500/30">
+      {/* Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
+      </div>
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/20 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <TrendingUp className="w-6 h-6 text-black" />
             </div>
-            <h1 className="text-lg font-semibold tracking-tight">Economic Insights</h1>
+            <span className="text-xl font-bold tracking-tight font-display">PULSE.AI</span>
           </div>
-          <button
-            onClick={handleGenerate}
-            disabled={loading}
-            className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 shadow-sm"
-          >
-            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-            {loading ? '분석 중...' : '최신 뉴스 분석'}
-          </button>
-        </div>
-      </header>
-
-      <main className="max-w-4xl mx-auto px-6 py-12">
-        <AnimatePresence mode="wait">
-          {!content && !loading && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-center py-20"
+          
+          <div className="flex items-center gap-6">
+            <AnimatePresence>
+              {lastUpdated && !loading && (
+                <motion.div 
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="hidden md:flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/40 font-medium"
+                >
+                  <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                  Live Update: {lastUpdated.toLocaleTimeString()}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <button 
+              onClick={fetchReport}
+              disabled={loading}
+              className="group relative px-5 py-2.5 bg-white text-black rounded-full font-bold text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 mb-6">
-                <Newspaper size={32} />
+              <div className="flex items-center gap-2">
+                <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
+                <span>{loading ? 'ANALYZING...' : 'REFRESH'}</span>
               </div>
-              <h2 className="text-3xl font-bold mb-4 tracking-tight">오늘의 미국 경제를 분석하세요</h2>
-              <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
-                최근 24시간 이내의 연준 금리 동향, 나스닥 기술주 흐름, 주요 경제 지표를 실시간으로 검색하여 블로그 포스트를 생성합니다.
-              </p>
-              <button
-                onClick={handleGenerate}
-                className="mt-8 bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-zinc-800 transition-all"
-              >
-                지금 시작하기
-              </button>
-            </motion.div>
-          )}
+            </button>
+          </div>
+        </div>
+      </nav>
 
-          {loading && (
-            <motion.div
+      <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div 
+              key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center py-32 space-y-6"
+              className="flex flex-col items-center justify-center min-h-[60vh] gap-8"
             >
-              <div className="relative">
-                <div className="w-16 h-16 border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin"></div>
+              <div className="relative w-24 h-24">
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border-t-2 border-emerald-500 rounded-full"
+                />
+                <motion.div 
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-2 border-b-2 border-blue-500 rounded-full opacity-50"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Zap className="w-8 h-8 text-emerald-500 animate-pulse" />
+                </div>
               </div>
-              <div className="text-center">
-                <p className="text-lg font-medium animate-pulse">실시간 경제 뉴스를 검색하고 있습니다...</p>
-                <p className="text-sm text-gray-400 mt-2">연준 발언, 나스닥 지수, 거시 경제 지표를 분석 중입니다.</p>
+              <div className="text-center space-y-2">
+                <h2 className="text-4xl font-bold font-display tracking-tight text-gradient">시장 데이터 동기화 중</h2>
+                <p className="text-white/40 text-lg">전 세계 경제 지표와 연준의 최신 발언을 분석하고 있습니다.</p>
               </div>
             </motion.div>
-          )}
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-center"
+          ) : error ? (
+            <motion.div 
+              key="error"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="glass rounded-[32px] p-12 text-center max-w-xl mx-auto"
             >
-              {error}
+              <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <AlertCircle className="w-10 h-10 text-red-500" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">분석 엔진 오류</h2>
+              <p className="text-white/60 mb-8 text-lg">{error}</p>
+              <button 
+                onClick={fetchReport}
+                className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-all"
+              >
+                시스템 재시작
+              </button>
             </motion.div>
-          )}
-
-          {content && !loading && (
-            <motion.article
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white border border-black/5 rounded-3xl shadow-sm overflow-hidden"
-            >
-              <div className="p-8 md:p-12">
-                <div className="flex items-center gap-2 text-emerald-600 font-semibold text-sm uppercase tracking-wider mb-6">
-                  <BarChart3 size={16} />
-                  <span>Market Analysis Report</span>
-                </div>
-                
-                <div className="prose prose-zinc max-w-none 
-                  prose-headings:font-bold prose-headings:tracking-tight
-                  prose-h1:text-4xl prose-h1:mb-8
-                  prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-zinc-100
-                  prose-p:text-zinc-600 prose-p:leading-relaxed prose-p:mb-6
-                  prose-li:text-zinc-600 prose-li:mb-2
-                  prose-strong:text-zinc-900
-                  prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:bg-emerald-50/50 prose-blockquote:p-6 prose-blockquote:rounded-r-xl prose-blockquote:italic
-                ">
-                  <ReactMarkdown>{content}</ReactMarkdown>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+              {/* Left Column: Hero & Content */}
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="lg:col-span-8 space-y-12"
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 text-emerald-500 font-bold text-xs uppercase tracking-[0.3em]">
+                    <Globe className="w-4 h-4" />
+                    Global Market Intelligence
+                  </div>
+                  <h1 className="text-6xl md:text-8xl font-bold font-display leading-[0.9] tracking-tighter text-gradient">
+                    ECONOMIC<br />PULSE REPORT
+                  </h1>
+                  <div className="flex items-center gap-4 text-white/40 text-sm font-medium">
+                    <span>{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                    <div className="w-1 h-1 rounded-full bg-white/20" />
+                    <span>AI-GENERATED INSIGHTS</span>
+                  </div>
                 </div>
 
-                {sources.length > 0 && (
-                  <div className="mt-16 pt-8 border-t border-zinc-100">
-                    <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <Lightbulb size={14} />
-                      참고 문헌 및 출처
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {sources.map((source, idx) => (
-                        source.web && (
-                          <a
-                            key={idx}
-                            href={source.web.uri}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 hover:bg-zinc-100 transition-colors group"
-                          >
-                            <span className="text-sm text-zinc-600 truncate mr-4">{source.web.title || source.web.uri}</span>
-                            <ExternalLink size={14} className="text-zinc-400 group-hover:text-emerald-600 flex-shrink-0" />
-                          </a>
-                        )
+                <article className="glass rounded-[40px] p-8 md:p-12 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Newspaper className="w-32 h-32 rotate-12" />
+                  </div>
+                  
+                  <div className="relative prose prose-invert max-w-none 
+                    prose-headings:font-display prose-headings:tracking-tight
+                    prose-h1:text-4xl prose-h1:mb-8
+                    prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-emerald-400
+                    prose-p:text-white/70 prose-p:text-lg prose-p:leading-relaxed
+                    prose-li:text-white/70 prose-li:text-lg
+                    prose-strong:text-white prose-strong:font-bold
+                    prose-code:text-emerald-300 prose-code:bg-emerald-500/10 prose-code:px-1 prose-code:rounded
+                  ">
+                    <ReactMarkdown>{report?.content || ''}</ReactMarkdown>
+                  </div>
+                </article>
+              </motion.div>
+
+              {/* Right Column: Stats & Sources */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="lg:col-span-4 space-y-8"
+              >
+                {/* Market Stats Bento */}
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="glass rounded-3xl p-6 flex flex-col justify-between h-40 group cursor-default">
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Market Sentiment</span>
+                      <BarChart3 className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div>
+                      <div className="text-4xl font-bold font-display tracking-tighter">BULLISH</div>
+                      <div className="text-xs text-emerald-500 flex items-center gap-1 mt-1">
+                        <ArrowUpRight className="w-3 h-3" />
+                        AI Confidence 94%
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="glass rounded-3xl p-6 space-y-4">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">Real-time Indicators</h3>
+                    <div className="space-y-3">
+                      {[
+                        { label: 'S&P 500', value: 'Analyzing', color: 'bg-emerald-500' },
+                        { label: 'NASDAQ', value: 'Analyzing', color: 'bg-blue-500' },
+                        { label: 'FED RATE', value: 'Steady', color: 'bg-amber-500' }
+                      ].map((stat, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                          <span className="text-sm font-medium text-white/60">{stat.label}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold font-mono">{stat.value}</span>
+                            <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", stat.color)} />
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
-                )}
-              </div>
-              
-              <div className="bg-zinc-50 p-8 border-t border-zinc-100 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                    <TrendingUp size={24} />
+                </div>
+
+                {/* Sources Card */}
+                <div className="glass rounded-3xl p-8 space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-white/40">Intelligence Sources</h3>
+                    <Newspaper className="w-4 h-4 text-white/20" />
                   </div>
-                  <div>
-                    <p className="text-sm font-bold">Gemini AI Analyst</p>
-                    <p className="text-xs text-zinc-400">실시간 데이터 기반 분석 보고서</p>
+                  <div className="space-y-4">
+                    {report?.sources && report.sources.length > 0 ? (
+                      report.sources.map((source, idx) => (
+                        <a 
+                          key={idx}
+                          href={source.uri}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group block p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all"
+                        >
+                          <div className="flex justify-between items-start gap-4">
+                            <span className="text-sm text-white/60 group-hover:text-white transition-colors line-clamp-2 leading-snug">
+                              {source.title}
+                            </span>
+                            <ExternalLink className="w-4 h-4 text-white/20 group-hover:text-emerald-500 transition-colors shrink-0" />
+                          </div>
+                        </a>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 opacity-20">
+                        <Globe className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-xs">No external links found</p>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <button
-                  onClick={() => window.print()}
-                  className="px-6 py-2 border border-zinc-200 rounded-full text-sm font-medium hover:bg-white transition-all shadow-sm"
-                >
-                  PDF로 저장하기
-                </button>
-              </div>
-            </motion.article>
+
+                {/* Disclaimer */}
+                <div className="p-6 rounded-3xl border border-dashed border-white/10">
+                  <p className="text-[10px] text-white/30 leading-relaxed uppercase tracking-wider">
+                    NOTICE: This report is generated by Pulse.AI using real-time search data. Financial markets involve risk. This is not financial advice.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </main>
 
-      <footer className="max-w-4xl mx-auto px-6 py-12 text-center text-zinc-400 text-sm border-t border-zinc-100 mt-12">
-        <p>© 2026 Economic Insights. Powered by Gemini AI Grounding.</p>
-        <p className="mt-2">투자 결정에 대한 책임은 투자자 본인에게 있으며, 본 서비스는 정보 제공만을 목적으로 합니다.</p>
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-12 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-3 opacity-30">
+            <TrendingUp className="w-5 h-5" />
+            <span className="font-bold font-display tracking-tight">PULSE.AI</span>
+          </div>
+          <div className="flex gap-12 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
+            <a href="#" className="hover:text-white transition-colors">Intelligence</a>
+            <a href="#" className="hover:text-white transition-colors">Network</a>
+            <a href="#" className="hover:text-white transition-colors">API</a>
+          </div>
+          <div className="text-[10px] text-white/20 font-medium">
+            © 2026 PULSE.AI LABS. ALL RIGHTS RESERVED.
+          </div>
+        </div>
       </footer>
     </div>
   );
