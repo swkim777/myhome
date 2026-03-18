@@ -38,7 +38,9 @@ jobs:
         run: |
           rm -rf ./FinNews
           mkdir -p ./FinNews
-          cp -R ./FinNews/dist/* ./FinNews/
+          if [ -d ./FinNews/dist ]; then
+            cp -R ./FinNews/dist/* ./FinNews/
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
