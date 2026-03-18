@@ -25,6 +25,8 @@ jobs:
 
       - name: Install and build FinNews
         working-directory: ./FinNews
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           npm ci
           npm run build
@@ -36,7 +38,7 @@ jobs:
         run: |
           rm -rf ./FinNews
           mkdir -p ./FinNews
-          cp -R ./FinNewsBuild/* ./FinNews/
+          cp -R ./FinNews/dist/* ./FinNews/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
