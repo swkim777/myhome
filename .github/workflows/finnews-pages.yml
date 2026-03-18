@@ -28,11 +28,20 @@ jobs:
         run: |
           npm ci
           npm run build
+          rm -rf ../FinNewsBuild
+          mkdir -p ../FinNewsBuild
+          cp -R dist/* ../FinNewsBuild/
+
+      - name: Prepare site root
+        run: |
+          rm -rf ./FinNews
+          mkdir -p ./FinNews
+          cp -R ./FinNewsBuild/* ./FinNews/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./FinNews/dist
+          path: ./
 
   deploy:
     needs: build
