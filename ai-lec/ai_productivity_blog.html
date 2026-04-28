@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 기술로 업무 생산성 최적화하기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --accent: #c8392b;
+    --gold: #b8962e;
+    --muted: #6b6459;
+    --light-rule: #d4cfc6;
+    --highlight-bg: #fdf6e3;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* HEADER */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .masthead-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(255,255,255,0.04) 39px,
+        rgba(255,255,255,0.04) 40px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 59px,
+        rgba(255,255,255,0.02) 59px,
+        rgba(255,255,255,0.02) 60px
+      );
+  }
+
+  .masthead-accent {
+    position: absolute;
+    top: 0; right: 0;
+    width: 45%;
+    height: 100%;
+    background: var(--accent);
+    clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+    opacity: 0.12;
+  }
+
+  .masthead-number {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    font-family: 'Space Mono', monospace;
+    font-size: 200px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .masthead-tag {
+    position: absolute;
+    top: 40px;
+    left: 60px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .masthead-tag .pub {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .masthead-tag .issue {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .masthead-content {
+    position: relative;
+    z-index: 2;
+    padding: 60px;
+    padding-top: 120px;
+  }
+
+  .category-pill {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    margin-bottom: 32px;
+  }
+
+  .masthead h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: white;
+    max-width: 800px;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+
+  .masthead h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .masthead-meta {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    max-width: 800px;
+  }
+
+  .masthead-meta .author {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.05em;
+  }
+
+  .masthead-meta .author strong {
+    color: white;
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .masthead-meta .divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+  }
+
+  .masthead-meta .read-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* LEAD */
+  .lead-section {
+    background: white;
+    padding: 80px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .lead-quote {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .lead-quote::before {
+    content: '\201C';
+    display: block;
+    font-size: 80px;
+    line-height: 0.8;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-family: Georgia, serif;
+  }
+
+  .lead-rule {
+    background: var(--light-rule);
+  }
+
+  .lead-intro {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  .lead-intro p + p { margin-top: 1.2em; }
+
+  /* MAIN CONTENT */
+  .content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 60px;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* FEATURE CARDS */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin: 48px 0;
+    background: var(--light-rule);
+  }
+
+  .feature-card {
+    background: white;
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s ease;
+  }
+
+  .feature-card:hover::before { transform: scaleY(1); }
+
+  .feature-card:hover { background: var(--highlight-bg); }
+
+  .feature-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .feature-card h3 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--ink);
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 80px -60px;
+  }
+
+  .stat-item {
+    padding: 48px 40px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  /* BODY TEXT */
+  .body-text {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    margin: 48px 0;
+  }
+
+  .body-text p {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #2a2420;
+  }
+
+  .body-text p + p { margin-top: 1.3em; }
+
+  .sidebar-note {
+    background: var(--ink);
+    color: white;
+    padding: 32px;
+    align-self: start;
+    position: sticky;
+    top: 24px;
+  }
+
+  .sidebar-note h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-note p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+
+  /* WORKFLOW VISUAL */
+  .workflow {
+    margin: 64px 0;
+    position: relative;
+  }
+
+  .workflow-steps {
+    display: flex;
+    gap: 0;
+    position: relative;
+  }
+
+  .workflow-steps::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    right: 36px;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--accent) 0, var(--accent) 8px, transparent 8px, transparent 16px);
+  }
+
+  .workflow-step {
+    flex: 1;
+    text-align: center;
+    padding: 0 12px;
+    position: relative;
+  }
+
+  .step-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    position: relative;
+    z-index: 1;
+    background: var(--paper);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .workflow-step:hover .step-circle {
+    background: var(--accent);
+    color: white;
+  }
+
+  .step-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* TOOL SHOWCASE */
+  .tool-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 40px 0;
+    font-size: 14px;
+  }
+
+  .tool-table thead tr {
+    background: var(--ink);
+    color: white;
+  }
+
+  .tool-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .tool-table tbody tr {
+    border-bottom: 1px solid var(--light-rule);
+    transition: background 0.2s;
+  }
+
+  .tool-table tbody tr:hover { background: white; }
+
+  .tool-table td {
+    padding: 16px 20px;
+    color: #2a2420;
+    vertical-align: top;
+  }
+
+  .tool-table td:first-child {
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .tag.gold { background: var(--gold); }
+  .tag.dark { background: var(--ink); }
+
+  /* PULLQUOTE */
+  .pullquote {
+    margin: 64px 0;
+    padding: 48px 60px;
+    background: var(--accent);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pullquote::after {
+    content: '\201D';
+    position: absolute;
+    bottom: -40px;
+    right: 40px;
+    font-size: 200px;
+    line-height: 1;
+    color: rgba(255,255,255,0.1);
+    font-family: Georgia, serif;
+  }
+
+  .pullquote p {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+  }
+
+  .pullquote cite {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-top: 20px;
+    font-style: normal;
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    margin: 32px 0;
+  }
+
+  .checklist li {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--light-rule);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .checklist li:first-child { border-top: 1px solid var(--light-rule); }
+
+  .check-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    border: none;
+    border-top: 2px solid var(--light-rule);
+    margin: 80px 0;
+  }
+
+  /* FOOTER */
+  .article-footer {
+    background: var(--ink);
+    color: white;
+    padding: 80px 60px;
+    margin-top: 80px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 60px;
+    max-width: 1080px;
+  }
+
+  .footer-cta h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .footer-cta p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 14px 36px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s;
+    cursor: pointer;
+    border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  .btn-primary:hover { background: #a02d22; }
+
+  .footer-rule { background: rgba(255,255,255,0.1); }
+
+  .footer-tags h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+  }
+
+  .tag-list li {
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    padding: 6px 14px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .tag-list li:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  @media (max-width: 900px) {
+    .masthead-content { padding: 40px; }
+    .lead-section { grid-template-columns: 1fr; padding: 48px 40px; }
+    .lead-rule { display: none; }
+    .content-wrapper { padding: 48px 40px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); margin: 48px -40px; }
+    .body-text { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-rule { display: none; }
+    .workflow-steps { flex-direction: column; }
+    .workflow-steps::before { display: none; }
+    .article-footer { padding: 48px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-bg"></div>
+  <div class="masthead-accent"></div>
+  <div class="masthead-number">AI</div>
+
+  <div class="masthead-tag">
+    <span class="pub">Productivity Intelligence</span>
+    <span class="issue">Vol. 2025 · Issue 04</span>
+  </div>
+
+  <div class="masthead-content">
+    <span class="category-pill">특집 기획</span>
+    <h1>AI로 여는<br><em>업무 혁신</em>의<br>새로운 시대</h1>
+    <div class="masthead-meta">
+      <div class="author">
+        <strong>Productivity Intelligence</strong>
+        2025년 4월 27일 발행
+      </div>
+      <div class="divider"></div>
+      <div class="read-time">약 12분 분량</div>
+    </div>
+  </div>
+</header>
+
+<!-- LEAD -->
+<section class="lead-section">
+  <div class="lead-quote">
+    AI는 도구가 아니라 파트너다. 반복을 줄이고 본질에 집중하는 방식으로 일하는 시대가 이미 시작됐다.
+  </div>
+  <div class="lead-rule"></div>
+  <div class="lead-intro">
+    <p>2025년 현재, AI 기술은 더 이상 실험적 개념이 아니다. McKinsey 글로벌 연구소에 따르면 AI를 적극 도입한 기업은 그렇지 않은 기업 대비 생산성이 평균 <strong>40% 이상</strong> 향상된 것으로 나타났다.</p>
+    <p>이 글은 단순한 도구 소개서가 아니다. AI를 실제 업무에 녹여내기 위한 사고방식, 전략, 그리고 실행 체계를 다룬다. 당신의 하루를 바꿀 방법이 여기 있다.</p>
+    <p>직장인 10명 중 7명이 단순 반복 업무에 전체 시간의 절반 이상을 쏟고 있다. AI는 그 절반을 되돌려줄 수 있다.</p>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="content-wrapper">
+
+  <!-- SECTION 1 -->
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">AI 생산성의 핵심 영역 세 가지</h2>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🧠</span>
+      <h3>인지 부하 감소</h3>
+      <p>AI는 정보 수집, 요약, 분류를 대신 처리하여 인간의 뇌가 고차원적 판단에 집중할 수 있도록 환경을 만든다. 회의록 자동 생성, 이메일 초안 작성이 대표적 예시다.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3>워크플로우 자동화</h3>
+      <p>Zapier, Make 같은 AI 기반 자동화 플랫폼은 수백 개 앱을 연결해 반복 작업을 제로화한다. 한 번 설정으로 매주 수 시간을 절약한다.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <h3>데이터 기반 의사결정</h3>
+      <p>AI 분석 도구는 복잡한 데이터에서 패턴을 발견하고 인사이트를 즉시 추출한다. 수동 분석에 사흘이 걸리던 작업이 30분으로 단축된다.</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">40%</span>
+      <span class="stat-label">평균 생산성 향상</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">2.5h</span>
+      <span class="stat-label">하루 절약 시간</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">78%</span>
+      <span class="stat-label">반복업무 자동화율</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">3×</span>
+      <span class="stat-label">콘텐츠 생산 속도</span>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">AI 도입 5단계 워크플로우</h2>
+  </div>
+
+  <div class="workflow">
+    <div class="workflow-steps">
+      <div class="workflow-step">
+        <div class="step-circle">01</div>
+        <div class="step-title">현황 진단</div>
+        <div class="step-desc">반복 업무와 시간 소모 패턴을 데이터로 파악한다</div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-circle">02</div>
+        <div class="step-title">도구 선정</div>
+        <div class="step-desc">업무 유형과 팀 규모에 맞는 AI 솔루션을 선별한다</div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-circle">03</div>
+        <div class="step-title">파일럿 실행</div>
+        <div class="step-desc">소규모 테스트로 효과를 검증하고 문제점을 발견한다</div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-circle">04</div>
+        <div class="step-title">전사 적용</div>
+        <div class="step-desc">교육과 가이드라인 수립 후 조직 전체로 확산한다</div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-circle">05</div>
+        <div class="step-title">성과 측정</div>
+        <div class="step-desc">KPI 기반으로 ROI를 추적하고 지속 개선한다</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- SECTION 3 -->
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">직군별 추천 AI 도구 목록</h2>
+  </div>
+
+  <table class="tool-table">
+    <thead>
+      <tr>
+        <th>도구명</th>
+        <th>적용 직군</th>
+        <th>핵심 기능</th>
+        <th>추천도</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Claude <span class="tag">AI 어시스턴트</span></td>
+        <td>전 직군</td>
+        <td>글쓰기, 분석, 코딩, 전략 수립, 리서치 보조</td>
+        <td>★★★★★</td>
+      </tr>
+      <tr>
+        <td>Notion AI <span class="tag gold">문서</span></td>
+        <td>기획·PM</td>
+        <td>회의록 요약, 문서 자동 생성, 아이디어 정리</td>
+        <td>★★★★☆</td>
+      </tr>
+      <tr>
+        <td>GitHub Copilot <span class="tag dark">코드</span></td>
+        <td>개발자</td>
+        <td>코드 자동 완성, 버그 감지, 테스트 코드 생성</td>
+        <td>★★★★★</td>
+      </tr>
+      <tr>
+        <td>Midjourney</td>
+        <td>디자이너·마케터</td>
+        <td>이미지 생성, 시각 콘셉트 프로토타이핑</td>
+        <td>★★★★☆</td>
+      </tr>
+      <tr>
+        <td>Otter.ai</td>
+        <td>영업·HR</td>
+        <td>회의 실시간 녹취 및 요약, 액션 아이템 추출</td>
+        <td>★★★★☆</td>
+      </tr>
+      <tr>
+        <td>Perplexity AI</td>
+        <td>리서처·컨설턴트</td>
+        <td>출처 기반 실시간 리서치, 심층 분석</td>
+        <td>★★★★☆</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PULLQUOTE -->
+  <div class="pullquote">
+    <p>AI를 두려워하는 직장인은 AI에게 대체된다. AI를 활용하는 직장인은 AI를 활용하지 않는 사람을 대체한다.</p>
+    <cite>— 하버드 비즈니스 리뷰, 2024</cite>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">실전 프롬프트 전략</h2>
+  </div>
+
+  <div class="body-text">
+    <div>
+      <p>AI 도구의 효과는 90% 이상이 <strong>프롬프트 품질</strong>에 달려 있다. 같은 도구를 쓰더라도 어떻게 질문하느냐에 따라 결과물의 수준이 극적으로 달라진다. 이것이 'AI 리터러시'의 핵심이다.</p>
+      <p>좋은 프롬프트는 세 가지 요소를 갖춘다. 첫째, <strong>역할 부여(Role)</strong> — AI에게 특정 전문가의 페르소나를 지정한다. "당신은 10년 경력의 마케팅 전략가입니다"처럼. 둘째, <strong>맥락 제공(Context)</strong> — 현재 상황, 목표 독자, 제약 조건을 상세히 설명한다. 셋째, <strong>출력 형식(Format)</strong> — 원하는 결과물의 구조와 분량을 명시한다.</p>
+      <p>예를 들어 "블로그 글 써줘"보다 "당신은 B2B SaaS 마케터입니다. 스타트업 CTO를 타겟으로 AI 도입의 ROI를 설명하는 800자 분량의 LinkedIn 포스트를 작성해 주세요. 데이터와 사례를 포함하고, 행동을 유도하는 CTA로 마무리하세요"가 훨씬 강력한 결과를 낳는다.</p>
+      <p>팀 차원에서는 '프롬프트 라이브러리'를 구축해 검증된 프롬프트를 공유하고 지속적으로 개선하는 문화를 만드는 것이 중요하다. 이것이 조직적 AI 역량의 핵심 인프라다.</p>
+    </div>
+    <div class="sidebar-note">
+      <h4>핵심 원칙</h4>
+      <p>구체적일수록 강력하다. 역할, 맥락, 출력 형식의 3요소를 항상 명시하라. 그리고 결과를 반복적으로 개선하는 것을 두려워하지 마라.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <hr class="section-divider">
+
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">오늘부터 시작하는 AI 생산성 체크리스트</h2>
+  </div>
+
+  <ul class="checklist">
+    <li>
+      <div class="check-icon">✓</div>
+      <div><strong>일일 반복 업무 3가지를 AI에게 위임하라</strong> — 이메일 초안, 회의 요약, 데이터 정리부터 시작한다. 처음엔 작게, 그리고 점점 확장한다.</div>
+    </li>
+    <li>
+      <div class="check-icon">✓</div>
+      <div><strong>프롬프트 저장 습관을 들여라</strong> — 잘 작동한 프롬프트는 Notion이나 메모 앱에 저장해 재사용한다. 이것이 나만의 AI 사용 설명서가 된다.</div>
+    </li>
+    <li>
+      <div class="check-icon">✓</div>
+      <div><strong>AI와 '페어 워크'를 실천하라</strong> — AI의 출력을 그대로 쓰지 말고, 초안으로 활용해 인간의 판단과 통찰을 더한다. AI는 70%, 당신이 30%다.</div>
+    </li>
+    <li>
+      <div class="check-icon">✓</div>
+      <div><strong>주간 AI 리뷰를 정례화하라</strong> — 매주 금요일 30분, AI 도구 활용 현황을 점검하고 다음 주 적용할 새로운 방법을 하나씩 추가한다.</div>
+    </li>
+    <li>
+      <div class="check-icon">✓</div>
+      <div><strong>팀 내 AI 챔피언을 지정하라</strong> — 한 명이 새로운 도구와 프롬프트를 테스트하고 팀에 전파하는 역할을 맡는다. 조직 학습 속도가 10배 빨라진다.</div>
+    </li>
+    <li>
+      <div class="check-icon">✓</div>
+      <div><strong>절약한 시간을 창의적 업무에 재투자하라</strong> — AI로 확보한 시간을 전략적 사고, 관계 구축, 혁신에 쓰는 것이 진정한 생산성 최적화다.</div>
+    </li>
+  </ul>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="article-footer">
+  <div class="footer-grid">
+    <div class="footer-cta">
+      <h2>지금 시작하지 않으면<br>내일은 더 늦다</h2>
+      <p>AI 생산성 혁신은 기술의 문제가 아니라 결단의 문제다. 오늘 단 하나의 반복 업무를 AI에 맡기는 것으로 시작하라. 변화는 그 첫 걸음에서 시작된다.</p>
+      <button class="btn-primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">처음부터 다시 읽기 ↑</button>
+    </div>
+    <div class="footer-rule"></div>
+    <div class="footer-tags">
+      <h4>관련 키워드</h4>
+      <ul class="tag-list">
+        <li>AI 생산성</li>
+        <li>업무 자동화</li>
+        <li>프롬프트 엔지니어링</li>
+        <li>디지털 전환</li>
+        <li>워크플로우 최적화</li>
+        <li>ChatGPT</li>
+        <li>Claude AI</li>
+        <li>노션 AI</li>
+        <li>업무 혁신</li>
+        <li>스마트 워크</li>
+        <li>미래 직업</li>
+        <li>AI 리터러시</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
