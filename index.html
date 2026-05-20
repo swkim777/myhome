@@ -113,6 +113,12 @@
                     </button>
                 </li>
                 <li>
+                    <a href="BlogPage/index.html" class="w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>✍️</span>
+                        <span>블로그 (Blog)</span>
+                    </a>
+                </li>
+                <li>
                     <button onclick="router.navigate('connect')" id="nav-connect" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
                         <span>🤝</span>
                         <span>연락처 (Connect)</span>
@@ -152,6 +158,7 @@
                 <li><button onclick="router.navigate('overview')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📊 대시보드</button></li>
                 <li><button onclick="router.navigate('apps')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🚀 앱 & 도구</button></li>
                 <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
+                <li><a href="BlogPage/index.html" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</a></li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
             </ul>
         </div>
@@ -299,7 +306,8 @@
                 { id: 8, name: "Image Extractor", category: "AI", icon: "🖼️", link: "ImageExtract/index.html", desc: "이미지 데이터 추출 도구" },
                 { id: 9, name: "주식", category: "Utility", icon: "📈", link: "stock/index.html", desc: "주식 정보 및 차트 확인" },
                 { id: 10, name: "주식 뉴스", category: "Utility", icon: "📰", link: "StockNews/index.html", desc: "최신 주식 뉴스 확인" },
-                { id: 11, name: "테트리스", category: "Game", icon: "🕹️", link: "tetris/index.html", desc: "추억의 테트리스 게임" }
+                { id: 11, name: "테트리스", category: "Game", icon: "🕹️", link: "tetris/index.html", desc: "추억의 테트리스 게임" },
+                { id: 12, name: "Blog", category: "Profile", icon: "✍️", link: "BlogPage/index.html", desc: "개인 블로그 및 생각 정리" }
             ],
             activities: [
                 { type: "Blog", title: "타로점치기", link: "https://ai.studio/apps/drive/1eUpCxk2nCV7XTXiTBJoF7gKqCNMv2USd", date: "New", desc: "AI를 활용한 운세 서비스" },
