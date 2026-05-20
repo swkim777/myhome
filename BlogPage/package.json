@@ -1,0 +1,11 @@
+{
+  "name": "blog-page",
+  "version": "1.0.0",
+  "description": "Modern personal blog for GitHub Pages",
+  "main": "main.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
