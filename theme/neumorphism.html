@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뉴모피즘 테마 계산기</title>
+    <style>
+        /* --- 뉴모피즘 테마 변수 정의 (배경과 오브젝트 색상이 동일해야 함) --- */
+        :root[data-theme="light"] {
+            --bg-color: #e0e8f6;
+            --text-color: #4a5568;
+            --text-op-color: #ff922b;
+            
+            /* 뉴모피즘 핵심: 밝은 그림자와 어두운 그림자의 조합 */
+            --shadow-out: 9px 9px 16px #be6e6e00, -9px -9px 16px #ffffff; /* 실제 값은 아래에서 부드럽게 보정 */
+            --shadow-flat: 6px 6px 12px #b8bfc9, -6px -6px 12px #ffffff;
+            --shadow-inner: inset 4px 4px 8px #b8bfc9, inset -4px -4px 8px #ffffff;
+            --shadow-display: inset 5px 5px 10px #b8bfc9, inset -5px -5px 10px #ffffff;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #1e222b;
+            --text-color: #a0aec0;
+            --text-op-color: #fd7e14;
+            
+            --shadow-flat: 6px 6px 12px #13151b, -6px -6px 12px #292f3b;
+            --shadow-inner: inset 4px 4px 8px #13151b, inset -4px -4px 8px #292f3b;
+            --shadow-display: inset 5px 5px 10px #13151b, inset -5px -5px 10px #292f3b;
+        }
+
+        /* --- 기본 리셋 및 레이아웃 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* --- 상단 테마 전환 바 --- */
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            width: 350px;
+            margin-bottom: 25px;
+        }
+
+        .theme-toggle-btn {
+            background-color: var(--bg-color);
+            border: none;
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-flat);
+        }
+
+        .theme-toggle-btn:active {
+            box-shadow: var(--shadow-inner);
+        }
+
+        /* --- 계산기 메인 프레임 --- */
+        .calculator {
+            width: 350px;
+            background-color: var(--bg-color);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: var(--shadow-flat);
+        }
+
+        /* --- 뉴모피즘 디스플레이 (음각 효과) --- */
+        .display {
+            background-color: var(--bg-color);
+            padding: 22px;
+            border-radius: 20px;
+            text-align: right;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            word-wrap: break-word;
+            word-break: break-all;
+            box-shadow: var(--shadow-display);
+        }
+
+        .expression {
+            font-size: 0.85rem;
+            color: #8a94a6;
+            min-height: 1.2rem;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .current-value {
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        /* --- 버튼 그리드 및 양각 효과 --- */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        button.calc-btn {
+            background-color: var(--bg-color);
+            border: none;
+            padding: 18px 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-color);
+            border-radius: 16px;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            box-shadow: var(--shadow-flat);
+        }
+
+        /* 버튼 입력 시 오목하게 들어가는 음각 효과 구현 */
+        button.calc-btn:active {
+            box-shadow: var(--shadow-inner);
+        }
+
+        /* 연산자 버튼 기호 강조 색상 */
+        button.op {
+            color: var(--text-op-color);
+        }
+
+        /* 기능성 버튼 가독성 제어 */
+        button.action {
+            font-weight: 700;
+        }
+
+        /* 0 버튼 레이아웃 확장 */
+        .zero-btn {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">🌙 다크 모드</button>
+    </div>
+
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="current-value" id="displayValue">0</div>
+        </div>
+        <div class="buttons">
+            <!-- 1행 -->
+            <button class="calc-btn action" onclick="clearAll()">C</button>
+            <button class="calc-btn action" onclick="deleteLast()">⌫</button>
+            <button class="calc-btn action op" onclick="inputOperator('%')">%</button>
+            <button class="calc-btn op" onclick="inputOperator('/')">÷</button>
+
+            <!-- 2행 -->
+            <button class="calc-btn num" onclick="inputNumber('7')">7</button>
+            <button class="calc-btn num" onclick="inputNumber('8')">8</button>
+            <button class="calc-btn num" onclick="inputNumber('9')">9</button>
+            <button class="calc-btn op" onclick="inputOperator('*')">×</button>
+
+            <!-- 3행 -->
+            <button class="calc-btn num" onclick="inputNumber('4')">4</button>
+            <button class="calc-btn num" onclick="inputNumber('5')">5</button>
+            <button class="calc-btn num" onclick="inputNumber('6')">6</button>
+            <button class="calc-btn op" onclick="inputOperator('-')">-</button>
+
+            <!-- 4행 -->
+            <button class="calc-btn num" onclick="inputNumber('1')">1</button>
+            <button class="calc-btn num" onclick="inputNumber('2')">2</button>
+            <button class="calc-btn num" onclick="inputNumber('3')">3</button>
+            <button class="calc-btn op" onclick="inputOperator('+')">+</button>
+
+            <!-- 5행 -->
+            <button class="calc-btn num zero-btn" onclick="inputNumber('0')">0</button>
+            <button class="calc-btn num" onclick="inputDecimal('.')">.</button>
+            <button class="calc-btn op" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 엔진 상태 구조 정의 ---
+        let displayValue = '0';
+        let firstOperand = null;
+        let operator = null;
+        let waitingForSecondOperand = false;
+        let expressionSummary = '';
+
+        const displayEl = document.getElementById('displayValue');
+        const expressionEl = document.getElementById('expression');
+
+        function updateDisplay() {
+            displayEl.textContent = displayValue;
+            expressionEl.textContent = expressionSummary;
+        }
+
+        // --- 숫자 스트림 제어 ---
+        function inputNumber(num) {
+            if (waitingForSecondOperand) {
+                displayValue = num;
+                waitingForSecondOperand = false;
+            } else {
+                displayValue = displayValue === '0' ? num : displayValue + num;
+            }
+            updateDisplay();
+        }
+
+        // --- 부동 소수점 처리 ---
+        function inputDecimal(dot) {
+            if (waitingForSecondOperand) {
+                displayValue = '0.';
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
+            if (!displayValue.includes(dot)) {
+                displayValue += dot;
+            }
+            updateDisplay();
+        }
+
+        // --- 연산 큐 관리 ---
+        function inputOperator(nextOperator) {
+            const inputValue = parseFloat(displayValue);
+
+            if (operator && waitingForSecondOperand) {
+                operator = nextOperator;
+                expressionSummary = `${firstOperand} ${getOperatorSymbol(nextOperator)}`;
+                updateDisplay();
+                return;
+            }
+
+            if (firstOperand === null && !isNaN(inputValue)) {
+                firstOperand = inputValue;
+            } else if (operator) {
+                const result = performCalculation[operator](firstOperand, inputValue);
+                displayValue = String(Number(result.toFixed(10))); // IEEE 754 부동소수 오차 정제
+                firstOperand = result;
+            }
+
+            operator = nextOperator;
+            waitingForSecondOperand = true;
+            expressionSummary = `${firstOperand} ${getOperatorSymbol(nextOperator)}`;
+            updateDisplay();
+        }
+
+        function getOperatorSymbol(op) {
+            if (op === '*') return '×';
+            if (op === '/') return '÷';
+            return op;
+        }
+
+        // --- 사칙 연산 라우팅 객체 ---
+        const performCalculation = {
+            '/': (first, second) => first / second,
+            '*': (first, second) => first * second,
+            '+': (first, second) => first + second,
+            '-': (first, second) => first - second,
+            '%': (first, second) => first % second,
+        };
+
+        // --- 연산 평가 실행 (=) ---
+        function calculate() {
+            if (operator === null || waitingForSecondOperand) return;
+
+            const inputValue = parseFloat(displayValue);
+            const result = performCalculation[operator](firstOperand, inputValue);
+
+            expressionSummary = `${firstOperand} ${getOperatorSymbol(operator)} ${inputValue} =`;
+            displayValue = String(Number(result.toFixed(10)));
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = true;
+            updateDisplay();
+        }
+
+        // --- 컨텍스트 리셋 (C) ---
+        function clearAll() {
+            displayValue = '0';
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = false;
+            expressionSummary = '';
+            updateDisplay();
+        }
+
+        // --- 단일 문자 팝 (Backspace) ---
+        function deleteLast() {
+            if (waitingForSecondOperand) return;
+            
+            displayValue = displayValue.slice(0, -1);
+            if (displayValue === '' || displayValue === '-') {
+                displayValue = '0';
+            }
+            updateDisplay();
+        }
+
+        // --- 뉴모피즘 듀얼 테마 스위칭 인젝션 ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const themeToggleBtn = document.getElementById('themeToggle');
+
+            if (currentTheme === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                themeToggleBtn.textContent = '☀️ 라이트 모드';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeToggleBtn.textContent = '🌙 다크 모드';
+            }
+        }
+    </script>
+</body>
+</html>
