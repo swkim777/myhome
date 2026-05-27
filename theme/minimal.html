@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Calculator</title>
+    <style>
+        /* 미니멀리즘 테마 기본 스타일 설정 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f9fa; /* 부드러운 밝은 회색 톤 */
+            color: #212529;
+        }
+
+        /* 계산기 컨테이너 */
+        .calculator {
+            width: 320px;
+            padding: 24px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); /* 아주 은은한 그림자 */
+        }
+
+        /* 디스플레이 영역 */
+        .display-container {
+            margin-bottom: 24px;
+            text-align: right;
+            padding: 10px 4px;
+        }
+
+        #formula {
+            font-size: 0.85rem;
+            color: #adb5bd;
+            min-height: 1.2rem;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+
+        #output {
+            font-size: 2.25rem;
+            font-weight: 300;
+            color: #212529;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* 디스플레이 스크롤바 숨기기 */
+        #output::-webkit-scrollbar {
+            height: 0px;
+        }
+
+        /* 버튼 그리드 레이아웃 */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        /* 공통 버튼 스타일 */
+        button {
+            border: none;
+            outline: none;
+            height: 60px;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 400;
+            background-color: #f1f3f5;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* 마우스 호버 효과 */
+        button:hover {
+            background-color: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        /* 버튼 클릭 시 미세한 반응 */
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* 기능 버튼 (AC, Backspace 등) */
+        button.function {
+            background-color: #f8f9fa;
+            color: #868e96;
+        }
+        button.function:hover {
+            background-color: #f1f3f5;
+        }
+
+        /* 연산자 버튼 (+, -, *, /, =) */
+        button.operator {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+        button.operator:hover {
+            background-color: #d2e3fc;
+        }
+
+        /* 등호 버튼 (강조) */
+        button.equals {
+            background-color: #1a73e8;
+            color: #ffffff;
+        }
+        button.equals:hover {
+            background-color: #1557b0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="display-container">
+            <div id="formula"></div>
+            <div id="output">0</div>
+        </div>
+
+        <div class="buttons">
+            <button class="function" onclick="clearAll()">AC</button>
+            <button class="function" onclick="backspace()">⌫</button>
+            <button class="function" onclick="appendOperator('%')">%</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+
+            <button onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="operator equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const outputDisplay = document.getElementById('output');
+        const formulaDisplay = document.getElementById('formula');
+        
+        let currentInput = '0';
+        let shouldResetDisplay = false;
+
+        // 숫자 입력 처리
+        function appendNumber(number) {
+            if (currentInput === '0' && number !== '.') {
+                currentInput = number;
+            } else {
+                if (number === '.' && currentInput.includes('.')) return; // 소수점 중복 방지
+                if (shouldResetDisplay) {
+                    currentInput = number;
+                    shouldResetDisplay = false;
+                } else {
+                    currentInput += number;
+                }
+            }
+            updateDisplay();
+        }
+
+        // 연산자 입력 처리
+        function appendOperator(operator) {
+            if (shouldResetDisplay) shouldResetDisplay = false;
+            
+            const lastChar = currentInput.trim().slice(-1);
+            const operators = ['+', '-', '*', '/', '%'];
+
+            // 마지막 글자가 연산자일 경우 교체, 아닐 경우 추가
+            if (operators.includes(lastChar)) {
+                currentInput = currentInput.trim().slice(0, -1) + ' ' + operator + ' ';
+            } else {
+                currentInput += ' ' + operator + ' ';
+            }
+            updateDisplay();
+        }
+
+        // 전체 초기화 (AC)
+        function clearAll() {
+            currentInput = '0';
+            formulaDisplay.innerText = '';
+            updateDisplay();
+        }
+
+        // 백스페이스 (한 글자 지우기)
+        function backspace() {
+            if (shouldResetDisplay) {
+                clearAll();
+                return;
+            }
+            
+            currentInput = currentInput.trim();
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1).trim();
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        // 계산 실행
+        function calculate() {
+            let expression = currentInput;
+            if (!expression) return;
+
+            try {
+                // 수식 끝에 연산자가 남아있다면 제거 후 계산
+                const tokens = expression.trim().split(' ');
+                const lastToken = tokens[tokens.length - 1];
+                if (['+', '-', '*', '/', '%'].includes(lastToken)) {
+                    expression = expression.trim().slice(0, -1);
+                }
+
+                // UI 표시용 기호를 JavaScript 연산 기호로 변경할 필요 없이 이미 정렬됨
+                // 안전한 계산을 위해 Function 생성자 활용
+                const result = new Function(`return ${expression}`)();
+                
+                // 결과 포맷팅 (소수점 아래가 너무 길 경우 8자리까지 제한)
+                const formattedResult = Number(result.toFixed(8)).toString();
+
+                formulaDisplay.innerText = expression.replace(/\*/g, '×').replace(/\//g, '÷') + ' =';
+                currentInput = formattedResult;
+                shouldResetDisplay = true;
+            } catch (error) {
+                currentInput = 'Error';
+                shouldResetDisplay = true;
+            }
+            updateDisplay();
+        }
+
+        // 화면 업데이트
+        function updateDisplay() {
+            // 화면 출력 시 시각적인 기호로 변경하여 직관성 높임
+            let viewInput = currentInput.replace(/\*/g, '×').replace(/\//g, '÷');
+            outputDisplay.innerText = viewInput;
+        }
+    </script>
+</body>
+</html>
