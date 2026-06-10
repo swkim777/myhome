@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모던 테마 계산기</title>
+    <style>
+        /* --- 테마 변수 정의 --- */
+        :root[data-theme="light"] {
+            --bg-color: #f8f9fa;
+            --calc-bg: #ffffff;
+            --text-color: #212529;
+            --display-bg: #f1f3f5;
+            --btn-default: #e9ecef;
+            --btn-default-hover: #dee2e6;
+            --btn-op: #ff922b;
+            --btn-op-hover: #f76707;
+            --btn-op-text: #ffffff;
+            --btn-action: #ced4da;
+            --btn-action-hover: #adb5bd;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #1a1b1e;
+            --calc-bg: #25262b;
+            --text-color: #c1c2c5;
+            --display-bg: #141517;
+            --btn-default: #2c2e33;
+            --btn-default-hover: #383a40;
+            --btn-op: #fd7e14;
+            --btn-op-hover: #e8590c;
+            --btn-op-text: #ffffff;
+            --btn-action: #5c5f66;
+            --btn-action-hover: #696e79;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- 기본 스타일 리셋 및 레이아웃 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* --- 상단 컨트롤 바 --- */
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            width: 340px;
+            margin-bottom: 15px;
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: 2px solid var(--btn-action);
+            color: var(--text-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: var(--btn-default-hover);
+        }
+
+        /* --- 계산기 본체 --- */
+        .calculator {
+            width: 340px;
+            background-color: var(--calc-bg);
+            padding: 24px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        /* --- 디스플레이 --- */
+        .display {
+            background-color: var(--display-bg);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: right;
+            margin-bottom: 20px;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .expression {
+            font-size: 0.9rem;
+            color: #868e96;
+            min-height: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .current-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* --- 버튼 그리드 --- */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button.calc-btn {
+            border: none;
+            padding: 18px 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+        }
+
+        /* 일반 숫자 버튼 */
+        button.num {
+            background-color: var(--btn-default);
+            color: var(--text-color);
+        }
+        button.num:hover { background-color: var(--btn-default-hover); }
+
+        /* 연산자 버튼 (+, -, *, /, =) */
+        button.op {
+            background-color: var(--btn-op);
+            color: var(--btn-op-text);
+        }
+        button.op:hover { background-color: var(--btn-op-hover); }
+
+        /* 기능 버튼 (C, Backspace, %) */
+        button.action {
+            background-color: var(--btn-action);
+            color: var(--text-color);
+        }
+        button.action:hover { background-color: var(--btn-action-hover); }
+
+        /* 0 버튼 확장 */
+        .zero-btn {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">🌙 다크 모드</button>
+    </div>
+
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="current-value" id="displayValue">0</div>
+        </div>
+        <div class="buttons">
+            <button class="calc-btn action" onclick="clearAll()">C</button>
+            <button class="calc-btn action" onclick="deleteLast()">⌫</button>
+            <button class="calc-btn action" onclick="inputOperator('%')">%</button>
+            <button class="calc-btn op" onclick="inputOperator('/')">÷</button>
+
+            <button class="calc-btn num" onclick="inputNumber('7')">7</button>
+            <button class="calc-btn num" onclick="inputNumber('8')">8</button>
+            <button class="calc-btn num" onclick="inputNumber('9')">9</button>
+            <button class="calc-btn op" onclick="inputOperator('*')">×</button>
+
+            <button class="calc-btn num" onclick="inputNumber('4')">4</button>
+            <button class="calc-btn num" onclick="inputNumber('5')">5</button>
+            <button class="calc-btn num" onclick="inputNumber('6')">6</button>
+            <button class="calc-btn op" onclick="inputOperator('-')">-</button>
+
+            <button class="calc-btn num" onclick="inputNumber('1')">1</button>
+            <button class="calc-btn num" onclick="inputNumber('2')">2</button>
+            <button class="calc-btn num" onclick="inputNumber('3')">3</button>
+            <button class="calc-btn op" onclick="inputOperator('+')">+</button>
+
+            <button class="calc-btn num zero-btn" onclick="inputNumber('0')">0</button>
+            <button class="calc-btn num" onclick="inputDecimal('.')">.</button>
+            <button class="calc-btn op" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 상태 관리 변수 ---
+        let displayValue = '0';   // 현재 화면에 표시되는 숫자
+        let firstOperand = null;  // 첫 번째 피연산자
+        let operator = null;      // 현재 활성화된 연산자
+        let waitingForSecondOperand = false; // 새로운 숫자를 입력받을 준비 상태 레이블
+        let expressionSummary = ''; // 상단 연산 과정 문자열
+
+        const displayEl = document.getElementById('displayValue');
+        const expressionEl = document.getElementById('expression');
+
+        // --- 디스플레이 업데이트 인터페이스 ---
+        function updateDisplay() {
+            displayEl.textContent = displayValue;
+            expressionEl.textContent = expressionSummary;
+        }
+
+        // --- 숫자 입력 처리 ---
+        function inputNumber(num) {
+            if (waitingForSecondOperand) {
+                displayValue = num;
+                waitingForSecondOperand = false;
+            } else {
+                displayValue = displayValue === '0' ? num : displayValue + num;
+            }
+            updateDisplay();
+        }
+
+        // --- 소수점 입력 처리 ---
+        function inputDecimal(dot) {
+            if (waitingForSecondOperand) {
+                displayValue = '0.';
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
+            if (!displayValue.includes(dot)) {
+                displayValue += dot;
+            }
+            updateDisplay();
+        }
+
+        // --- 연산자 입력 처리 ---
+        function inputOperator(nextOperator) {
+            const inputValue = parseFloat(displayValue);
+
+            if (operator && waitingForSecondOperand) {
+                operator = nextOperator;
+                expressionSummary = `${firstOperand} ${getOperatorSymbol(nextOperator)}`;
+                updateDisplay();
+                return;
+            }
+
+            if (firstOperand === null && !isNaN(inputValue)) {
+                firstOperand = inputValue;
+            } else if (operator) {
+                const result = performCalculation[operator](firstOperand, inputValue);
+                displayValue = String(Number(result.toFixed(10))); // 부동소수점 오차 방지
+                firstOperand = result;
+            }
+
+            operator = nextOperator;
+            waitingForSecondOperand = true;
+            expressionSummary = `${firstOperand} ${getOperatorSymbol(nextOperator)}`;
+            updateDisplay();
+        }
+
+        // --- 연산 기호 매핑 내부 함수 ---
+        function getOperatorSymbol(op) {
+            if (op === '*') return '×';
+            if (op === '/') return '÷';
+            return op;
+        }
+
+        // --- 실제 사칙연산 객체 ---
+        const performCalculation = {
+            '/': (first, second) => first / second,
+            '*': (first, second) => first * second,
+            '+': (first, second) => first + second,
+            '-': (first, second) => first - second,
+            '%': (first, second) => first % second,
+        };
+
+        // --- 결과 계산 (=) ---
+        function calculate() {
+            if (operator === null || waitingForSecondOperand) return;
+
+            const inputValue = parseFloat(displayValue);
+            const result = performCalculation[operator](firstOperand, inputValue);
+
+            expressionSummary = `${firstOperand} ${getOperatorSymbol(operator)} ${inputValue} =`;
+            displayValue = String(Number(result.toFixed(10)));
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = true; // 계산 완료 후 숫자 누르면 새로 시작하도록 설정
+            updateDisplay();
+        }
+
+        // --- 초기화 (C) ---
+        function clearAll() {
+            displayValue = '0';
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = false;
+            expressionSummary = '';
+            updateDisplay();
+        }
+
+        // --- 한 글자 삭제 (Backspace) ---
+        function deleteLast() {
+            if (waitingForSecondOperand) return; // 계산 완료 상태 혹은 연산자 대기 상태 시 무시
+            
+            displayValue = displayValue.slice(0, -1);
+            if (displayValue === '' || displayValue === '-') {
+                displayValue = '0';
+            }
+            updateDisplay();
+        }
+
+        // --- 테마 스위칭 로직 ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const themeToggleBtn = document.getElementById('themeToggle');
+
+            if (currentTheme === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                themeToggleBtn.textContent = '☀️ 라이트 모드';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeToggleBtn.textContent = '🌙 다크 모드';
+            }
+        }
+    </script>
+</body>
+</html>

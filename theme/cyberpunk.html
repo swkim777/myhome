@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBERPUNK // MATRIX_CALCULATOR</title>
+    <style>
+        /* --- 사이버펑크 듀얼 테마 변수 정의 --- */
+        :root[data-theme="dark"] {
+            --bg-color: #0a0a0f;
+            --panel-bg: #12121a;
+            --text-main: #00ffff;      /* 네온 시안 */
+            --text-sub: #ff0055;       /* 네온 핑크 */
+            --text-num: #fdee00;       /* 네온 옐로우 */
+            --display-bg: #050508;
+            --border-color: #ff0055;
+            
+            /* 네온 글로우 효과 */
+            --glow-main: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+            --glow-sub: 0 0 10px rgba(255, 0, 85, 0.5), 0 0 20px rgba(255, 0, 85, 0.3);
+            --glow-num: 0 0 8px rgba(253, 238, 0, 0.4);
+            --panel-shadow: 0 0 30px rgba(255, 0, 85, 0.15);
+        }
+
+        :root[data-theme="light"] {
+            /* 사이버펑크 고대비 하이테크 화이트 테마 (Netrunner HUD 스타일) */
+            --bg-color: #e4e7eb;
+            --panel-bg: #ffffff;
+            --text-main: #0022ff;      /* 딥 네온 블루 */
+            --text-sub: #ff0055;       /* 사이버 핑크 */
+            --text-num: #111111;       /* 다크 오닉스 */
+            --display-bg: #f0f2f5;
+            --border-color: #0022ff;
+            
+            --glow-main: 0 0 8px rgba(0, 34, 255, 0.3);
+            --glow-sub: 0 0 8px rgba(255, 0, 85, 0.3);
+            --glow-num: none;
+            --panel-shadow: 0 10px 30px rgba(0, 34, 255, 0.1);
+        }
+
+        /* --- 레이아웃 및 폰트 세팅 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace, -apple-system;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            background-image: linear-gradient(rgba(18, 18, 26, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(18, 18, 26, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* --- 상단 테마 인디케이터 --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 360px;
+            margin-bottom: 20px;
+            padding: 0 5px;
+        }
+
+        .system-status {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-sub);
+            text-shadow: var(--glow-sub);
+            font-weight: bold;
+        }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: var(--text-sub);
+            color: #ffffff;
+            box-shadow: var(--glow-sub);
+            border-color: var(--text-sub);
+        }
+
+        /* --- 계산기 하우징 (기계적 프레임) --- */
+        .calculator {
+            width: 360px;
+            background-color: var(--panel-bg);
+            padding: 25px;
+            border: 3px solid var(--border-color);
+            position: relative;
+            box-shadow: var(--panel-shadow);
+            /* 우측 하단 모서리가 잘린 미래형 디자인 */
+            clip-path: polygon(0 0, 100% 0, 100% 94%, 93% 100%, 0 100%);
+        }
+
+        /* 프레임 외곽 사이버 데코레이션 선 */
+        .calculator::before {
+            content: "SYS_v4.206";
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background-color: var(--bg-color);
+            padding: 0 8px;
+            font-size: 0.65rem;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        /* --- 디스플레이 (HUD 스크린) --- */
+        .display {
+            background-color: var(--display-bg);
+            padding: 18px;
+            border: 1px solid var(--text-main);
+            margin-bottom: 25px;
+            min-height: 95px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            text-align: right;
+            position: relative;
+        }
+
+        /* CRT 모니터 주사선 효과 스캔라인 */
+        .display::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .expression {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            text-shadow: var(--glow-sub);
+            min-height: 1.2rem;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .current-value {
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: var(--text-main);
+            text-shadow: var(--glow-main);
+            letter-spacing: -1px;
+        }
+
+        /* --- 터미널 키패드 그리드 --- */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button.calc-btn {
+            background: transparent;
+            border: 1px solid var(--text-main);
+            color: var(--text-main);
+            padding: 16px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 기본 마우스 호버 및 클릭 액션 */
+        button.calc-btn:hover {
+            background-color: rgba(0, 255, 255, 0.08);
+            box-shadow: var(--glow-main);
+        }
+
+        button.calc-btn:active {
+            background-color: var(--text-main) !important;
+            color: var(--panel-bg) !important;
+        }
+
+        /* 숫자 버튼 커스텀 스타일 */
+        button.num {
+            color: var(--text-num);
+            border-color: var(--text-num);
+        }
+        button.num:hover {
+            background-color: rgba(253, 238, 0, 0.08);
+            box-shadow: var(--glow-num);
+        }
+        button.num:active {
+            background-color: var(--text-num) !important;
+            color: var(--panel-bg) !important;
+        }
+
+        /* 특수 연산자 패널 스타일 */
+        button.op {
+            color: var(--text-sub);
+            border-color: var(--text-sub);
+        }
+        button.op:hover {
+            background-color: rgba(255, 0, 85, 0.08);
+            box-shadow: var(--glow-sub);
+        }
+        button.op:active {
+            background-color: var(--text-sub) !important;
+            color: #ffffff !important;
+        }
+
+        /* 기능 제어 버튼 */
+        button.action {
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        .zero-btn {
+            grid-column: span 2;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 7% 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="system-status" id="sysStatus">⚡ OVERRIDE: ACTIVE</div>
+        <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">CYBER_DARK</button>
+    </div>
+
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="current-value" id="displayValue">0</div>
+        </div>
+        <div class="buttons">
+            <!-- ROW 1 -->
+            <button class="calc-btn action op" onclick="clearAll()">CLR</button>
+            <button class="calc-btn action op" onclick="deleteLast()">DEL</button>
+            <button class="calc-btn op" onclick="inputOperator('%')">MOD</button>
+            <button class="calc-btn op" onclick="inputOperator('/')">/</button>
+
+            <!-- ROW 2 -->
+            <button class="calc-btn num" onclick="inputNumber('7')">7</button>
+            <button class="calc-btn num" onclick="inputNumber('8')">8</button>
+            <button class="calc-btn num" onclick="inputNumber('9')">9</button>
+            <button class="calc-btn op" onclick="inputOperator('*')">*</button>
+
+            <!-- ROW 3 -->
+            <button class="calc-btn num" onclick="inputNumber('4')">4</button>
+            <button class="calc-btn num" onclick="inputNumber('5')">5</button>
+            <button class="calc-btn num" onclick="inputNumber('6')">6</button>
+            <button class="calc-btn op" onclick="inputOperator('-')">-</button>
+
+            <!-- ROW 4 -->
+            <button class="calc-btn num" onclick="inputNumber('1')">1</button>
+            <button class="calc-btn num" onclick="inputNumber('2')">2</button>
+            <button class="calc-btn num" onclick="inputNumber('3')">3</button>
+            <button class="calc-btn op" onclick="inputOperator('+')">+</button>
+
+            <!-- ROW 5 -->
+            <button class="calc-btn num zero-btn" onclick="inputNumber('0')">0</button>
+            <button class="calc-btn num" onclick="inputDecimal('.')">.</button>
+            <button class="calc-btn op" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 터미널 연산 엔진 ---
+        let displayValue = '0';
+        let firstOperand = null;
+        let operator = null;
+        let waitingForSecondOperand = false;
+        let expressionSummary = '';
+
+        const displayEl = document.getElementById('displayValue');
+        const expressionEl = document.getElementById('expression');
+
+        function updateDisplay() {
+            displayEl.textContent = displayValue;
+            expressionEl.textContent = expressionSummary;
+        }
+
+        function inputNumber(num) {
+            if (waitingForSecondOperand) {
+                displayValue = num;
+                waitingForSecondOperand = false;
+            } else {
+                displayValue = displayValue === '0' ? num : displayValue + num;
+            }
+            updateDisplay();
+        }
+
+        function inputDecimal(dot) {
+            if (waitingForSecondOperand) {
+                displayValue = '0.';
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
+            if (!displayValue.includes(dot)) {
+                displayValue += dot;
+            }
+            updateDisplay();
+        }
+
+        function inputOperator(nextOperator) {
+            const inputValue = parseFloat(displayValue);
+
+            if (operator && waitingForSecondOperand) {
+                operator = nextOperator;
+                expressionSummary = `${firstOperand} ${nextOperator}`;
+                updateDisplay();
+                return;
+            }
+
+            if (firstOperand === null && !isNaN(inputValue)) {
+                firstOperand = inputValue;
+            } else if (operator) {
+                const result = performCalculation[operator](firstOperand, inputValue);
+                displayValue = String(Number(result.toFixed(10)));
+                firstOperand = result;
+            }
+
+            operator = nextOperator;
+            waitingForSecondOperand = true;
+            expressionSummary = `${firstOperand} ${nextOperator}`;
+            updateDisplay();
+        }
+
+        const performCalculation = {
+            '/': (first, second) => first / second,
+            '*': (first, second) => first * second,
+            '+': (first, second) => first + second,
+            '-': (first, second) => first - second,
+            '%': (first, second) => first % second,
+        };
+
+        function calculate() {
+            if (operator === null || waitingForSecondOperand) return;
+
+            const inputValue = parseFloat(displayValue);
+            const result = performCalculation[operator](firstOperand, inputValue);
+
+            expressionSummary = `${firstOperand} ${operator} ${inputValue} =`;
+            displayValue = String(Number(result.toFixed(10)));
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            displayValue = '0';
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = false;
+            expressionSummary = '';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (waitingForSecondOperand) return;
+            
+            displayValue = displayValue.slice(0, -1);
+            if (displayValue === '' || displayValue === '-') {
+                displayValue = '0';
+            }
+            updateDisplay();
+        }
+
+        // --- 테마 인젝션 및 텍스트 데이터 매핑 ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const sysStatus = document.getElementById('sysStatus');
+
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                themeToggleBtn.textContent = 'NET_RUNNER';
+                sysStatus.textContent = '⚡ NODE: SECURE';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeToggleBtn.textContent = 'CYBER_DARK';
+                sysStatus.textContent = '⚡ OVERRIDE: ACTIVE';
+            }
+        }
+    </script>
+</body>
+</html>
