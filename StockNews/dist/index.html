@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 주식 뉴스</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@^0.14.0"
+        }
+      }
+    </script>
+  <script type="module" crossorigin src="./assets/index-DjBIYeyw.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-M8xHwpzG.css">
+</head>
+<body>
+    <header>
+        <h1>실시간 주식 뉴스</h1>
+    </header>
+    <main>
+        <form id="search-form">
+            <input type="text" id="search-input" placeholder="궁금한 주식 뉴스를 검색하세요..." aria-label="주식 뉴스 검색">
+            <button type="submit" id="search-button">뉴스 검색</button>
+        </form>
+        <div id="result-container">
+            <div class="loader" id="loader"></div>
+            <div id="response-text"></div>
+            <div id="sources-container"></div>
+        </div>
+    </main>
+    <footer>
+        <p>Powered by Google Gemini</p>
+    </footer>
+</body>
+</html>
