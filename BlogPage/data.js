@@ -1,14 +1,14 @@
 const BLOG_DATA = {
   profile: {
-    name: "Alex Rivera",
+    name: "Jowon",
     title: "Senior Full-Stack Engineer & Designer",
     bio: "Building thoughtful, performance-driven web interfaces. Passionate about minimalism, design systems, and modern web architectures. 20+ years of experience crafting digital solutions.",
-    avatar: "assets/img/profile.png",
+    avatar: "image/profile.jpg",
     socials: {
-      github: "https://github.com",
+      github: "https://github.com/swkim777",
       linkedin: "https://linkedin.com",
       twitter: "https://twitter.com",
-      email: "mailto:alex@example.com"
+      email: "mailto:swkim777@gmail.com"
     }
   },
   categories: ["All", "Tech", "Design", "Productivity"],
