@@ -334,7 +334,10 @@
         const router = {
             currentRoute: 'overview',
             init: function() {
-                this.navigate('overview');
+                const urlParams = new URLSearchParams(window.location.search);
+                const routeParam = urlParams.get('route');
+                const initialRoute = routeParam || 'overview';
+                this.navigate(initialRoute);
                 this.setupMobileMenu();
             },
             navigate: function(route) {

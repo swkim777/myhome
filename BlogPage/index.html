@@ -28,10 +28,97 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Tailwind CSS for dashboard sidebar -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-  <!-- Navigation Header -->
-  <header class="app-header" id="app-header">
+  <div class="flex h-screen overflow-hidden w-full text-slate-800 bg-slate-50">
+    <!-- Sidebar Navigation (Desktop) -->
+    <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full shadow-sm z-10 flex-shrink-0">
+        <div class="p-6 flex items-center space-x-3 border-b border-slate-100">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-200">
+                J
+            </div>
+            <div>
+                <h1 class="font-bold text-lg text-slate-800 leading-tight">Jowon Home</h1>
+                <p class="text-xs text-slate-500">Digital Hub</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="../index.html?route=overview" class="w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>📊</span>
+                        <span>Dash Board (Overview)</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html?route=apps" class="w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>🚀</span>
+                        <span>앱 & 도구 (Apps)</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html?route=activities" class="w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>📝</span>
+                        <span>최신 활동 (Activity)</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="w-full flex items-center space-x-3 px-6 py-3 text-blue-600 bg-blue-50 border-r-[3px] border-blue-600 transition-colors text-sm font-medium">
+                        <span>✍️</span>
+                        <span>블로그 (Blog)</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html?route=connect" class="w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>🤝</span>
+                        <span>연락처 (Connect)</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100">
+            <div class="bg-slate-50 rounded-xl p-4">
+                <p class="text-xs text-slate-500 mb-2">System Status</p>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-semibold text-slate-700">Online</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center z-20 flex-shrink-0">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold">J</div>
+                <span class="font-bold text-slate-800">Jowon Home</span>
+            </div>
+            <button id="mobileMenuBtn" class="text-slate-600 focus:outline-none text-2xl">
+                ☰
+            </button>
+        </header>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileNav" class="md:hidden absolute top-16 left-0 w-full bg-white shadow-xl border-b border-slate-200 hidden z-30 transition-all">
+            <ul class="py-2">
+                <li><a href="../index.html?route=overview" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📊 대시보드</a></li>
+                <li><a href="../index.html?route=apps" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🚀 앱 & 도구</a></li>
+                <li><a href="../index.html?route=activities" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</a></li>
+                <li><a href="#" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</a></li>
+                <li><a href="../index.html?route=connect" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</a></li>
+            </ul>
+        </div>
+
+        <!-- Scrollable Content View -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Navigation Header -->
+            <header class="app-header" id="app-header">
     <div class="container header-container">
       <a href="#home" class="logo" id="logo-link">
         <span class="logo-dot"></span>Jowon.dev
@@ -177,5 +264,19 @@
   <!-- Scripts -->
   <script src="data.js"></script>
   <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileNav = document.getElementById('mobileNav');
+      if (mobileMenuBtn && mobileNav) {
+        mobileMenuBtn.addEventListener('click', () => {
+          mobileNav.classList.toggle('hidden');
+        });
+      }
+    });
+  </script>
+        </div>
+    </main>
+  </div>
 </body>
 </html>
