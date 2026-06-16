@@ -214,6 +214,41 @@
                 display: flex;
             }
         }
+
+        /* 홈 버튼 스타일 */
+        .home-btn-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .retro-home-btn {
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            border: 2px solid #60a5fa;
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 0 10px rgba(59, 130, 246, 0.3);
+            text-shadow: 1px 1px 2px #000;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .retro-home-btn:hover {
+            background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .retro-home-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -260,6 +295,13 @@
             <span style="color: #38bdf8; font-weight: bold;">[PC 조작법]</span> 이동: 좌우 방향키 <span class="key-badge">◀</span> <span class="key-badge">▶</span> | 사다리 타기: 상하 방향키 <span class="key-badge">▲</span> <span class="key-badge">▼</span> | 점프: <span class="key-badge">Spacebar</span> (한 번 누르면 낮게, 연달아 두 번 누르면 높게 점프!)<br>
             <span style="color: #fb7185; font-weight: bold;">[게임 규칙]</span> 가시와 애벌레를 피해 모든 사과와 단지를 드세요! 낙하하면 체력을 잃습니다. 우측 상단의 <span style="color: #34d399; font-weight: bold;">SOUND 버튼</span>을 눌러 사운드를 ON/OFF 하실 수 있습니다!
         </div>
+    </div>
+
+    <!-- 홈화면 복귀 버튼 -->
+    <div class="home-btn-container">
+        <a href="../index.html" class="retro-home-btn">
+            🏠 HOME
+        </a>
     </div>
 
     <!-- 게임 로직 스크립트 엔진 -->
