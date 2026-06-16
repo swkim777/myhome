@@ -3,7 +3,7 @@ const BLOG_DATA = {
     name: "Jowon",
     title: "Senior Full-Stack Engineer & Designer",
     bio: "Building thoughtful, performance-driven web interfaces. Passionate about minimalism, design systems, and modern web architectures. 20+ years of experience crafting digital solutions.",
-    avatar: "image/profile.jpg",
+    avatar: "../image/profile.jpg",
     socials: {
       github: "https://github.com/swkim777",
       linkedin: "https://linkedin.com",
