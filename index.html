@@ -318,7 +318,7 @@
                 { id: 13, name: "너구리", category: "Game", icon: "🦝", link: "game/racoon/index.html", desc: "추억의 레트로 너구리 게임" }
             ],
             activities: [
-                { type: "Project", title: "Application Suite 카테고리 개편", link: "#", date: "New", desc: "앱 & 도구 화면을 AI Tools, Utility, Game, Projects 4개 카테고리로 분류 및 개선" },
+                { type: "Project", title: "Application Suite 카테고리 개편", link: "index.html?route=apps", date: "New", desc: "앱 & 도구 화면을 AI Tools, Utility, Game, Projects 4개 카테고리로 분류 및 개선" },
                 { type: "Blog", title: "타로점치기", link: "https://ai.studio/apps/drive/1eUpCxk2nCV7XTXiTBJoF7gKqCNMv2USd", date: "New", desc: "AI를 활용한 운세 서비스" },
                 { type: "Game", title: "Space Runner", link: "https://aistudio.google.com/apps/bundled/gemini_runner?showPreview=true&showAssistant=true", date: "New", desc: "Gemini 기반 웹 게임" },
                 { type: "Tool", title: "Image Creater", link: "https://ai.studio/apps/drive/1sDeMsAPYLgn9Ehmf5bt3-0MfqAFHSpes", date: "Update", desc: "생성형 AI 이미지 툴" },
@@ -529,6 +529,9 @@
                     // Icon logic
                     let iconColor = act.type === 'Project' ? 'bg-purple-500' : 'bg-blue-500';
                     
+                    const isLocalRoute = act.link.includes('?route=');
+                    const routeName = isLocalRoute ? new URLSearchParams(act.link.split('?')[1]).get('route') : null;
+                    
                     item.innerHTML = `
                         <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 border-white ${iconColor} shadow-sm"></div>
                         <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
@@ -537,14 +540,24 @@
                                 <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">${act.date}</span>
                             </div>
                             <h3 class="text-lg font-bold text-slate-800 mb-1">
-                                <a href="${act.link}" class="hover:text-blue-600 transition-colors">${act.title}</a>
+                                <a href="${act.link}" class="timeline-link hover:text-blue-600 transition-colors">${act.title}</a>
                             </h3>
                             <p class="text-sm text-slate-500 mb-3">${act.desc}</p>
-                            <a href="${act.link}" class="text-sm font-medium text-blue-600 hover:text-blue-800 inline-flex items-center">
+                            <a href="${act.link}" class="timeline-link text-sm font-medium text-blue-600 hover:text-blue-800 inline-flex items-center">
                                 자세히 보기 &rarr;
                             </a>
                         </div>
                     `;
+                    
+                    if (isLocalRoute && routeName) {
+                        item.querySelectorAll('.timeline-link').forEach(el => {
+                            el.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                router.navigate(routeName);
+                            });
+                        });
+                    }
+                    
                     container.appendChild(item);
                 });
             },
