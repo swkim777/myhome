@@ -113,10 +113,10 @@
                     </button>
                 </li>
                 <li>
-                    <a href="BlogPage/index.html" class="w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                    <button onclick="router.navigate('blog')" id="nav-blog" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
                         <span>✍️</span>
                         <span>블로그 (Blog)</span>
-                    </a>
+                    </button>
                 </li>
                 <li>
                     <button onclick="router.navigate('connect')" id="nav-connect" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
@@ -158,7 +158,7 @@
                 <li><button onclick="router.navigate('overview')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📊 대시보드</button></li>
                 <li><button onclick="router.navigate('apps')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🚀 앱 & 도구</button></li>
                 <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
-                <li><a href="BlogPage/index.html" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</a></li>
+                <li><button onclick="router.navigate('blog')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</button></li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
             </ul>
         </div>
@@ -286,6 +286,12 @@
         </div>
     </template>
 
+    <template id="view-blog">
+        <div class="w-full h-full min-h-[calc(100vh-4rem)] md:min-h-screen animate-fade-in flex flex-col">
+            <iframe src="BlogPage/index.html" class="w-full flex-1 border-none min-h-[85vh] h-full" id="blog-iframe"></iframe>
+        </div>
+    </template>
+
     <!-- JavaScript Logic -->
     <script>
         // Data Store (Extracted & Enhanced from Source)
@@ -358,6 +364,15 @@
                 contentArea.innerHTML = '';
                 const clone = template.content.cloneNode(true);
                 contentArea.appendChild(clone);
+
+                // Toggle padding for iframe compatibility on blog view
+                if (route === 'blog') {
+                    contentArea.classList.remove('p-4', 'md:p-8', 'overflow-y-auto');
+                    contentArea.classList.add('p-0', 'overflow-hidden');
+                } else {
+                    contentArea.classList.remove('p-0', 'overflow-hidden');
+                    contentArea.classList.add('p-4', 'md:p-8', 'overflow-y-auto');
+                }
 
                 // Initialize View Specific Logic
                 if (route === 'overview') views.overview();
@@ -453,7 +468,15 @@
                     appData.features.forEach(app => {
                         if (filter === 'all' || app.category === filter) {
                             const card = document.createElement('a');
-                            card.href = app.link;
+                            if (app.name === 'Blog') {
+                                card.href = '#';
+                                card.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    router.navigate('blog');
+                                });
+                            } else {
+                                card.href = app.link;
+                            }
                             card.className = "group block bg-white rounded-xl p-6 border border-slate-200 hover:border-green-400 hover:shadow-md transition-all duration-300 relative overflow-hidden";
                             card.innerHTML = `
                                 <div class="absolute top-0 left-0 w-1 h-full bg-slate-200 group-hover:bg-green-500 transition-colors"></div>
