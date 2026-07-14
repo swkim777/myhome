@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐릭터 시트 생성기</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0066FF',
+                        bgGray: '#F7F8FA',
+                        panelBlue: '#90C4D9',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; }
+        
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+
+        /* 입력창 포커스 아웃라인 제거 */
+        textarea:focus { outline: none; }
+        
+        /* 옵션 라디오 버튼 스타일링을 위한 유틸 */
+        .option-btn.active {
+            border-color: #0066FF;
+            color: #0066FF;
+            background-color: #F0F6FF;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex h-screen bg-bgGray text-gray-800 overflow-hidden">
+
+    <!-- 좌측 사이드바 -->
+    <aside class="w-[240px] bg-white border-r border-gray-200 flex flex-col flex-shrink-0 z-10">
+        <!-- 로고 영역 -->
+        <div class="h-16 flex items-center justify-between px-4">
+            <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
+                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                Jowon
+            </div>
+            <button class="text-gray-400 hover:text-gray-600">
+                <i data-lucide="layout-sidebar-left-collapse" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- 에이전트 토글 -->
+        <div class="px-4 py-2">
+            <div class="bg-gray-100 rounded-lg p-1 flex text-sm font-medium">
+                <button class="flex-1 bg-white shadow-sm rounded-md py-1.5 text-center">에이전트 1.0</button>
+                <button class="flex-1 text-gray-500 py-1.5 text-center hover:text-gray-700">2.0</button>
+            </div>
+        </div>
+
+        <!-- 새 채팅 버튼 -->
+        <div class="px-4 py-2">
+            <button class="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                새 채팅
+            </button>
+        </div>
+
+        <!-- 메뉴 -->
+        <nav class="flex-1 overflow-y-auto px-2 py-2">
+            <button class="w-full flex items-center gap-2 px-3 py-2.5 text-sm bg-gray-100 font-medium rounded-lg mb-4">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                탐색
+            </button>
+
+            <div class="px-3 text-xs font-semibold text-gray-400 mb-2">내 채팅</div>
+            <button class="w-full flex items-center px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg truncate text-left">
+                A professional studio photo...
+            </button>
+        </nav>
+
+        <!-- 하단 프로필 영역 -->
+        <div class="border-t border-gray-100 p-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-primary flex items-center justify-center font-bold">
+                    조
+                </div>
+                <div class="flex-1 text-sm font-medium">조원</div>
+            </div>
+            <div class="flex items-center gap-4 mt-4 text-gray-400">
+                <button class="hover:text-gray-600"><i data-lucide="bell" class="w-4 h-4"></i></button>
+                <button class="hover:text-gray-600"><i data-lucide="help-circle" class="w-4 h-4"></i></button>
+                <div class="flex-1 text-right">
+                    <button class="hover:text-gray-600"><i data-lucide="loader-2" class="w-4 h-4 animate-spin hidden" id="syncIcon"></i></button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- 중앙 입력 패널 -->
+        <section class="w-[450px] bg-bgGray flex flex-col border-r border-gray-200 flex-shrink-0">
+            <!-- 빵부스러기 -->
+            <div class="h-16 flex items-center px-6 text-sm text-gray-500 font-medium">
+                앱 <span class="mx-2 text-gray-300">/</span> <span class="text-gray-800">캐릭터 시트 생성기</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-6 pb-24 space-y-4">
+                
+                <!-- 캐릭터 설명 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                    <div class="flex items-center gap-2 mb-3 text-sm font-bold text-gray-700">
+                        <i data-lucide="pencil" class="w-4 h-4"></i> 캐릭터 설명
+                        <span class="text-gray-400 font-normal text-xs ml-1">선택</span>
+                    </div>
+                    <textarea 
+                        id="promptInput"
+                        class="w-full resize-none h-24 text-[15px] placeholder-gray-400 leading-relaxed" 
+                        placeholder="예: 20대 한국 여성, 검은 단발머리, 하얀 원피스, 밝고 활발한 느낌"
+                    ></textarea>
+                </div>
+
+                <!-- 캐릭터 이미지 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                    <div class="flex items-center gap-2 mb-3 text-sm font-bold text-gray-700">
+                        <i data-lucide="user" class="w-4 h-4"></i> 캐릭터 이미지
+                        <span class="text-gray-400 font-normal text-xs ml-1">선택</span>
+                    </div>
+                    
+                    <!-- 파일 업로드 영역 -->
+                    <label id="dropZone" class="relative block bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:bg-gray-100 hover:border-gray-300 transition-colors group h-40 flex flex-col items-center justify-center">
+                        <input type="file" id="fileInput" class="hidden" accept="image/*" />
+                        
+                        <div id="uploadPlaceholder" class="flex flex-col items-center">
+                            <div class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 text-gray-400 group-hover:text-gray-600">
+                                <i data-lucide="image-plus" class="w-5 h-5"></i>
+                            </div>
+                            <div class="text-sm font-medium text-gray-600">캐릭터 이미지</div>
+                            <div class="text-xs text-gray-400 mt-1">캐릭터 참조 이미지를 추가하세요 (선택)</div>
+                        </div>
+
+                        <!-- 썸네일 미리보기 (숨김 상태) -->
+                        <div id="imagePreviewContainer" class="absolute inset-0 p-2 hidden">
+                            <img id="imagePreview" class="w-full h-full object-contain rounded-lg" src="" alt="미리보기" />
+                            <button type="button" id="removeImageBtn" class="absolute top-4 right-4 bg-white/80 p-1.5 rounded-full shadow hover:bg-white text-gray-600">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- 시트 유형 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                    <div class="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> 시트 유형
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="option-btn active border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">기본</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">표정 시트</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">포즈 시트</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">의상 변경</button>
+                    </div>
+                </div>
+
+                <!-- 스타일 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                    <div class="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> 스타일
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="option-btn active border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">실사</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">애니메이션</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">카툰</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">클레이</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">픽셀 아트</button>
+                        <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">수채화</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 하단 고정 생성 버튼 -->
+            <div class="p-6 bg-gradient-to-t from-bgGray via-bgGray to-transparent border-t border-gray-200">
+                <button id="generateBtn" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold rounded-xl py-4 flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <span id="generateText">생성하기</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 우측 결과/미리보기 패널 -->
+        <section class="flex-1 bg-white flex flex-col items-center justify-center p-8 overflow-y-auto relative">
+            
+            <!-- 상단 타이틀 영역 -->
+            <div class="text-center mb-8 max-w-lg mt-8">
+                <div class="flex justify-center mb-4">
+                    <!-- 아이콘/대표이미지 목업 -->
+                    <div class="flex items-center -space-x-2">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=e2e8f0" class="w-10 h-10 rounded-lg border-2 border-white shadow-sm" alt="avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=e2e8f0" class="w-10 h-10 rounded-lg border-2 border-white shadow-sm z-10" alt="avatar">
+                        <div class="w-10 h-10 rounded-lg bg-gray-800 text-white flex items-center justify-center border-2 border-white shadow-sm z-20 text-xs font-bold">
+                            +
+                        </div>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">캐릭터 시트 생성기</h1>
+                <p class="text-sm text-gray-500">텍스트 설명이나 참조 이미지로 일관된 캐릭터 시트를 만듭니다. 정면/측면/후면 + 얼굴 클로즈업이 한 장에!</p>
+            </div>
+
+            <!-- 메인 결과 이미지 캔버스 -->
+            <div id="resultCanvas" class="w-full max-w-4xl bg-panelBlue rounded-3xl p-6 aspect-[4/3] flex flex-col relative shadow-inner overflow-hidden transition-all duration-500">
+                
+                <!-- 로딩 오버레이 (초기엔 숨김) -->
+                <div id="loadingOverlay" class="absolute inset-0 bg-panelBlue/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center text-white">
+                    <i data-lucide="loader-2" class="w-12 h-12 animate-spin mb-4"></i>
+                    <p class="font-medium text-lg">캐릭터 시트를 생성하고 있습니다...</p>
+                    <p class="text-sm opacity-80 mt-2">입력한 정보를 바탕으로 렌더링 중입니다.</p>
+                </div>
+
+                <!-- 3x2 이미지 그리드 (초기 목업 데이터) -->
+                <div class="grid grid-cols-3 grid-rows-2 gap-4 h-full w-full" id="imageGrid">
+                    <!-- Javascript로 채워짐 -->
+                </div>
+
+                <!-- 하단 썸네일 리스트 목업 -->
+                <div class="absolute bottom-6 left-6 flex gap-2 overflow-x-auto bg-white/20 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/30">
+                    <button class="w-10 h-10 rounded-lg bg-white/40 border-2 border-white flex items-center justify-center overflow-hidden">
+                         <img src="https://api.dicebear.com/7.x/bottts/svg?seed=1" class="w-full h-full object-cover">
+                    </button>
+                    <button class="w-10 h-10 rounded-lg bg-black/10 hover:bg-white/40 border-2 border-transparent hover:border-white transition-all overflow-hidden">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=2" class="w-full h-full object-cover">
+                    </button>
+                    <button class="w-10 h-10 rounded-lg bg-black/10 hover:bg-white/40 border-2 border-transparent hover:border-white transition-all overflow-hidden">
+                         <img src="https://api.dicebear.com/7.x/bottts/svg?seed=3" class="w-full h-full object-cover">
+                    </button>
+                    <div class="w-px h-6 bg-white/30 self-center mx-1"></div>
+                    <button class="w-10 h-10 rounded-lg bg-black/10 hover:bg-white/40 border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-white font-bold text-xs">
+                        +3
+                    </button>
+                </div>
+            </div>
+
+            <!-- 여백 확보용 -->
+            <div class="h-12"></div>
+        </section>
+    </main>
+
+    <script>
+        // 1. Lucide 아이콘 초기화
+        lucide.createIcons();
+
+        // 2. 옵션 선택 로직 (시트 유형 및 스타일 그룹별 독립 적용)
+        function selectOption(clickedBtn) {
+            // 클릭된 버튼이 속한 부모 그룹(grid) 내에서만 active 클래스 제거
+            const group = clickedBtn.closest('.grid');
+            if (group) {
+                group.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+            // 클릭된 버튼에 active 클래스 추가
+            clickedBtn.classList.add('active');
+        }
+
+        // 3. 이미지 파일 업로드 미리보기 로직
+        const fileInput = document.getElementById('fileInput');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const dropZone = document.getElementById('dropZone');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    uploadPlaceholder.classList.add('hidden');
+                    imagePreviewContainer.classList.remove('hidden');
+                    imagePreviewContainer.classList.add('flex');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 이미지 삭제 버튼
+        removeImageBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // 라벨 클릭 이벤트 방지
+            e.stopPropagation();
+            fileInput.value = '';
+            imagePreview.src = '';
+            uploadPlaceholder.classList.remove('hidden');
+            imagePreviewContainer.classList.add('hidden');
+            imagePreviewContainer.classList.remove('flex');
+        });
+
+        // 드래그 앤 드롭 효과 (선택적)
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-primary', 'bg-blue-50');
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary', 'bg-blue-50');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary', 'bg-blue-50');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                // 수동으로 change 이벤트 트리거
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+
+        // 4. 생성하기 버튼 및 실제 이미지 생성 로직
+        const generateBtn = document.getElementById('generateBtn');
+        const generateText = document.getElementById('generateText');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const imageGrid = document.getElementById('imageGrid');
+        
+        const apiKey = ""; // 런타임 환경에서 자동으로 주입됩니다.
+
+        // 지수 백오프(Exponential Backoff)를 적용한 이미지 생성 API 호출 함수
+        async function generateImageWithRetry(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+            const payload = {
+                instances: { prompt: prompt },
+                parameters: { sampleCount: 1 }
+            };
+
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            let lastError = null;
+
+            for (let i = 0; i < delays.length; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        throw new Error(`API Error (${response.status}): ${errText}`);
+                    }
+                    const result = await response.json();
+                    if (result.predictions && result.predictions[0] && result.predictions[0].bytesBase64Encoded) {
+                        return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    } else {
+                        throw new Error("유효하지 않은 응답 형식입니다.");
+                    }
+                } catch (err) {
+                    lastError = err;
+                    // 실패 시 지정된 시간만큼 대기 후 재시도 (마지막 시도 제외)
+                    if (i < delays.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delays[i]));
+                    }
+                }
+            }
+            throw lastError; // 모든 재시도 실패 시 에러 던지기
+        }
+
+        // 초기 목업 이미지 렌더링 (우주비행사 느낌의 로봇 플레이스홀더 사용)
+        function renderImages(seedPrefix = 'astro') {
+            imageGrid.innerHTML = '';
+            for (let i = 1; i <= 6; i++) {
+                // UI 통일성을 위해 배경색이 없는 투명한 SVG 렌더링 후 div에 배치
+                const imgUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${seedPrefix}${i}&backgroundColor=transparent`;
+                
+                const item = document.createElement('div');
+                item.className = 'bg-white/10 rounded-2xl flex items-center justify-center p-4 relative group overflow-hidden transition-all hover:bg-white/20 hover:shadow-lg cursor-pointer';
+                item.innerHTML = `
+                    <img src="${imgUrl}" alt="Pose ${i}" class="w-full h-full object-contain drop-shadow-xl transform group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 border-2 border-transparent group-hover:border-white/50 rounded-2xl pointer-events-none transition-colors"></div>
+                `;
+                imageGrid.appendChild(item);
+            }
+        }
+
+        // 초기 로드 시 이미지 렌더링
+        renderImages('space');
+
+        generateBtn.addEventListener('click', async () => {
+            const userInput = document.getElementById('promptInput').value.trim();
+            // 프롬프트가 비어있을 경우를 대비한 기본값
+            const basePrompt = userInput || "20대 한국 여성, 검은 단발머리, 하얀 원피스, 밝고 활발한 느낌";
+            
+            // 선택된 옵션(시트 유형, 스타일) 텍스트 추출
+            const activeOptions = Array.from(document.querySelectorAll('.option-btn.active')).map(btn => btn.textContent.trim());
+            const sheetType = activeOptions[0] || "기본";
+            const style = activeOptions[1] || "실사";
+
+            // 더 나은 이미지 생성을 위한 프롬프트 조합 (모델이 잘 이해하도록 영어 키워드 추가)
+            const finalPrompt = `Character sheet, multiple views (front, side, back, close-up) in one image. Style: ${style}. Description: ${basePrompt}. Sheet type: ${sheetType}. High quality, detailed illustration.`;
+            
+            // 상태 변경: 로딩 중
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            generateText.textContent = '생성 중... (약 10~20초 소요)';
+            loadingOverlay.classList.remove('hidden');
+            loadingOverlay.classList.add('flex');
+
+            try {
+                // 실제 이미지 생성 API 호출
+                const imageUrl = await generateImageWithRetry(finalPrompt);
+                
+                // 기존 3x2 그리드를 하나로 통합하여 생성된 캐릭터 시트를 전체 화면으로 표시
+                imageGrid.innerHTML = `
+                    <div class="col-span-3 row-span-2 w-full h-full rounded-2xl overflow-hidden shadow-lg border border-white/20 bg-white/10 flex items-center justify-center">
+                        <img src="${imageUrl}" alt="Generated Character Sheet" class="w-full h-full object-contain">
+                    </div>
+                `;
+                
+                // 캔버스 반짝임 효과
+                const canvas = document.getElementById('resultCanvas');
+                canvas.classList.add('ring-4', 'ring-white', 'ring-opacity-50');
+                setTimeout(() => canvas.classList.remove('ring-4', 'ring-white', 'ring-opacity-50'), 500);
+
+            } catch (error) {
+                console.error("이미지 생성 에러:", error);
+                // 에러 발생 시 캔버스 내부에 안내 메시지 표시 (alert 미사용)
+                imageGrid.innerHTML = `
+                    <div class="col-span-3 row-span-2 w-full h-full flex flex-col items-center justify-center text-red-100 bg-red-500/20 rounded-2xl border border-red-500/30 backdrop-blur-sm">
+                        <i data-lucide="alert-circle" class="w-10 h-10 mb-3 text-red-400"></i>
+                        <p class="font-bold text-red-600">이미지 생성에 실패했습니다.</p>
+                        <p class="text-sm mt-1 text-red-500">네트워크 상태를 확인하고 다시 시도해주세요.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            } finally {
+                // 버튼 상태 복구
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                generateText.textContent = '다시 생성하기';
+                loadingOverlay.classList.add('hidden');
+                loadingOverlay.classList.remove('flex');
+            }
+        });
+
+    </script>
+</body>
+</html>
