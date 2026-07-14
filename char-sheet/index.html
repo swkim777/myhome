@@ -357,14 +357,15 @@
 
         // 지수 백오프(Exponential Backoff)를 적용한 이미지 생성 API 호출 함수
         async function generateImageWithRetry(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+            // Google AI Developer API (generativelanguage.googleapis.com) 규격 적용
+            // 모델은 개발자용 이미지 생성 모델인 'imagen-3.0-generate-002' 사용
+            const modelName = "imagen-3.0-generate-002";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateImages?key=${apiKey}`;
             const payload = {
-                instances: [{ prompt: prompt }],
-                parameters: { 
-                    sampleCount: 1,
-                    aspectRatio: "4:3",
-                    outputMimeType: "image/png"
-                }
+                prompt: prompt,
+                numberOfImages: 1,
+                aspectRatio: "4:3",
+                outputMimeType: "image/png"
             };
 
             const delays = [1000, 2000, 4000, 8000, 16000];
@@ -382,8 +383,10 @@
                         throw new Error(`API Error (${response.status}): ${errText}`);
                     }
                     const result = await response.json();
-                    if (result.predictions && result.predictions[0] && result.predictions[0].bytesBase64Encoded) {
-                        return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    
+                    // Google AI Developer API의 응답 규격 파싱
+                    if (result.generatedImages && result.generatedImages[0] && result.generatedImages[0].image && result.generatedImages[0].image.imageBytes) {
+                        return `data:image/png;base64,${result.generatedImages[0].image.imageBytes}`;
                     } else {
                         throw new Error("유효하지 않은 응답 형식입니다.");
                     }
