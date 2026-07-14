@@ -492,12 +492,20 @@
 
             } catch (error) {
                 console.error("이미지 생성 에러:", error);
-                // 에러 발생 시 캔버스 내부에 안내 메시지 표시 (alert 미사용)
+                
+                // API Key 마스킹 처리 (디버깅용)
+                const maskedKey = apiKey ? `${apiKey.substring(0, 6)}...${apiKey.substring(apiKey.length - 4)}` : "설정되지 않음 (Not Set)";
+                
+                // 에러 발생 시 캔버스 내부에 상세 에러 안내 메시지 표시 (사용자가 원인을 진단할 수 있도록 개선)
                 imageGrid.innerHTML = `
-                    <div class="col-span-3 row-span-2 w-full h-full flex flex-col items-center justify-center text-red-100 bg-red-500/20 rounded-2xl border border-red-500/30 backdrop-blur-sm">
-                        <i data-lucide="alert-circle" class="w-10 h-10 mb-3 text-red-400"></i>
-                        <p class="font-bold text-red-600">이미지 생성에 실패했습니다.</p>
-                        <p class="text-sm mt-1 text-red-500">네트워크 상태를 확인하고 다시 시도해주세요.</p>
+                    <div class="col-span-3 row-span-2 w-full h-full flex flex-col items-center justify-center p-6 text-red-100 bg-red-500/25 rounded-2xl border border-red-500/30 backdrop-blur-md">
+                        <i data-lucide="alert-circle" class="w-12 h-12 mb-4 text-red-400"></i>
+                        <p class="font-bold text-lg text-red-600 mb-1">이미지 생성에 실패했습니다.</p>
+                        <p class="text-sm text-red-500 text-center max-w-md mb-4">${error.message || "네트워크 오류 또는 API 호출 차단"}</p>
+                        <div class="text-xs text-slate-500 bg-black/10 px-4 py-2.5 rounded-lg border border-white/5 space-y-1 w-full max-w-sm font-mono">
+                            <div class="flex justify-between"><span>현재 API Key:</span> <span class="font-bold text-slate-700">${maskedKey}</span></div>
+                            <div class="text-[10px] text-slate-400 mt-1">※ 좌측 하단의 🔑 아이콘을 클릭하여 유효한 Gemini API Key를 다시 입력하고 시도해 보세요.</div>
+                        </div>
                     </div>
                 `;
                 lucide.createIcons();

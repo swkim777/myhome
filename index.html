@@ -248,10 +248,9 @@
                 <!-- Filter Controls -->
                 <div class="flex space-x-2 overflow-x-auto pb-2 md:pb-0">
                     <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="all">전체보기</button>
-                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="AI Tools">🤖 AI Tools</button>
-                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="Utility">🛠️ Utility</button>
-                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="Game">🎮 Game</button>
-                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="Projects">📁 Projects</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="일반 앱">📱 일반 앱</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="업무">💼 업무</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="미디어">🎬 미디어</button>
                 </div>
             </div>
 
@@ -311,36 +310,36 @@
             },
             // Categorized links for better structure
             features: [
-                { id: 1, name: "OpenAI", category: "AI Tools", icon: "🤖", link: "openai/index.html", desc: "AI 모델 탐색 및 실험" },
-                { id: 2, name: "Google", category: "Utility", icon: "🌐", link: "google/index.html", desc: "검색 및 리소스" },
-                { id: 3, name: "Portfolio", category: "Projects", icon: "📂", link: "port.html", desc: "경력 및 프로젝트 모음" },
-                { id: 4, name: "계산기", category: "Utility", icon: "🧮", link: "calc.html", desc: "웹 기반 계산 도구" },
-                { id: 5, name: "Home", category: "Projects", icon: "🏠", link: "myhub/index.html", desc: "메인 허브로 이동" },
-                { id: 6, name: "Audio Editor", category: "Utility", icon: "🎵", link: "audio/index.html", desc: "오디오 편집 및 처리" },
-                { id: 7, name: "H&O Biosis", category: "Projects", icon: "🏢", link: "HnO/index.html", desc: "기업 페이지 바로가기" },
-                { id: 8, name: "Image Extractor", category: "AI Tools", icon: "🖼️", link: "ImageTools/ImageExtract/index.html", desc: "이미지 데이터 추출 도구" },
-                { id: 9, name: "주식", category: "Utility", icon: "📈", link: "stock/index.html", desc: "주식 정보 및 차트 확인" },
-                { id: 10, name: "주식 뉴스", category: "Utility", icon: "📰", link: "StockNews/dist/index.html", desc: "최신 주식 뉴스 확인" },
-                { id: 11, name: "테트리스", category: "Game", icon: "🕹️", link: "game/tetris/index.html", desc: "추억의 테트리스 게임" },
-                { id: 12, name: "Blog", category: "Projects", icon: "✍️", link: "BlogPage/index.html", desc: "개인 블로그 및 생각 정리" },
-                { id: 13, name: "너구리", category: "Game", icon: "🦝", link: "game/racoon/index.html", desc: "추억의 레트로 너구리 게임" },
-                { id: 14, name: "금융 뉴스", category: "Utility", icon: "💵", link: "FinNews/index.html", desc: "실시간 금융 뉴스 및 지표 분석 대시보드" },
-                { id: 15, name: "제미니 타로", category: "AI Tools", icon: "🃏", link: "Tarot/dist/index.html", desc: "Gemini API 기반 타로 카드 운세 및 해석 서비스" },
-                { id: 16, name: "AI 이미지 에디터", category: "AI Tools", icon: "🎨", link: "ImageTools/ImageEditor/index.html", desc: "Gemini AI 기반 이미지 편집 및 분위기 보정" },
-                { id: 17, name: "이미지 생성 스튜디오", category: "AI Tools", icon: "🍌", link: "nanobanana/dist/index.html", desc: "Gemini Imagen 모델을 활용한 고화질 이미지 생성" },
-                { id: 18, name: "뮤직 플레이어", category: "Utility", icon: "📻", link: "chatgpt/MusicPlayer/index.html", desc: "웹 브라우저 기반 미니멀 음악 플레이어" },
-                { id: 19, name: "심플 계산기", category: "Utility", icon: "📐", link: "chatgpt/calc/index.html", desc: "ChatGPT 제작 웹 기반 심플 계산기" },
-                { id: 20, name: "아날로그 시계", category: "Utility", icon: "⏰", link: "chatgpt/clock/index.html", desc: "실시간 작동하는 웹 아날로그 시계" },
-                { id: 21, name: "26년 한국경제 전망", category: "Projects", icon: "📊", link: "finance/korea26.html", desc: "2026년대 한국 경제 트렌드 및 시나리오 분석 보고서" },
-                { id: 22, name: "25년 한국경제", category: "Projects", icon: "📈", link: "korea2025.html", desc: "2025년대 한국 경제 상황 보고서" },
-                { id: 23, name: "인공지능 개념 구조", category: "Projects", icon: "🎓", link: "ai-lec/ai-category.html", desc: "인공지능, 머신러닝, 딥러닝 개념 인포그래픽" },
-                { id: 24, name: "테마별 계산기 패키지", category: "Utility", icon: "🎨", link: "theme/index.html", desc: "미니멀, 사이버펑크 등 다양한 테마의 계산기 패키지" },
-                { id: 25, name: "봄 감성 블로그", category: "Projects", icon: "🌸", link: "blog/index.html", desc: "겨울 끝자락의 사색을 담은 감성 미니 블로그" },
-                { id: 26, name: "블로그 관리자", category: "Projects", icon: "⚙️", link: "blog.html", desc: "Google Apps Script 연동 블로그 게시글 관리 시스템" },
-                { id: 27, name: "AI Pulse Check 뉴스", category: "Projects", icon: "📰", link: "opal/news/ainews260214.html", desc: "2026년 2월 AI 업계 소식 및 동향 뉴스레터" },
-                { id: 28, name: "AI 업무 효율화", category: "Projects", icon: "💼", link: "opal/blog.html", desc: "AI를 활용한 업무 자동화 및 생산성 향상 가이드" },
-                { id: 29, name: "스마트 요리 가이드", category: "Utility", icon: "🍳", link: "opal/cook.html", desc: "남은 요리 재료 활용을 돕는 스마트 요리 가이드" },
-                { id: 30, name: "캐릭터 시트", category: "AI Tools", icon: "🎭", link: "char-sheet/index.html", desc: "AI 기반 멀티뷰 캐릭터 시트 생성기" }
+                { id: 1, name: "OpenAI", category: "일반 앱", icon: "🤖", link: "openai/index.html", desc: "AI 모델 탐색 및 실험" },
+                { id: 2, name: "Google", category: "일반 앱", icon: "🌐", link: "google/index.html", desc: "검색 및 리소스" },
+                { id: 3, name: "Portfolio", category: "업무", icon: "📂", link: "port.html", desc: "경력 및 프로젝트 모음" },
+                { id: 4, name: "계산기", category: "일반 앱", icon: "🧮", link: "calc.html", desc: "웹 기반 계산 도구" },
+                { id: 5, name: "Home", category: "일반 앱", icon: "🏠", link: "myhub/index.html", desc: "메인 허브로 이동" },
+                { id: 6, name: "Audio Editor", category: "미디어", icon: "🎵", link: "audio/index.html", desc: "오디오 편집 및 처리" },
+                { id: 7, name: "H&O Biosis", category: "업무", icon: "🏢", link: "HnO/index.html", desc: "기업 페이지 바로가기" },
+                { id: 8, name: "Image Extractor", category: "미디어", icon: "🖼️", link: "ImageTools/ImageExtract/index.html", desc: "이미지 데이터 추출 도구" },
+                { id: 9, name: "주식", category: "업무", icon: "📈", link: "stock/index.html", desc: "주식 정보 및 차트 확인" },
+                { id: 10, name: "주식 뉴스", category: "일반 앱", icon: "📰", link: "StockNews/dist/index.html", desc: "최신 주식 뉴스 확인" },
+                { id: 11, name: "테트리스", category: "일반 앱", icon: "🕹️", link: "game/tetris/index.html", desc: "추억의 테트리스 게임" },
+                { id: 12, name: "Blog", category: "일반 앱", icon: "✍️", link: "BlogPage/index.html", desc: "개인 블로그 및 생각 정리" },
+                { id: 13, name: "너구리", category: "일반 앱", icon: "🦝", link: "game/racoon/index.html", desc: "추억의 레트로 너구리 게임" },
+                { id: 14, name: "금융 뉴스", category: "업무", icon: "💵", link: "FinNews/index.html", desc: "실시간 금융 뉴스 및 지표 분석 대시보드" },
+                { id: 15, name: "제미니 타로", category: "일반 앱", icon: "🃏", link: "Tarot/dist/index.html", desc: "Gemini API 기반 타로 카드 운세 및 해석 서비스" },
+                { id: 16, name: "AI 이미지 에디터", category: "미디어", icon: "🎨", link: "ImageTools/ImageEditor/index.html", desc: "Gemini AI 기반 이미지 편집 및 분위기 보정" },
+                { id: 17, name: "이미지 생성 스튜디오", category: "미디어", icon: "🍌", link: "nanobanana/dist/index.html", desc: "Gemini Imagen 모델을 활용한 고화질 이미지 생성" },
+                { id: 18, name: "뮤직 플레이어", category: "미디어", icon: "📻", link: "chatgpt/MusicPlayer/index.html", desc: "웹 브라우저 기반 미니멀 음악 플레이어" },
+                { id: 19, name: "심플 계산기", category: "일반 앱", icon: "📐", link: "chatgpt/calc/index.html", desc: "ChatGPT 제작 웹 기반 심플 계산기" },
+                { id: 20, name: "아날로그 시계", category: "일반 앱", icon: "⏰", link: "chatgpt/clock/index.html", desc: "실시간 작동하는 웹 아날로그 시계" },
+                { id: 21, name: "26년 한국경제 전망", category: "업무", icon: "📊", link: "finance/korea26.html", desc: "2026년대 한국 경제 트렌드 및 시나리오 분석 보고서" },
+                { id: 22, name: "25년 한국경제", category: "업무", icon: "📈", link: "korea2025.html", desc: "2025년대 한국 경제 상황 보고서" },
+                { id: 23, name: "인공지능 개념 구조", category: "일반 앱", icon: "🎓", link: "ai-lec/ai-category.html", desc: "인공지능, 머신러닝, 딥러닝 개념 인포그래픽" },
+                { id: 24, name: "테마별 계산기 패키지", category: "일반 앱", icon: "🎨", link: "theme/index.html", desc: "미니멀, 사이버펑크 등 다양한 테마의 계산기 패키지" },
+                { id: 25, name: "봄 감성 블로그", category: "일반 앱", icon: "🌸", link: "blog/index.html", desc: "겨울 끝자락의 사색을 담은 감성 미니 블로그" },
+                { id: 26, name: "블로그 관리자", category: "일반 앱", icon: "⚙️", link: "blog.html", desc: "Google Apps Script 연동 블로그 게시글 관리 시스템" },
+                { id: 27, name: "AI Pulse Check 뉴스", category: "일반 앱", icon: "📰", link: "opal/news/ainews260214.html", desc: "2026년 2월 AI 업계 소식 및 동향 뉴스레터" },
+                { id: 28, name: "AI 업무 효율화", category: "일반 앱", icon: "💼", link: "opal/blog.html", desc: "AI를 활용한 업무 자동화 및 생산성 향상 가이드" },
+                { id: 29, name: "스마트 요리 가이드", category: "일반 앱", icon: "🍳", link: "opal/cook.html", desc: "남은 요리 재료 활용을 돕는 스마트 요리 가이드" },
+                { id: 30, name: "캐릭터 시트", category: "미디어", icon: "🎭", link: "char-sheet/index.html", desc: "AI 기반 멀티뷰 캐릭터 시트 생성기" }
             ],
             activities: [
                 { type: "Project", title: "전체 서비스 카테고리 대규모 개편", link: "index.html?route=apps", date: "New", desc: "myhome에 존재하는 타로, 이미지 생성, 금융 뉴스, 보고서 등 전체 29개 앱 반영 및 동적 카운트 연동" },
