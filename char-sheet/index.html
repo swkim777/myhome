@@ -100,8 +100,9 @@
                 <div class="flex-1 text-sm font-medium">조원</div>
             </div>
             <div class="flex items-center gap-4 mt-4 text-gray-400">
-                <button class="hover:text-gray-600"><i data-lucide="bell" class="w-4 h-4"></i></button>
-                <button class="hover:text-gray-600"><i data-lucide="help-circle" class="w-4 h-4"></i></button>
+                <button class="hover:text-gray-600" title="알림"><i data-lucide="bell" class="w-4 h-4"></i></button>
+                <button class="hover:text-gray-600" title="도움말"><i data-lucide="help-circle" class="w-4 h-4"></i></button>
+                <button id="setApiKeyBtn" class="hover:text-gray-600" title="API Key 설정"><i data-lucide="key" class="w-4 h-4"></i></button>
                 <div class="flex-1 text-right">
                     <button class="hover:text-gray-600"><i data-lucide="loader-2" class="w-4 h-4 animate-spin hidden" id="syncIcon"></i></button>
                 </div>
@@ -168,7 +169,7 @@
                     <div class="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
                         <i data-lucide="sparkles" class="w-4 h-4"></i> 시트 유형
                     </div>
-                    <div class="grid grid-cols-3 gap-2">
+                    <div id="sheetTypeGrid" class="grid grid-cols-3 gap-2">
                         <button class="option-btn active border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">기본</button>
                         <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">표정 시트</button>
                         <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">포즈 시트</button>
@@ -181,7 +182,7 @@
                     <div class="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
                         <i data-lucide="sparkles" class="w-4 h-4"></i> 스타일
                     </div>
-                    <div class="grid grid-cols-3 gap-2">
+                    <div id="styleGrid" class="grid grid-cols-3 gap-2">
                         <button class="option-btn active border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">실사</button>
                         <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">애니메이션</button>
                         <button class="option-btn border border-gray-200 rounded-xl py-2.5 text-sm text-gray-600 transition-all" onclick="selectOption(this)">카툰</button>
@@ -334,15 +335,36 @@
         const generateText = document.getElementById('generateText');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const imageGrid = document.getElementById('imageGrid');
-        
-        const apiKey = ""; // 런타임 환경에서 자동으로 주입됩니다.
+                let apiKey = ""; // 런타임 환경에서 자동으로 주입됩니다.
+        if (!apiKey) {
+            apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('quant_ex_gemini_api_key') || "";
+        }
+
+        // API Key 설정 버튼 이벤트 리스너 추가
+        const setApiKeyBtn = document.getElementById('setApiKeyBtn');
+        if (setApiKeyBtn) {
+            setApiKeyBtn.addEventListener('click', () => {
+                const currentKey = localStorage.getItem('gemini_api_key') || '';
+                const newKey = prompt('Gemini API Key를 입력하세요:', currentKey);
+                if (newKey !== null) {
+                    const trimmedKey = newKey.trim();
+                    localStorage.setItem('gemini_api_key', trimmedKey);
+                    apiKey = trimmedKey;
+                    alert('API Key가 저장되었습니다.');
+                }
+            });
+        }
 
         // 지수 백오프(Exponential Backoff)를 적용한 이미지 생성 API 호출 함수
         async function generateImageWithRetry(prompt) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
             const payload = {
-                instances: { prompt: prompt },
-                parameters: { sampleCount: 1 }
+                instances: [{ prompt: prompt }],
+                parameters: { 
+                    sampleCount: 1,
+                    aspectRatio: "4:3",
+                    outputMimeType: "image/png"
+                }
             };
 
             const delays = [1000, 2000, 4000, 8000, 16000];
@@ -397,17 +419,50 @@
         renderImages('space');
 
         generateBtn.addEventListener('click', async () => {
+            if (!apiKey) {
+                const userKey = prompt("Gemini API Key가 필요합니다. API Key를 입력해주세요:");
+                if (userKey) {
+                    const trimmedKey = userKey.trim();
+                    localStorage.setItem('gemini_api_key', trimmedKey);
+                    apiKey = trimmedKey;
+                } else {
+                    return; // 생성 중단
+                }
+            }
+
             const userInput = document.getElementById('promptInput').value.trim();
             // 프롬프트가 비어있을 경우를 대비한 기본값
             const basePrompt = userInput || "20대 한국 여성, 검은 단발머리, 하얀 원피스, 밝고 활발한 느낌";
             
             // 선택된 옵션(시트 유형, 스타일) 텍스트 추출
-            const activeOptions = Array.from(document.querySelectorAll('.option-btn.active')).map(btn => btn.textContent.trim());
-            const sheetType = activeOptions[0] || "기본";
-            const style = activeOptions[1] || "실사";
+            const sheetTypeBtn = document.querySelector('#sheetTypeGrid .option-btn.active');
+            const styleBtn = document.querySelector('#styleGrid .option-btn.active');
+            
+            const sheetType = sheetTypeBtn ? sheetTypeBtn.textContent.trim() : "기본";
+            const style = styleBtn ? styleBtn.textContent.trim() : "실사";
 
-            // 더 나은 이미지 생성을 위한 프롬프트 조합 (모델이 잘 이해하도록 영어 키워드 추가)
-            const finalPrompt = `Character sheet, multiple views (front, side, back, close-up) in one image. Style: ${style}. Description: ${basePrompt}. Sheet type: ${sheetType}. High quality, detailed illustration.`;
+            // 한국어 옵션을 영어 키워드로 맵핑 (Imagen 성능 향상 목적)
+            const sheetTypeTranslation = {
+                "기본": "standard character sheet showing front view, side view, and back view",
+                "표정 시트": "expression sheet showing multiple facial expressions (happy, sad, angry, surprised)",
+                "포즈 시트": "pose sheet showing the character in multiple action poses",
+                "의상 변경": "costume sheet showing the character in multiple different outfits and clothing styles"
+            };
+
+            const styleTranslation = {
+                "실사": "Realistic, photorealistic, highly detailed 3D render, digital art, octane render",
+                "애니메이션": "Anime style, manga illustration, highly detailed, vibrant colors",
+                "카툰": "Cartoon style, 2D vector illustration, cute, stylized art",
+                "클레이": "Claymation style, 3D clay model, cute clay character, plasticine",
+                "픽셀 아트": "Pixel art style, 16-bit retro game art, pixelated character",
+                "수채화": "Watercolor painting style, soft pastel colors, hand-drawn art, textured paper"
+            };
+
+            const englishSheetType = sheetTypeTranslation[sheetType] || "standard character sheet";
+            const englishStyle = styleTranslation[style] || "Realistic";
+
+            // 더 나은 이미지 생성을 위한 프롬프트 조합 (모델이 잘 이해하도록 구조적인 영어 지시어로 구성)
+            const finalPrompt = `Character sheet, multiple views (front, side, back, close-up) in one image. Description: ${basePrompt}. Sheet type: ${englishSheetType}. Style: ${englishStyle}. High quality, detailed illustration, model sheet, reference sheet, clean white background.`;
             
             // 상태 변경: 로딩 중
             generateBtn.disabled = true;
@@ -452,7 +507,6 @@
                 loadingOverlay.classList.remove('flex');
             }
         });
-
     </script>
 </body>
 </html>
