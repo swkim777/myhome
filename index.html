@@ -251,6 +251,7 @@
                     <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="일반 앱">📱 일반 앱</button>
                     <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="업무">💼 업무</button>
                     <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="미디어">🎬 미디어</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="게임">🎮 게임</button>
                 </div>
             </div>
 
@@ -320,11 +321,11 @@
                 { id: 8, name: "Image Extractor", category: "미디어", icon: "🖼️", link: "ImageTools/ImageExtract/index.html", desc: "이미지 데이터 추출 도구" },
                 { id: 9, name: "주식", category: "업무", icon: "📈", link: "stock/index.html", desc: "주식 정보 및 차트 확인" },
                 { id: 10, name: "주식 뉴스", category: "일반 앱", icon: "📰", link: "StockNews/dist/index.html", desc: "최신 주식 뉴스 확인" },
-                { id: 11, name: "테트리스", category: "일반 앱", icon: "🕹️", link: "game/tetris/index.html", desc: "추억의 테트리스 게임" },
+                { id: 11, name: "테트리스", category: "게임", icon: "🕹️", link: "game/tetris/index.html", desc: "추억의 테트리스 게임" },
                 { id: 12, name: "Blog", category: "일반 앱", icon: "✍️", link: "BlogPage/index.html", desc: "개인 블로그 및 생각 정리" },
-                { id: 13, name: "너구리", category: "일반 앱", icon: "🦝", link: "game/racoon/index.html", desc: "추억의 레트로 너구리 게임" },
+                { id: 13, name: "너구리", category: "게임", icon: "🦝", link: "game/racoon/index.html", desc: "추억의 레트로 너구리 게임" },
                 { id: 14, name: "금융 뉴스", category: "업무", icon: "💵", link: "FinNews/index.html", desc: "실시간 금융 뉴스 및 지표 분석 대시보드" },
-                { id: 15, name: "제미니 타로", category: "일반 앱", icon: "🃏", link: "Tarot/dist/index.html", desc: "Gemini API 기반 타로 카드 운세 및 해석 서비스" },
+                { id: 15, name: "제미니 타로", category: "게임", icon: "🃏", link: "Tarot/dist/index.html", desc: "Gemini API 기반 타로 카드 운세 및 해석 서비스" },
                 { id: 16, name: "AI 이미지 에디터", category: "미디어", icon: "🎨", link: "ImageTools/ImageEditor/index.html", desc: "Gemini AI 기반 이미지 편집 및 분위기 보정" },
                 { id: 17, name: "이미지 생성 스튜디오", category: "미디어", icon: "🍌", link: "nanobanana/dist/index.html", desc: "Gemini Imagen 모델을 활용한 고화질 이미지 생성" },
                 { id: 18, name: "뮤직 플레이어", category: "미디어", icon: "📻", link: "chatgpt/MusicPlayer/index.html", desc: "웹 브라우저 기반 미니멀 음악 플레이어" },
@@ -460,7 +461,7 @@
                 // Prepare Data
                 const labels = Object.keys(distribution);
                 const data = Object.values(distribution);
-                const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']; // Tailwind blue-500, green-500, amber-500, violet-500
+                const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']; // Tailwind blue-500, green-500, amber-500, violet-500, pink-500
 
                 new Chart(ctx, {
                     type: 'doughnut',
