@@ -51,7 +51,13 @@ export const ReadingView: React.FC<ReadingViewProps> = ({ cards, reading, onRese
                   <img
                     src={card.imageUrl}
                     alt={card.name}
-                    className="w-full h-full object-contain rounded-xl shadow-2xl shadow-purple-500/30"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('jsdelivr')) {
+                        target.src = 'https://cdn.jsdelivr.net/gh/metabismuth/tarot-json@master' + card.imageUrl;
+                      }
+                    }}
+                    className="w-full h-full object-cover rounded-xl shadow-2xl shadow-purple-500/40 border border-purple-400/40"
                   />
                 </div>
               </div>

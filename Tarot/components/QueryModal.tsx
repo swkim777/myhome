@@ -25,18 +25,35 @@ export const QueryModal: React.FC<QueryModalProps> = ({ cards, onGetReading }) =
           더 자세한 운세를 받아보세요
         </h2>
 
-        <div className="flex justify-center gap-4 mb-6">
-          {cards.map((card, index) => (
-            <div key={index} className="w-24 h-40">
-              <img
-                src={card.imageUrl}
-                alt={card.name}
-                className={`w-full h-full object-cover rounded-lg shadow-lg shadow-purple-500/30 ${
-                  card.reversed ? 'transform rotate-180' : ''
-                }`}
-              />
-            </div>
-          ))}
+        <div className="flex justify-center gap-3 sm:gap-6 mb-6">
+          {cards.map((card, index) => {
+            const positions = ['과거', '현재', '미래'];
+            return (
+              <div key={index} className="flex flex-col items-center">
+                <span className="text-xs font-semibold text-purple-300 mb-1">{positions[index]}</span>
+                <div className="w-24 h-40 sm:w-28 sm:h-44 rounded-lg overflow-hidden border-2 border-purple-400 shadow-lg shadow-purple-500/40 bg-gray-950 flex items-center justify-center">
+                  <img
+                    src={card.imageUrl}
+                    alt={card.name}
+                    onError={(e) => {
+                      // 로컬 경로 실패 시 jsdelivr CDN으로 fallback
+                      const target = e.currentTarget;
+                      if (!target.src.includes('jsdelivr')) {
+                        target.src = 'https://cdn.jsdelivr.net/gh/metabismuth/tarot-json@master' + card.imageUrl;
+                      }
+                    }}
+                    className={`w-full h-full object-cover transition-transform duration-300 ${
+                      card.reversed ? 'transform rotate-180' : ''
+                    }`}
+                  />
+                </div>
+                <p className="mt-1.5 text-xs text-yellow-200 text-center font-medium max-w-[100px] truncate" title={card.name}>
+                  {card.name}
+                </p>
+                {card.reversed && <span className="text-[11px] text-pink-300">(역방향)</span>}
+              </div>
+            );
+          })}
         </div>
 
         <p className="text-center text-purple-200 mb-4">

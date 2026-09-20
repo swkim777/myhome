@@ -1,13 +1,32 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ReadingCard } from '../types';
 
-const API_KEY = process.env.API_KEY;
+function getApiKey(): string {
+  // 1. Vite 주입 환경변수 (로컬 개발 환경)
+  const envKey = process.env.API_KEY || '';
+  if (envKey && !envKey.startsWith('YOUR_') && envKey.length > 20) {
+    return envKey;
+  }
 
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
+  // 2. 브라우저 localStorage 확인
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('GEMINI_API_KEY');
+    if (saved && saved.trim()) {
+      return saved.trim();
+    }
+
+    // 3. 키가 없을 경우 사용자에게 입력 요청 (GitHub Pages 배포 환경 등)
+    const inputKey = window.prompt(
+      'Gemini API 키를 입력해 주세요 (Google AI Studio에서 발급):\n* 입력하신 키는 브라우저 로컬 저장소에만 안전하게 보관됩니다.'
+    );
+    if (inputKey && inputKey.trim()) {
+      localStorage.setItem('GEMINI_API_KEY', inputKey.trim());
+      return inputKey.trim();
+    }
+  }
+
+  return '';
 }
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export async function getTarotReading(cards: ReadingCard[], userQuery: string): Promise<string> {
   const cardDescriptions = cards.map(c => `${c.name} (${c.reversed ? '역방향' : '정방향'})`).join(', ');
@@ -38,6 +57,11 @@ export async function getTarotReading(cards: ReadingCard[], userQuery: string): 
   `;
   
   try {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      throw new Error("API 키가 제공되지 않았습니다. Gemini API 키를 입력해 주세요.");
+    }
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
