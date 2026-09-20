@@ -214,6 +214,41 @@
                 display: flex;
             }
         }
+
+        /* 홈 버튼 스타일 */
+        .home-btn-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .retro-home-btn {
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            border: 2px solid #60a5fa;
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 0 10px rgba(59, 130, 246, 0.3);
+            text-shadow: 1px 1px 2px #000;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .retro-home-btn:hover {
+            background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .retro-home-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -223,8 +258,8 @@
         <div class="cabinet-header">
             <span class="retro-brand">RETRO CLASSICS</span>
             <!-- 사운드 토글 스위치 -->
-            <button class="sound-btn" id="soundBtn">
-                <span id="soundIcon">🔇</span> SOUND: OFF
+            <button class="sound-btn active" id="soundBtn">
+                <span id="soundIcon">🔊</span> SOUND: ON
             </button>
             <span class="retro-brand" style="color: #f43f5e; font-size: 14px;">1982 ORIGINAL</span>
         </div>
@@ -258,8 +293,15 @@
         <!-- 조작 안내문 -->
         <div class="controls-info">
             <span style="color: #38bdf8; font-weight: bold;">[PC 조작법]</span> 이동: 좌우 방향키 <span class="key-badge">◀</span> <span class="key-badge">▶</span> | 사다리 타기: 상하 방향키 <span class="key-badge">▲</span> <span class="key-badge">▼</span> | 점프: <span class="key-badge">Spacebar</span> (한 번 누르면 낮게, 연달아 두 번 누르면 높게 점프!)<br>
-            <span style="color: #fb7185; font-weight: bold;">[게임 규칙]</span> 가시와 애벌레를 피해 모든 사과와 단지를 드세요! 낙하하면 체력을 잃습니다. 우측 상단의 <span style="color: #34d399; font-weight: bold;">SOUND 버튼</span>을 눌러 사운드를 ON/OFF 하실 수 있습니다!
+            <span style="color: #fb7185; font-weight: bold;">[게임 규칙]</span> 가시와 애벌레를 피해 모든 사과와 단지를 드세요! 낙하하면 체력을 잃습니다. 우측 상단의 <span style="color: #34d399; font-weight: bold;">SOUND 버튼</span>을 눌러 배경음악 및 효과음을 ON/OFF 하실 수 있습니다!
         </div>
+    </div>
+
+    <!-- 홈화면 복귀 버튼 -->
+    <div class="home-btn-container">
+        <a href="../../index.html" class="retro-home-btn">
+            🏠 HOME
+        </a>
     </div>
 
     <!-- 게임 로직 스크립트 엔진 -->
@@ -270,7 +312,7 @@
         // Web Audio API 오디오 칩셋 합성
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
-        let isSoundOn = false; // 기본값은 무음 시작 (Autoplay 차단 방지 정책 대응)
+        let isSoundOn = true; // 기본값은 사운드 켜짐 상태 (첫 사용자 제스처 시 오디오 활성화)
 
         const soundBtn = document.getElementById('soundBtn');
         const soundIcon = document.getElementById('soundIcon');
@@ -295,10 +337,256 @@
                 if (audioCtx.state === 'suspended') {
                     await audioCtx.resume();
                 }
+                if (bgmEngine) {
+                    bgmEngine.initNodes();
+                }
             } catch (e) {
                 console.warn("오디오 초기화가 지연되고 있습니다:", e);
             }
         }
+
+        // --- 8-Bit 레트로 너구리 배경음악(BGM) 사운드 엔진 ---
+        // 원작 너구리(Ponpoko 1982) 시그니처 테마: '쇼죠지의 너구리 하야시(証城寺の狸囃子)'
+        const N = {
+            _ : 0,
+            E2: 82.41, F2: 87.31, G2: 98.00, A2: 110.00, B2: 123.47,
+            C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
+            C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+            C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, B5: 987.77,
+            C6: 1046.50
+        };
+
+        const bgmEngine = {
+            bpm: 148,
+            get stepTime() { return 60 / this.bpm / 4; }, // 16분음표 1스텝 = 약 0.101초
+            isPlaying: false,
+            currentStep: 0,
+            nextNoteTime: 0,
+            timerId: null,
+            masterGain: null,
+            leadGain: null,
+            bassGain: null,
+            percGain: null,
+            noiseBuffer: null,
+
+            // 128스텝 원작 너구리 메인 멜로디
+            melody: [
+                // [마디 1-2] 쇼, 쇼, 쇼죠지~
+                N.A4, N._,  N.A4, N._,   N.A4, N.C5, N.D5, N.E5,
+                N.E5, N._,  N.E5, N._,   N.D5, N.C5, N.A4, N.C5,
+                // [마디 3-4] 쇼죠지의 마당은 퐁포코퐁의 퐁~
+                N.D5, N._,  N.E5, N._,   N.D5, N._,  N.C5, N._,
+                N.A4, N._,  N.A4, N._,   N.A4, N._,  N._,  N._,
+                // [마디 5-6] 오이라모 민나테~
+                N.E5, N._,  N.E5, N._,   N.D5, N.C5, N.A4, N.G4,
+                N.A4, N._,  N.C5, N._,   N.D5, N._,  N.C5, N._,
+                // [마디 7-8] 퐁포코퐁의 퐁~
+                N.A4, N._,  N.A4, N._,   N.A4, N._,  N._,  N._,
+                N._,  N._,  N._,  N._,   N._,  N._,  N._,  N._,
+                // [마디 9-10] 마케루나 마케루나~
+                N.G4, N._,  N.G4, N._,   N.A4, N.C5, N.D5, N.E5,
+                N.E5, N._,  N.D5, N.C5,  N.A4, N.C5, N.D5, N.E5,
+                // [마디 11-12] 오쇼상니 마케루나~
+                N.D5, N._,  N.C5, N._,   N.A4, N._,  N.A4, N._,
+                N.D5, N._,  N.C5, N._,   N.A4, N._,  N._,  N._,
+                // [마디 13-14] 코이 코이 코이~ 퐁포코퐁~
+                N.E5, N._,  N.D5, N.C5,  N.A4, N._,  N.G4, N._,
+                N.A4, N._,  N.C5, N._,   N.D5, N._,  N.C5, N._,
+                // [마디 15-16] 퐁포코퐁의 퐁! (마무리 클라이맥스)
+                N.A4, N._,  N.A4, N._,   N.A4, N.C5, N.D5, N.E5,
+                N.E5, N.D5, N.C5, N.D5,  N.A4, N._,  N._,  N._
+            ],
+
+            // 128스텝 통통 튀는 8비트 아케이드 베이스
+            bass: [
+                // 마디 1-2
+                N.A2, N._, N.E3, N._,  N.A2, N._, N.E3, N._,
+                N.A2, N._, N.E3, N._,  N.A2, N._, N.E3, N._,
+                // 마디 3-4
+                N.D3, N._, N.A2, N._,  N.D3, N._, N.A2, N._,
+                N.A2, N._, N.E3, N._,  N.A2, N._, N._,  N._,
+                // 마디 5-6
+                N.E3, N._, N.B2, N._,  N.E3, N._, N.B2, N._,
+                N.A2, N._, N.E3, N._,  N.D3, N._, N.E3, N._,
+                // 마디 7-8
+                N.A2, N._, N.E3, N._,  N.A2, N._, N.E3, N._,
+                N.A2, N._, N._,  N._,  N.E3, N._, N._,  N._,
+                // 마디 9-10
+                N.G2, N._, N.D3, N._,  N.G2, N._, N.D3, N._,
+                N.A2, N._, N.E3, N._,  N.A2, N._, N.E3, N._,
+                // 마디 11-12
+                N.D3, N._, N.A2, N._,  N.D3, N._, N.A2, N._,
+                N.A2, N._, N.E3, N._,  N.A2, N._, N._,  N._,
+                // 마디 13-14
+                N.E3, N._, N.B2, N._,  N.E3, N._, N.B2, N._,
+                N.A2, N._, N.E3, N._,  N.D3, N._, N.E3, N._,
+                // 마디 15-16
+                N.A2, N._, N.E3, N._,  N.A2, N._, N.E3, N._,
+                N.A2, N._, N.E3, N._,  N.A2, N._, N._,  N._
+            ],
+
+            initNodes() {
+                if (!audioCtx) return;
+                if (!this.masterGain) {
+                    this.masterGain = audioCtx.createGain();
+                    this.masterGain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+                    this.masterGain.connect(audioCtx.destination);
+
+                    this.leadGain = audioCtx.createGain();
+                    this.leadGain.gain.setValueAtTime(0.30, audioCtx.currentTime);
+                    this.leadGain.connect(this.masterGain);
+
+                    this.bassGain = audioCtx.createGain();
+                    this.bassGain.gain.setValueAtTime(0.38, audioCtx.currentTime);
+                    this.bassGain.connect(this.masterGain);
+
+                    this.percGain = audioCtx.createGain();
+                    this.percGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    this.percGain.connect(this.masterGain);
+
+                    // 노이즈 버퍼 준비 (0.15초)
+                    const bufSize = Math.floor(audioCtx.sampleRate * 0.15);
+                    this.noiseBuffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+                    const out = this.noiseBuffer.getChannelData(0);
+                    for (let i = 0; i < bufSize; i++) {
+                        out[i] = Math.random() * 2 - 1;
+                    }
+                }
+            },
+
+            start() {
+                if (!isSoundOn || !audioCtx) return;
+                this.initNodes();
+                if (this.isPlaying) return;
+                this.isPlaying = true;
+                if (this.masterGain) {
+                    this.masterGain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+                }
+                this.currentStep = 0;
+                this.nextNoteTime = audioCtx.currentTime + 0.05;
+                this.scheduler();
+            },
+
+            stop() {
+                this.isPlaying = false;
+                if (this.timerId) {
+                    clearTimeout(this.timerId);
+                    this.timerId = null;
+                }
+                if (this.masterGain && audioCtx) {
+                    this.masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                }
+            },
+
+            scheduler() {
+                if (!this.isPlaying || !isSoundOn || !audioCtx) return;
+                // 향후 120ms 동안의 노트를 미리 스케줄링
+                while (this.nextNoteTime < audioCtx.currentTime + 0.12) {
+                    this.playStep(this.currentStep, this.nextNoteTime);
+                    this.nextNoteTime += this.stepTime;
+                    this.currentStep = (this.currentStep + 1) % this.melody.length;
+                }
+                this.timerId = setTimeout(() => this.scheduler(), 30);
+            },
+
+            playStep(step, time) {
+                const dur = this.stepTime;
+
+                // 1. 리드 멜로디 (Square Wave 8-bit 사운드)
+                const mFreq = this.melody[step];
+                if (mFreq > 0) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(mFreq, time);
+
+                    gain.gain.setValueAtTime(0.001, time);
+                    gain.gain.linearRampToValueAtTime(0.18, time + 0.006);
+                    gain.gain.exponentialRampToValueAtTime(0.10, time + dur * 0.7);
+                    gain.gain.linearRampToValueAtTime(0.001, time + dur * 0.95);
+
+                    osc.connect(gain);
+                    gain.connect(this.leadGain);
+                    osc.start(time);
+                    osc.stop(time + dur);
+                }
+
+                // 2. 베이스 (Triangle Wave 쿵짝 베이스)
+                const bFreq = this.bass[step];
+                if (bFreq > 0) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(bFreq, time);
+
+                    gain.gain.setValueAtTime(0.001, time);
+                    gain.gain.linearRampToValueAtTime(0.30, time + 0.006);
+                    gain.gain.exponentialRampToValueAtTime(0.12, time + dur * 1.5);
+                    gain.gain.linearRampToValueAtTime(0.001, time + dur * 1.8);
+
+                    osc.connect(gain);
+                    gain.connect(this.bassGain);
+                    osc.start(time);
+                    osc.stop(time + dur * 1.85);
+                }
+
+                // 3. 퍼커션 드럼 (8-Bit 칩튠 킥/스네어/하이햇)
+                // 킥 드럼: 스텝 0, 8, 16...
+                if (step % 8 === 0) {
+                    const kickOsc = audioCtx.createOscillator();
+                    const kickGain = audioCtx.createGain();
+                    kickOsc.type = 'sine';
+                    kickOsc.frequency.setValueAtTime(140, time);
+                    kickOsc.frequency.exponentialRampToValueAtTime(30, time + 0.08);
+
+                    kickGain.gain.setValueAtTime(0.25, time);
+                    kickGain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+
+                    kickOsc.connect(kickGain);
+                    kickGain.connect(this.percGain);
+                    kickOsc.start(time);
+                    kickOsc.stop(time + 0.08);
+                }
+
+                // 스네어 드럼: 스텝 4, 12, 20...
+                if (step % 8 === 4 && this.noiseBuffer) {
+                    const snareNode = audioCtx.createBufferSource();
+                    snareNode.buffer = this.noiseBuffer;
+                    const snareFilter = audioCtx.createBiquadFilter();
+                    snareFilter.type = 'highpass';
+                    snareFilter.frequency.setValueAtTime(800, time);
+
+                    const snareGain = audioCtx.createGain();
+                    snareGain.gain.setValueAtTime(0.12, time);
+                    snareGain.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
+
+                    snareNode.connect(snareFilter);
+                    snareFilter.connect(snareGain);
+                    snareGain.connect(this.percGain);
+                    snareNode.start(time);
+                    snareNode.stop(time + 0.06);
+                }
+
+                // 하이햇: 스텝 2, 6, 10...
+                if (step % 4 === 2 && this.noiseBuffer) {
+                    const hihatNode = audioCtx.createBufferSource();
+                    hihatNode.buffer = this.noiseBuffer;
+                    const hihatFilter = audioCtx.createBiquadFilter();
+                    hihatFilter.type = 'highpass';
+                    hihatFilter.frequency.setValueAtTime(4500, time);
+
+                    const hihatGain = audioCtx.createGain();
+                    hihatGain.gain.setValueAtTime(0.04, time);
+                    hihatGain.gain.exponentialRampToValueAtTime(0.001, time + 0.025);
+
+                    hihatNode.connect(hihatFilter);
+                    hihatFilter.connect(hihatGain);
+                    hihatGain.connect(this.percGain);
+                    hihatNode.start(time);
+                    hihatNode.stop(time + 0.025);
+                }
+            }
+        };
 
         // 사운드 합성기 메인 구동 장치 (isSoundOn 여부에 따른 완벽 통제)
         function playSound(type) {
@@ -410,19 +698,27 @@
             if (isSoundOn) {
                 await initAudio();
                 updateSoundButtonUI();
-                // 활성화 확인용 픽업 효과음 재생
                 playSound('pickup');
+                if (gameState === 'START' || gameState === 'PLAYING') {
+                    bgmEngine.start();
+                }
             } else {
                 updateSoundButtonUI();
+                bgmEngine.stop();
             }
         });
 
-        // 사용자의 간접 입력 제스처 감지 시 (사운드가 ON 상태일 때만 백그라운드 브라우저 잠금 자동 해제)
+        // 사용자의 간접 입력 제스처 감지 시 (사운드가 ON 상태일 때 오디오 컨텍스트 자동 활성화 및 BGM 재생)
         const userGestures = ['click', 'keydown', 'touchstart', 'mousedown'];
         userGestures.forEach(gesture => {
-            window.addEventListener(gesture, () => {
-                if (isSoundOn && (!audioCtx || audioCtx.state === 'suspended')) {
-                    initAudio();
+            window.addEventListener(gesture, async () => {
+                if (isSoundOn) {
+                    if (!audioCtx || audioCtx.state === 'suspended') {
+                        await initAudio();
+                    }
+                    if (gameState === 'START' || gameState === 'PLAYING') {
+                        bgmEngine.start();
+                    }
                 }
             }, { passive: true });
         });
@@ -696,6 +992,7 @@
             
             gameState = 'INTRO';
             introTicks = 120; // 2초간 인트로 출력
+            if (bgmEngine) bgmEngine.stop();
             playSound('start');
         }
 
@@ -772,7 +1069,9 @@
         function startGame() {
             score = 0;
             lives = 5;
-            loadStage(0);
+            initAudio().then(() => {
+                loadStage(0);
+            });
         }
 
         function resetFullGame() {
@@ -840,6 +1139,9 @@
                 introTicks--;
                 if (introTicks <= 0) {
                     gameState = 'PLAYING';
+                    if (isSoundOn && bgmEngine) {
+                        bgmEngine.start();
+                    }
                 }
                 return;
             }
@@ -868,6 +1170,7 @@
                     lives--;
                     if (lives <= 0) {
                         gameState = 'GAMEOVER';
+                        if (bgmEngine) bgmEngine.stop();
                         playSound('gameover');
                     } else {
                         loadStage(currentStageIndex);
@@ -1086,6 +1389,7 @@
                         if (activeStage.items.length === 0) {
                             gameState = 'CLEAR';
                             clearTicks = 150; // 승리 축하 프레임 유지 시간
+                            if (bgmEngine) bgmEngine.stop();
                             playSound('win');
                         }
                     }
@@ -1140,6 +1444,7 @@
         // 너구리 사망 트리거 실행기
         function triggerDeath() {
             gameState = 'DYING';
+            if (bgmEngine) bgmEngine.stop();
             player.dyingY = player.y;
             player.dyingVy = -5.5; // 소폭 상승 후 낙하 연출
             player.dyingRot = 0;
