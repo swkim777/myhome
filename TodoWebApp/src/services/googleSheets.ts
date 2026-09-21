@@ -7,13 +7,14 @@ import { Todo } from '../types/todo';
 
 export const SPREADSHEET_ID = "1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f";
 export const SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit`;
+export const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyb7cyWSAfgbEZ58N2uI-SKh5iDnxxQ8xehvIdPnMhb0gHuzCKba0tp86V0aKC-1N4/exec";
 const APPS_SCRIPT_STORAGE_KEY = 'todo_apps_script_url';
 
 /**
  * 저장된 Google Apps Script 배포 URL을 가져옵니다.
  */
 export function getAppsScriptUrl(): string {
-  return localStorage.getItem(APPS_SCRIPT_STORAGE_KEY) || '';
+  return localStorage.getItem(APPS_SCRIPT_STORAGE_KEY) || DEFAULT_APPS_SCRIPT_URL;
 }
 
 /**
