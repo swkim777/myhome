@@ -27,16 +27,17 @@ const SHEET_NAME = "Todos";
  * 스프레드시트 및 'Todos' 시트 객체를 반환하며, 시트나 헤더가 없을 시 자동 생성합니다.
  */
 function getOrCreateSheet() {
-  let ss;
-  try {
-    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  } catch (err) {
-    // 바인딩된 스크립트인 경우 활성 시트 사용
-    ss = SpreadsheetApp.getActiveSpreadsheet();
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    try {
+      ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    } catch (err) {
+      // ignore openById error
+    }
   }
   
   if (!ss) {
-    throw new Error("스프레드시트를 열 수 없습니다. ID를 확인해 주세요: " + SPREADSHEET_ID);
+    throw new Error("스프레드시트를 열 수 없습니다. 구글 스프레드시트의 [확장 프로그램] > [Apps Script]에서 실행하거나 정확한 스프레드시트 ID를 확인해 주세요.");
   }
 
   let sheet = ss.getSheetByName(SHEET_NAME);
