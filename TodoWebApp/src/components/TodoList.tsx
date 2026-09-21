@@ -27,8 +27,7 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
     refreshFromSheet, 
     isSheetLoading,
     syncAllToSheet,
-    isSavingToSheet,
-    isDriveLoading
+    isSavingToSheet
   } = useTodoContext();
 
   const [saveStatus, setSaveStatus] = useState<{
@@ -127,18 +126,18 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
         )}
       </div>
 
-      {/* Drive Loading Banner */}
+      {/* Google Sheet Initial Loading Banner */}
       <AnimatePresence>
-        {isDriveLoading && (
+        {isSheetLoading && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex items-center space-x-2.5 px-4 py-2.5 bg-blue-50/80 border border-blue-100 text-blue-700 rounded-xl text-xs font-medium backdrop-blur-sm">
-              <Loader2 size={15} className="animate-spin text-blue-600 shrink-0" />
-              <span>구글 드라이브(todos.csv)에서 최신 일정을 불러오는 중입니다...</span>
+            <div className="flex items-center space-x-2.5 px-4 py-2.5 bg-emerald-50/90 border border-emerald-100 text-emerald-800 rounded-xl text-xs font-medium backdrop-blur-sm shadow-sm">
+              <Loader2 size={15} className="animate-spin text-emerald-600 shrink-0" />
+              <span>구글 스프레드시트(Todos)에서 최신 일정을 불러오는 중입니다...</span>
             </div>
           </motion.div>
         )}

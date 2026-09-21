@@ -67,8 +67,10 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [isSavingToDrive, setIsSavingToDrive] = useState<boolean>(false);
   const [isSavingToSheet, setIsSavingToSheet] = useState<boolean>(false);
-  const [isDriveLoading, setIsDriveLoading] = useState<boolean>(true);
-  const [isSheetLoading, setIsSheetLoading] = useState<boolean>(false);
+  const [isDriveLoading, setIsDriveLoading] = useState<boolean>(false);
+  const [isSheetLoading, setIsSheetLoading] = useState<boolean>(() => {
+    return Boolean(getAppsScriptUrl());
+  });
 
   // Save to LocalStorage whenever todos change
   useEffect(() => {
@@ -148,20 +150,15 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   /**
-   * 앱이 처음 실행될 때 구글 드라이브 지정 폴더의 todos.csv 파일을 우선 로드하여 화면에 표시합니다.
-   * 드라이브 로드 실패 시 구글 시트 데이터로 fallback합니다.
+   * 앱이 처음 실행될 때 todos 구글 스프레드시트 파일을 읽어와 화면에 표시합니다.
    */
   useEffect(() => {
     if (getAppsScriptUrl()) {
-      refreshFromDriveCsv().then((res) => {
-        if (!res.success) {
-          refreshFromSheet();
-        }
-      });
+      refreshFromSheet();
     } else {
-      setIsDriveLoading(false);
+      setIsSheetLoading(false);
     }
-  }, [refreshFromDriveCsv, refreshFromSheet]);
+  }, [refreshFromSheet]);
 
   /**
    * 새 일정 추가 (낙관적 UI + 구글 시트 비동기 저장)
