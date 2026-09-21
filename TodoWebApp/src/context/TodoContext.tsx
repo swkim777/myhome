@@ -39,7 +39,7 @@ interface TodoContextType {
   syncAllToSheet: () => Promise<boolean>;
   isSavingToDrive: boolean;
   isDriveLoading: boolean;
-  saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string }>;
+  saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string; folderUrl?: string; folderName?: string }>;
 }
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
@@ -301,7 +301,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   /**
    * 구글 드라이브에 todos.csv 파일로 일정을 저장/반영합니다.
    */
-  const saveToDriveCsv = async (): Promise<{ success: boolean; message: string; fileUrl?: string }> => {
+  const saveToDriveCsv = async (): Promise<{ success: boolean; message: string; fileUrl?: string; folderUrl?: string; folderName?: string }> => {
     setIsSavingToDrive(true);
     try {
       const res = await saveTodosToDriveCsv(todos);

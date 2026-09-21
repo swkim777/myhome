@@ -271,9 +271,12 @@ function doPost(e) {
         const fileInfo = saveTodosToDriveCsv(todos);
         return createJsonResponse({
           success: true,
-          message: "구글 드라이브의 todos.csv 파일에 일정이 성공적으로 저장되었습니다.",
+          message: "구글 드라이브 지정 폴더('" + fileInfo.folderName + "')의 todos.csv 파일에 일정이 성공적으로 저장되었습니다.",
           fileUrl: fileInfo.fileUrl,
           fileId: fileInfo.fileId,
+          folderUrl: fileInfo.folderUrl,
+          folderName: fileInfo.folderName,
+          parentFolderName: fileInfo.parentFolderName,
           updatedAt: fileInfo.updatedAt
         });
       }
@@ -459,11 +462,49 @@ function saveTodosToDriveCsv(todos) {
     }
   }
 
+  // 혹시 이전에 내 드라이브(루트)에 생성된 todos.csv 파일이 있고 지정 폴더에는 아직 없다면, 지정 폴더로 자동 이동
+  if (!file) {
+    try {
+      const rootFiles = DriveApp.getRootFolder().getFilesByName(CSV_FILE_NAME);
+      if (rootFiles.hasNext()) {
+        const rootFile = rootFiles.next();
+        rootFile.moveTo(folder);
+        file = rootFile;
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
   if (file) {
     file.setContent(csvContent);
+    // 파일이 확실하게 지정 폴더 안에 위치하도록 보장
+    try {
+      const parents = file.getParents();
+      let alreadyInTargetFolder = false;
+      while (parents.hasNext()) {
+        if (parents.next().getId() === DRIVE_FOLDER_ID) {
+          alreadyInTargetFolder = true;
+          break;
+        }
+      }
+      if (!alreadyInTargetFolder) {
+        file.moveTo(folder);
+      }
+    } catch (moveErr) {
+      // ignore
+    }
   } else {
     file = folder.createFile(CSV_FILE_NAME, csvContent, MimeType.CSV);
   }
+
+  let parentName = "";
+  try {
+    const parents = file.getParents();
+    if (parents.hasNext()) {
+      parentName = parents.next().getName();
+    }
+  } catch (pe) {}
 
   return {
     fileId: file.getId(),
@@ -471,6 +512,8 @@ function saveTodosToDriveCsv(todos) {
     name: file.getName(),
     folderId: DRIVE_FOLDER_ID,
     folderName: folder.getName(),
+    folderUrl: "https://drive.google.com/drive/folders/" + DRIVE_FOLDER_ID,
+    parentFolderName: parentName || folder.getName(),
     size: file.getSize(),
     updatedAt: new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
     timestamp: Date.now()

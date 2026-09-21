@@ -235,7 +235,13 @@ export async function fetchTodosFromDriveCsv(): Promise<{
 /**
  * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일로 현재 일정을 저장/반영합니다.
  */
-export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boolean; message: string; fileUrl?: string }> {
+export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ 
+  success: boolean; 
+  message: string; 
+  fileUrl?: string; 
+  folderUrl?: string;
+  folderName?: string;
+}> {
   const url = getAppsScriptUrl();
   if (!url) {
     return { success: false, message: 'Google Apps Script URL이 설정되지 않았습니다. 상단 설정에서 등록해 주세요.' };
@@ -262,7 +268,9 @@ export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boo
     return {
       success: Boolean(result.success),
       message: result.message || (result.success ? '구글 드라이브 폴더의 todos.csv에 저장되었습니다.' : '저장 실패'),
-      fileUrl: result.fileUrl
+      fileUrl: result.fileUrl,
+      folderUrl: result.folderUrl || `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`,
+      folderName: result.folderName || '지정 폴더'
     };
   } catch (err: any) {
     console.error('[GoogleSheets] Drive CSV 저장 실패:', err);

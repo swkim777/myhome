@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useTodoContext } from '../context/TodoContext';
 import { TodoItem } from './TodoItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings } from 'lucide-react';
+import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings, Folder } from 'lucide-react';
 
 interface TodoListProps {
   onOpenSettings?: () => void;
@@ -23,6 +23,7 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
     type: 'success' | 'error';
     message: string;
     fileUrl?: string;
+    folderUrl?: string;
   } | null>(null);
 
   const handleSaveToDrive = async () => {
@@ -32,11 +33,12 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
         type: 'success',
         message: res.message || 'todos.csv 파일로 구글 드라이브에 저장되었습니다.',
         fileUrl: res.fileUrl,
+        folderUrl: res.folderUrl,
       });
-      // 8초 후 성공 알림 자동 닫기
+      // 12초 후 성공 알림 자동 닫기
       setTimeout(() => {
         setSaveStatus(null);
-      }, 8000);
+      }, 12000);
     } else {
       setSaveStatus({
         type: 'error',
@@ -201,7 +203,20 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors"
                 >
-                  <span>드라이브 파일 보기</span>
+                  <span>파일 보기</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+              {saveStatus.folderUrl && (
+                <a
+                  href={saveStatus.folderUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-colors"
+                  title="구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J) 열기"
+                >
+                  <Folder size={12} />
+                  <span>지정 폴더 열기</span>
                   <ExternalLink size={12} />
                 </a>
               )}
