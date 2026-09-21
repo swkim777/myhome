@@ -248,9 +248,9 @@ function doPost(e) {
       }
 
       case "sync": {
-        // 클라이언트 목록으로 전체 덮어쓰기 동기화
+        // 클라이언트 목록으로 전체 덮어쓰기 동기화 (기존 데이터 삭제 후 신규 데이터 쓰기)
         const todos = payload.todos || [];
-        // 기존 데이터 행 전체 삭제
+        // 기존 데이터 행 전체 삭제 (1행 헤더 유지)
         if (sheet.getLastRow() > 1) {
           sheet.deleteRows(2, sheet.getLastRow() - 1);
         }
@@ -265,7 +265,13 @@ function doPost(e) {
           ]);
           sheet.getRange(2, 1, rows.length, 5).setValues(rows);
         }
-        return createJsonResponse({ success: true, message: "전체 동기화가 완료되었습니다." });
+        return createJsonResponse({ 
+          success: true, 
+          message: "구글 시트(Todos)의 기존 데이터를 모두 삭제하고 현재 " + todos.length + "개의 일정을 성공적으로 저장했습니다.",
+          count: todos.length,
+          sheetUrl: "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/edit",
+          timestamp: Date.now()
+        });
       }
 
       case "saveToDriveCsv": {

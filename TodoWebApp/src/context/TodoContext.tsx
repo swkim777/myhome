@@ -36,8 +36,9 @@ interface TodoContextType {
   lastSyncedAt: number | null;
   refreshFromSheet: () => Promise<{ success: boolean; count: number; message?: string }>;
   refreshFromDriveCsv: () => Promise<{ success: boolean; count: number; message?: string }>;
-  syncAllToSheet: () => Promise<boolean>;
+  syncAllToSheet: () => Promise<{ success: boolean; message: string; sheetUrl?: string; count?: number }>;
   isSavingToDrive: boolean;
+  isSavingToSheet: boolean;
   isDriveLoading: boolean;
   isSheetLoading: boolean;
   saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string; folderUrl?: string; folderName?: string }>;
@@ -65,6 +66,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   });
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [isSavingToDrive, setIsSavingToDrive] = useState<boolean>(false);
+  const [isSavingToSheet, setIsSavingToSheet] = useState<boolean>(false);
   const [isDriveLoading, setIsDriveLoading] = useState<boolean>(true);
   const [isSheetLoading, setIsSheetLoading] = useState<boolean>(false);
 
@@ -286,22 +288,26 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   };
 
   /**
-   * 현재 전체 일정을 구글 시트로 강제 덮어쓰기 동기화
+   * 현재 전체 일정을 구글 시트로 강제 덮어쓰기 저장 (기존 데이터 삭제 후 신규 저장)
    */
-  const syncAllToSheet = async (): Promise<boolean> => {
-    if (!getAppsScriptUrl()) return false;
+  const syncAllToSheet = async (): Promise<{ success: boolean; message: string; sheetUrl?: string; count?: number }> => {
+    if (!getAppsScriptUrl()) {
+      return { success: false, message: 'Google Apps Script URL이 설정되지 않았습니다. 상단 설정에서 등록해 주세요.' };
+    }
     setIsSyncing(true);
+    setIsSavingToSheet(true);
     setSyncStatus('syncing');
     try {
-      const ok = await syncAllTodosToSheet(todos);
-      setSyncStatus(ok ? 'synced' : 'error');
-      if (ok) setLastSyncedAt(Date.now());
-      return ok;
-    } catch {
+      const res = await syncAllTodosToSheet(todos);
+      setSyncStatus(res.success ? 'synced' : 'error');
+      if (res.success) setLastSyncedAt(Date.now());
+      return res;
+    } catch (err: any) {
       setSyncStatus('error');
-      return false;
+      return { success: false, message: err?.message || '구글 시트 저장 실패' };
     } finally {
       setIsSyncing(false);
+      setIsSavingToSheet(false);
     }
   };
 
@@ -336,6 +342,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         refreshFromDriveCsv,
         syncAllToSheet,
         isSavingToDrive,
+        isSavingToSheet,
         isDriveLoading,
         isSheetLoading,
         saveToDriveCsv,

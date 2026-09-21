@@ -24,11 +24,11 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
     filter, 
     setFilter, 
     clearCompleted, 
-    isSavingToDrive, 
-    saveToDriveCsv, 
-    isDriveLoading, 
     refreshFromSheet, 
-    isSheetLoading 
+    isSheetLoading,
+    syncAllToSheet,
+    isSavingToSheet,
+    isDriveLoading
   } = useTodoContext();
 
   const [saveStatus, setSaveStatus] = useState<{
@@ -39,23 +39,23 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
     sheetUrl?: string;
   } | null>(null);
 
-  const handleSaveToDrive = async () => {
-    const res = await saveToDriveCsv();
+  const handleSaveToSheet = async () => {
+    const res = await syncAllToSheet();
     if (res.success) {
       setSaveStatus({
         type: 'success',
-        message: res.message || 'todos.csv 파일로 구글 드라이브에 저장되었습니다.',
-        fileUrl: res.fileUrl,
-        folderUrl: res.folderUrl,
+        message: res.message || `구글 시트(Todos)의 기존 데이터를 삭제하고 현재 ${todos.length}개의 일정을 성공적으로 저장했습니다.`,
+        sheetUrl: res.sheetUrl || SPREADSHEET_URL,
       });
-      // 12초 후 성공 알림 자동 닫기
+      // 9초 후 성공 알림 자동 닫기
       setTimeout(() => {
         setSaveStatus(null);
-      }, 12000);
+      }, 9000);
     } else {
       setSaveStatus({
         type: 'error',
-        message: res.message || '구글 드라이브 저장 중 오류가 발생했습니다.',
+        message: res.message || '구글 시트 저장 중 오류가 발생했습니다. Apps Script 설정을 확인해 주세요.',
+        sheetUrl: SPREADSHEET_URL,
       });
       // 실패 시 15초 후 닫기
       setTimeout(() => {
@@ -191,7 +191,7 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
           {/* Reload (Google Sheet) Button */}
           <button
             onClick={handleReloadFromSheet}
-            disabled={isSheetLoading || isSavingToDrive || isDriveLoading}
+            disabled={isSheetLoading || isSavingToSheet}
             title="구글 스프레드시트(Todos)에서 최신 일정을 다시 읽어와 화면에 표시합니다"
             className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-emerald-50/80 hover:bg-emerald-100 text-emerald-800 font-semibold text-xs border border-emerald-200/80 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
           >
@@ -199,19 +199,19 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
             <span>{isSheetLoading ? '시트 불러오는 중...' : 'Reload (구글 시트)'}</span>
           </button>
 
-          {/* Save Button */}
+          {/* Save (Google Sheet) Button */}
           <button
-            onClick={handleSaveToDrive}
-            disabled={isSavingToDrive || isDriveLoading}
-            title="구글 드라이브 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에 저장"
+            onClick={handleSaveToSheet}
+            disabled={isSavingToSheet || isSheetLoading}
+            title="현재 등록된 일정들을 구글 시트(Todos)에 덮어써서 저장합니다 (기존 데이터 모두 삭제 후 저장)"
             className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 font-semibold text-xs border border-blue-200/70 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
           >
-            {isSavingToDrive ? (
+            {isSavingToSheet ? (
               <Loader2 size={14} className="animate-spin text-blue-600" />
             ) : (
               <Save size={14} className="text-blue-600 group-hover:scale-110 transition-transform" />
             )}
-            <span>{isSavingToDrive ? '드라이브 저장 중...' : 'Save (todos.csv)'}</span>
+            <span>{isSavingToSheet ? '시트에 저장 중...' : 'Save (구글 시트)'}</span>
           </button>
         </div>
       </div>

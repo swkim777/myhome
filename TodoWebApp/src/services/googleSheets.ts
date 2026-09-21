@@ -154,9 +154,50 @@ export async function clearCompletedFromSheet(): Promise<boolean> {
 
 /**
  * 전체 Todo 목록을 구글 시트와 덮어쓰기 동기화합니다.
+ * (기존 시트 데이터 전체 삭제 후 현재 목록 쓰기)
  */
-export async function syncAllTodosToSheet(todos: Todo[]): Promise<boolean> {
-  return sendPostRequest({ action: 'sync', todos });
+export async function syncAllTodosToSheet(todos: Todo[]): Promise<{ 
+  success: boolean; 
+  message: string; 
+  sheetUrl?: string; 
+  count?: number; 
+}> {
+  const url = getAppsScriptUrl();
+  if (!url) {
+    return { success: false, message: 'Google Apps Script URL이 설정되지 않았습니다. 상단 설정에서 등록해 주세요.' };
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify({ action: 'sync', todos }),
+    });
+
+    if (!response.ok) {
+      return { success: false, message: `서버 응답 오류 (HTTP ${response.status})` };
+    }
+
+    const result = await response.json();
+    return {
+      success: Boolean(result.success),
+      message: result.message || (result.success ? '구글 시트에 성공적으로 덮어써서 저장했습니다.' : '저장 실패'),
+      sheetUrl: result.sheetUrl || SPREADSHEET_URL,
+      count: result.count !== undefined ? result.count : todos.length
+    };
+  } catch (err: any) {
+    console.error('[GoogleSheets] 전체 동기화 저장 실패:', err);
+    const msg = String(err?.message || '');
+    return {
+      success: false,
+      message: msg.includes('Failed to fetch')
+        ? 'Google Apps Script 연결 실패 (Failed to fetch). Apps Script 배포 상태를 확인해 주세요.'
+        : `저장 실패: ${msg}`,
+      sheetUrl: SPREADSHEET_URL
+    };
+  }
 }
 
 /**
