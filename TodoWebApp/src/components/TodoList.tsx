@@ -7,7 +7,8 @@ import React, { useState } from 'react';
 import { useTodoContext } from '../context/TodoContext';
 import { TodoItem } from './TodoItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings, Folder, RotateCw } from 'lucide-react';
+import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings, Folder, RotateCw, FileSpreadsheet } from 'lucide-react';
+import { SPREADSHEET_URL } from '../services/googleSheets';
 
 interface TodoListProps {
   onOpenSettings?: () => void;
@@ -18,12 +19,24 @@ interface TodoListProps {
  * Displays filtered todos and provides a dashboard view of task metrics with Google Drive save support.
  */
 export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
-  const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv, isDriveLoading, refreshFromDriveCsv } = useTodoContext();
+  const { 
+    todos, 
+    filter, 
+    setFilter, 
+    clearCompleted, 
+    isSavingToDrive, 
+    saveToDriveCsv, 
+    isDriveLoading, 
+    refreshFromSheet, 
+    isSheetLoading 
+  } = useTodoContext();
+
   const [saveStatus, setSaveStatus] = useState<{
     type: 'success' | 'error';
     message: string;
     fileUrl?: string;
     folderUrl?: string;
+    sheetUrl?: string;
   } | null>(null);
 
   const handleSaveToDrive = async () => {
@@ -51,22 +64,23 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
     }
   };
 
-  const handleReloadFromDrive = async () => {
-    const res = await refreshFromDriveCsv();
+  const handleReloadFromSheet = async () => {
+    const res = await refreshFromSheet();
     if (res.success) {
       setSaveStatus({
         type: 'success',
-        message: res.message || `구글 드라이브(todos.csv)에서 ${res.count}개의 최신 일정을 성공적으로 불러왔습니다.`,
-        folderUrl: 'https://drive.google.com/drive/folders/1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J',
+        message: res.message || `구글 시트(Todos)에서 ${res.count}개의 최신 일정을 성공적으로 불러왔습니다.`,
+        sheetUrl: SPREADSHEET_URL,
       });
-      // 7초 후 성공 알림 자동 닫기
+      // 8초 후 성공 알림 자동 닫기
       setTimeout(() => {
         setSaveStatus(null);
-      }, 7000);
+      }, 8000);
     } else {
       setSaveStatus({
         type: 'error',
-        message: res.message || '구글 드라이브(todos.csv) 일정을 불러오지 못했습니다.',
+        message: res.message || '구글 시트 일정을 불러오지 못했습니다. 앱스 스크립트 연결을 확인해 주세요.',
+        sheetUrl: SPREADSHEET_URL,
       });
       // 실패 시 12초 후 닫기
       setTimeout(() => {
@@ -174,15 +188,15 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Reload Button */}
+          {/* Reload (Google Sheet) Button */}
           <button
-            onClick={handleReloadFromDrive}
-            disabled={isDriveLoading || isSavingToDrive}
-            title="구글 드라이브 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에서 최신 일정을 다시 읽어옵니다"
-            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold text-xs border border-gray-200/80 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+            onClick={handleReloadFromSheet}
+            disabled={isSheetLoading || isSavingToDrive || isDriveLoading}
+            title="구글 스프레드시트(Todos)에서 최신 일정을 다시 읽어와 화면에 표시합니다"
+            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-emerald-50/80 hover:bg-emerald-100 text-emerald-800 font-semibold text-xs border border-emerald-200/80 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
           >
-            <RotateCw size={14} className={`text-gray-600 transition-transform ${isDriveLoading ? 'animate-spin text-blue-600' : 'group-hover:rotate-180'}`} />
-            <span>{isDriveLoading ? '불러오는 중...' : 'Reload (todos.csv)'}</span>
+            <RotateCw size={14} className={`text-emerald-700 transition-transform ${isSheetLoading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
+            <span>{isSheetLoading ? '시트 불러오는 중...' : 'Reload (구글 시트)'}</span>
           </button>
 
           {/* Save Button */}
@@ -255,6 +269,19 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
                 >
                   <Folder size={12} />
                   <span>지정 폴더 열기</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+              {saveStatus.sheetUrl && (
+                <a
+                  href={saveStatus.sheetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors"
+                  title="구글 스프레드시트 열기"
+                >
+                  <FileSpreadsheet size={12} />
+                  <span>구글 시트 열기</span>
                   <ExternalLink size={12} />
                 </a>
               )}

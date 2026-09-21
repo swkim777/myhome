@@ -74,16 +74,22 @@ export async function testAppsScriptConnection(url: string): Promise<{ success: 
 /**
  * 구글 시트에서 전체 Todo 목록을 불러옵니다.
  */
-export async function fetchTodosFromSheet(): Promise<Todo[] | null> {
+export async function fetchTodosFromSheet(): Promise<{ success: boolean; data: Todo[]; count: number; message?: string }> {
   const url = getAppsScriptUrl();
-  if (!url) return null;
+  if (!url) {
+    return { success: false, data: [], count: 0, message: 'Google Apps Script URL이 설정되지 않았습니다.' };
+  }
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-    const response = await fetch(url, {
+    const separator = url.includes('?') ? '&' : '?';
+    const targetUrl = `${url}${separator}source=sheet&_t=${Date.now()}`;
+
+    const response = await fetch(targetUrl, {
       method: 'GET',
+      cache: 'no-store',
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -94,12 +100,27 @@ export async function fetchTodosFromSheet(): Promise<Todo[] | null> {
 
     const result = await response.json();
     if (result.success && Array.isArray(result.data)) {
-      return result.data as Todo[];
+      return {
+        success: true,
+        data: result.data as Todo[],
+        count: result.data.length,
+        message: result.message || `구글 시트(Todos)에서 ${result.data.length}개의 일정을 불러왔습니다.`
+      };
     }
-    return null;
-  } catch (err) {
-    console.warn('[GoogleSheets] 일정 불러오기 실패:', err);
-    return null;
+    return {
+      success: false,
+      data: [],
+      count: 0,
+      message: result.error || '구글 시트에서 데이터를 불러오지 못했습니다.'
+    };
+  } catch (err: any) {
+    console.warn('[GoogleSheets] 구글 시트 일정 불러오기 실패:', err);
+    return {
+      success: false,
+      data: [],
+      count: 0,
+      message: `구글 시트 불러오기 실패: ${err?.message || '네트워크 오류'}`
+    };
   }
 }
 

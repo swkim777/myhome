@@ -127,7 +127,10 @@ function doGet(e) {
       return createJsonResponse({
         success: true,
         data: todos,
-        source: "sheet"
+        count: todos.length,
+        message: "구글 시트(Todos)에서 " + todos.length + "개의 일정을 성공적으로 불러왔습니다.",
+        source: "sheet",
+        timestamp: Date.now()
       });
     }
 

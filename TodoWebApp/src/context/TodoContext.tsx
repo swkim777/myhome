@@ -34,11 +34,12 @@ interface TodoContextType {
   isSyncing: boolean;
   syncStatus: SyncStatus;
   lastSyncedAt: number | null;
-  refreshFromSheet: () => Promise<void>;
+  refreshFromSheet: () => Promise<{ success: boolean; count: number; message?: string }>;
   refreshFromDriveCsv: () => Promise<{ success: boolean; count: number; message?: string }>;
   syncAllToSheet: () => Promise<boolean>;
   isSavingToDrive: boolean;
   isDriveLoading: boolean;
+  isSheetLoading: boolean;
   saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string; folderUrl?: string; folderName?: string }>;
 }
 
@@ -65,6 +66,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [isSavingToDrive, setIsSavingToDrive] = useState<boolean>(false);
   const [isDriveLoading, setIsDriveLoading] = useState<boolean>(true);
+  const [isSheetLoading, setIsSheetLoading] = useState<boolean>(false);
 
   // Save to LocalStorage whenever todos change
   useEffect(() => {
@@ -74,30 +76,35 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   /**
    * 구글 시트로부터 최신 일정을 불러옵니다.
    */
-  const refreshFromSheet = useCallback(async () => {
+  const refreshFromSheet = useCallback(async (): Promise<{ success: boolean; count: number; message?: string }> => {
     const url = getAppsScriptUrl();
     if (!url) {
       setSyncStatus('idle');
-      return;
+      return { success: false, count: 0, message: 'Apps Script URL 미설정' };
     }
 
     setIsSyncing(true);
+    setIsSheetLoading(true);
     setSyncStatus('syncing');
 
     try {
-      const remoteTodos = await fetchTodosFromSheet();
-      if (remoteTodos !== null) {
-        setTodos(remoteTodos);
+      const res = await fetchTodosFromSheet();
+      if (res.success && Array.isArray(res.data)) {
+        setTodos(res.data);
         setSyncStatus('synced');
         setLastSyncedAt(Date.now());
+        return { success: true, count: res.count, message: res.message };
       } else {
         setSyncStatus('error');
+        return { success: false, count: 0, message: res.message || '데이터를 불러오지 못했습니다.' };
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Refresh from sheet failed:', err);
       setSyncStatus('error');
+      return { success: false, count: 0, message: err?.message || '구글 시트 연동 실패' };
     } finally {
       setIsSyncing(false);
+      setIsSheetLoading(false);
     }
   }, []);
 
@@ -330,6 +337,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         syncAllToSheet,
         isSavingToDrive,
         isDriveLoading,
+        isSheetLoading,
         saveToDriveCsv,
       }}
     >
