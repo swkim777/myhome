@@ -190,12 +190,12 @@ export async function fetchTodosFromDriveCsv(): Promise<{
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-    const targetUrl = url.includes('?') 
-      ? `${url}&source=driveCsv` 
-      : `${url}?source=driveCsv`;
+    const separator = url.includes('?') ? '&' : '?';
+    const targetUrl = `${url}${separator}source=driveCsv&_t=${Date.now()}`;
 
     const response = await fetch(targetUrl, {
       method: 'GET',
+      cache: 'no-store',
       signal: controller.signal,
     });
     clearTimeout(timeoutId);

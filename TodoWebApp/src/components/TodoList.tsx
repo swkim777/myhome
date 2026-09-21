@@ -18,7 +18,7 @@ interface TodoListProps {
  * Displays filtered todos and provides a dashboard view of task metrics with Google Drive save support.
  */
 export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
-  const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv } = useTodoContext();
+  const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv, isDriveLoading } = useTodoContext();
   const [saveStatus, setSaveStatus] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -86,6 +86,23 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
           </button>
         )}
       </div>
+
+      {/* Drive Loading Banner */}
+      <AnimatePresence>
+        {isDriveLoading && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="flex items-center space-x-2.5 px-4 py-2.5 bg-blue-50/80 border border-blue-100 text-blue-700 rounded-xl text-xs font-medium backdrop-blur-sm">
+              <Loader2 size={15} className="animate-spin text-blue-600 shrink-0" />
+              <span>구글 드라이브(todos.csv)에서 최신 일정을 불러오는 중입니다...</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="relative min-h-[200px]">
         <AnimatePresence mode="popLayout">

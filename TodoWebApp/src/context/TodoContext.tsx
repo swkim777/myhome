@@ -38,6 +38,7 @@ interface TodoContextType {
   refreshFromDriveCsv: () => Promise<{ success: boolean; count: number; message?: string }>;
   syncAllToSheet: () => Promise<boolean>;
   isSavingToDrive: boolean;
+  isDriveLoading: boolean;
   saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string }>;
 }
 
@@ -63,6 +64,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   });
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [isSavingToDrive, setIsSavingToDrive] = useState<boolean>(false);
+  const [isDriveLoading, setIsDriveLoading] = useState<boolean>(true);
 
   // Save to LocalStorage whenever todos change
   useEffect(() => {
@@ -106,18 +108,19 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     const url = getAppsScriptUrl();
     if (!url) {
       setSyncStatus('idle');
+      setIsDriveLoading(false);
       return { success: false, count: 0, message: 'Apps Script URL 미설정' };
     }
 
     setIsSyncing(true);
+    setIsDriveLoading(true);
     setSyncStatus('syncing');
 
     try {
       const res = await fetchTodosFromDriveCsv();
       if (res.success && Array.isArray(res.data)) {
-        if (res.data.length > 0) {
-          setTodos(res.data);
-        }
+        // 구글 드라이브 todos.csv 파일의 내용을 화면에 즉시 동기화 반영
+        setTodos(res.data);
         setSyncStatus('synced');
         setLastSyncedAt(Date.now());
         return { success: true, count: res.data.length, message: res.message };
@@ -131,6 +134,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
       return { success: false, count: 0, message: err.message };
     } finally {
       setIsSyncing(false);
+      setIsDriveLoading(false);
     }
   }, []);
 
@@ -145,6 +149,8 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
           refreshFromSheet();
         }
       });
+    } else {
+      setIsDriveLoading(false);
     }
   }, [refreshFromDriveCsv, refreshFromSheet]);
 
@@ -323,6 +329,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         refreshFromDriveCsv,
         syncAllToSheet,
         isSavingToDrive,
+        isDriveLoading,
         saveToDriveCsv,
       }}
     >

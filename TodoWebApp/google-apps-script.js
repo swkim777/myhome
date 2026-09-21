@@ -319,47 +319,100 @@ function parseCsvLine(line) {
 
 /**
  * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J) 내 todos.csv 파일을 읽어와 Todo 배열로 반환합니다.
+ * (동일 이름 파일이 여러 개일 경우 가장 최근에 수정된 최신 파일을 자동 선택)
  */
 function getTodosFromDriveCsv() {
   const folder = getDriveFolder();
   const files = folder.getFilesByName(CSV_FILE_NAME);
 
-  if (!files.hasNext()) {
+  let file = null;
+  while (files.hasNext()) {
+    const f = files.next();
+    if (!file || f.getLastUpdated().getTime() > file.getLastUpdated().getTime()) {
+      file = f;
+    }
+  }
+
+  if (!file) {
     return {
       success: true,
       data: [],
       message: "지정된 드라이브 폴더에 todos.csv 파일이 아직 없습니다. 앱에서 'Save'를 누르면 자동 생성됩니다.",
       fileFound: false,
-      folderId: DRIVE_FOLDER_ID
+      folderId: DRIVE_FOLDER_ID,
+      folderName: folder.getName(),
+      timestamp: Date.now()
     };
   }
 
-  const file = files.next();
   const content = file.getBlob().getDataAsString("UTF-8");
   const rawLines = content.split(/\r\n|\n|\r/);
   const lines = rawLines.filter(function(line) { return line.trim().length > 0; });
 
   const todos = [];
-  // 1행이 헤더인 경우 건너뜁니다
-  const startIndex = (lines.length > 0 && lines[0].toLowerCase().indexOf("id") !== -1) ? 1 : 0;
+  if (lines.length === 0) {
+    return {
+      success: true,
+      data: [],
+      fileId: file.getId(),
+      fileUrl: file.getUrl(),
+      folderId: DRIVE_FOLDER_ID,
+      folderName: folder.getName(),
+      count: 0,
+      fileFound: true,
+      timestamp: Date.now()
+    };
+  }
+
+  // 1행 헤더 동적 컬럼 인덱스 분석
+  let colId = -1, colText = -1, colCompleted = -1, colCreatedAt = -1;
+  const headerCols = parseCsvLine(lines[0]);
+  let isHeaderRow = false;
+
+  for (let c = 0; c < headerCols.length; c++) {
+    const colName = String(headerCols[c] || "").trim().toLowerCase();
+    if (colName === "id" || colName === "아이디" || colName === "번호") {
+      colId = c;
+      isHeaderRow = true;
+    } else if (colName.indexOf("할일") !== -1 || colName === "text" || colName === "todo" || colName === "task" || colName === "title" || colName === "내용") {
+      colText = c;
+      isHeaderRow = true;
+    } else if (colName.indexOf("완료") !== -1 || colName === "completed" || colName === "done" || colName === "status") {
+      colCompleted = c;
+      isHeaderRow = true;
+    } else if (colName.indexOf("생성") !== -1 || colName.indexOf("등록") !== -1 || colName === "createdat" || colName === "timestamp" || colName === "date") {
+      colCreatedAt = c;
+      isHeaderRow = true;
+    }
+  }
+
+  // 감지되지 않은 컬럼은 기본 순서로 대체
+  if (colId === -1) colId = 0;
+  if (colText === -1) colText = 1;
+  if (colCompleted === -1) colCompleted = 2;
+  if (colCreatedAt === -1) colCreatedAt = 3;
+
+  const startIndex = isHeaderRow ? 1 : 0;
 
   for (let i = startIndex; i < lines.length; i++) {
     const cols = parseCsvLine(lines[i]);
     if (!cols || cols.length === 0) continue;
 
-    const id = String(cols[0] || "").trim();
-    const text = String(cols[1] || "").trim();
+    const id = String(cols[colId] || "").trim();
+    const text = String(cols[colText] !== undefined ? cols[colText] : (cols[1] || "")).trim();
     if (!id && !text) continue;
 
-    const completed = String(cols[2] || "").toLowerCase() === "true" || String(cols[2] || "") === "1";
-    let createdAt = Number(cols[3]);
+    const compVal = String(cols[colCompleted] !== undefined ? cols[colCompleted] : "").toLowerCase().trim();
+    const completed = compVal === "true" || compVal === "1" || compVal === "완료" || compVal === "yes" || compVal === "y";
+    
+    let createdAt = Number(cols[colCreatedAt]);
     if (!createdAt || isNaN(createdAt)) {
       createdAt = Date.now();
     }
 
     todos.push({
       id: id || ("todo_" + Date.now() + "_" + i),
-      text: text,
+      text: text || "제목 없음",
       completed: completed,
       createdAt: createdAt
     });
@@ -373,7 +426,9 @@ function getTodosFromDriveCsv() {
     folderId: DRIVE_FOLDER_ID,
     folderName: folder.getName(),
     count: todos.length,
-    fileFound: true
+    fileFound: true,
+    lastUpdated: file.getLastUpdated().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
+    timestamp: Date.now()
   };
 }
 
@@ -395,10 +450,16 @@ function saveTodosToDriveCsv(todos) {
 
   const csvContent = csvRows.join("\r\n");
 
-  let file;
+  let file = null;
   const files = folder.getFilesByName(CSV_FILE_NAME);
-  if (files.hasNext()) {
-    file = files.next();
+  while (files.hasNext()) {
+    const f = files.next();
+    if (!file || f.getLastUpdated().getTime() > file.getLastUpdated().getTime()) {
+      file = f;
+    }
+  }
+
+  if (file) {
     file.setContent(csvContent);
   } else {
     file = folder.createFile(CSV_FILE_NAME, csvContent, MimeType.CSV);
@@ -411,7 +472,8 @@ function saveTodosToDriveCsv(todos) {
     folderId: DRIVE_FOLDER_ID,
     folderName: folder.getName(),
     size: file.getSize(),
-    updatedAt: new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })
+    updatedAt: new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
+    timestamp: Date.now()
   };
 }
 
