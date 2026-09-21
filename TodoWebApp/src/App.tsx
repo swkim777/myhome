@@ -50,6 +50,7 @@ function TodoAppContent() {
 
             <button
               onClick={() => setIsSettingsOpen(true)}
+              title="연동 상태 확인"
               className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-white/80 backdrop-blur-md border border-slate-200/80 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-white transition-all shadow-sm"
             >
               <span className={`w-2 h-2 rounded-full ${
@@ -58,11 +59,20 @@ function TodoAppContent() {
                 syncStatus === 'error' ? 'bg-rose-500' : 'bg-amber-400'
               }`} />
               <span>{
-                syncStatus === 'synced' ? '드라이브/시트 연동됨' :
+                syncStatus === 'synced' ? '연동 완료' :
                 syncStatus === 'syncing' ? '동기화 중...' :
                 syncStatus === 'error' ? '연동 오류' : '로컬 모드'
               }</span>
-              <Settings size={13} className="text-slate-400" />
+            </button>
+
+            {/* 명확한 설정 버튼 */}
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/20 active:scale-95 transition-all cursor-pointer"
+              title="구글 Apps Script URL 및 동기화 설정 열기"
+            >
+              <Settings size={13} />
+              <span>설정</span>
             </button>
           </div>
         </div>
@@ -93,7 +103,7 @@ function TodoAppContent() {
           className="glass rounded-[2rem] p-6 sm:p-8 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-all hover:shadow-[0_32px_80px_-16px_rgba(0,0,0,0.15)]"
         >
           <TodoForm />
-          <TodoList />
+          <TodoList onOpenSettings={() => setIsSettingsOpen(true)} />
         </motion.main>
         
         {/* Footer Info */}

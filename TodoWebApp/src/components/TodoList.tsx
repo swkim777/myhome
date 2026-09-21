@@ -3,17 +3,21 @@
  * @description Container component that filters and renders the list of todos.
  * Handles empty states and provides filter controls (All, Active, Completed).
  */
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTodoContext } from '../context/TodoContext';
 import { TodoItem } from './TodoItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
+import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings } from 'lucide-react';
+
+interface TodoListProps {
+  onOpenSettings?: () => void;
+}
 
 /**
  * TodoList Component.
  * Displays filtered todos and provides a dashboard view of task metrics with Google Drive save support.
  */
-export const TodoList = () => {
+export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
   const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv } = useTodoContext();
   const [saveStatus, setSaveStatus] = useState<{
     type: 'success' | 'error';
@@ -164,6 +168,15 @@ export const TodoList = () => {
             </div>
 
             <div className="flex items-center space-x-2 shrink-0">
+              {saveStatus.type === 'error' && onOpenSettings && (
+                <button
+                  onClick={onOpenSettings}
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs transition-colors shadow-sm cursor-pointer"
+                >
+                  <Settings size={12} />
+                  <span>설정 열기</span>
+                </button>
+              )}
               {saveStatus.fileUrl && (
                 <a
                   href={saveStatus.fileUrl}

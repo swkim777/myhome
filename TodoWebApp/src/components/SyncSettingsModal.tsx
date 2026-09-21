@@ -8,6 +8,7 @@ import { X, ExternalLink, CheckCircle2, AlertCircle, RefreshCw, HelpCircle, Save
 import { 
   SPREADSHEET_ID, 
   SPREADSHEET_URL, 
+  DRIVE_FOLDER_ID,
   getAppsScriptUrl, 
   setAppsScriptUrl, 
   testAppsScriptConnection 
@@ -98,22 +99,44 @@ export const SyncSettingsModal: React.FC<SyncSettingsModalProps> = ({ isOpen, on
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-6 flex-1 text-sm">
-              {/* Target Sheet Info */}
-              <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-0.5">연동 스프레드시트</span>
-                  <p className="font-mono text-xs text-slate-700 font-semibold break-all">{SPREADSHEET_ID}</p>
+            <div className="p-6 overflow-y-auto space-y-5 flex-1 text-sm">
+              {/* Target Resources Info Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Google Drive Folder */}
+                <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 flex flex-col justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider block mb-0.5">연동 구글 드라이브 폴더</span>
+                    <p className="font-mono text-xs text-slate-700 font-semibold break-all">{DRIVE_FOLDER_ID}</p>
+                    <p className="text-[11px] text-slate-500 mt-1">todos.csv 자동 로드 및 저장</p>
+                  </div>
+                  <a
+                    href={`https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 rounded-xl bg-white text-indigo-600 text-xs font-semibold shadow-sm border border-indigo-200 hover:bg-indigo-50 transition-colors shrink-0"
+                  >
+                    <span>폴더 열기</span>
+                    <ExternalLink size={13} />
+                  </a>
                 </div>
-                <a
-                  href={SPREADSHEET_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 rounded-xl bg-white text-blue-600 text-xs font-semibold shadow-sm border border-blue-200 hover:bg-blue-50 transition-colors shrink-0"
-                >
-                  <span>시트 열기</span>
-                  <ExternalLink size={13} />
-                </a>
+
+                {/* Target Sheet Info */}
+                <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex flex-col justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block mb-0.5">연동 구글 스프레드시트</span>
+                    <p className="font-mono text-xs text-slate-700 font-semibold break-all">{SPREADSHEET_ID}</p>
+                    <p className="text-[11px] text-slate-500 mt-1">Todos 시트 데이터베이스</p>
+                  </div>
+                  <a
+                    href={SPREADSHEET_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 rounded-xl bg-white text-blue-600 text-xs font-semibold shadow-sm border border-blue-200 hover:bg-blue-50 transition-colors shrink-0"
+                  >
+                    <span>시트 열기</span>
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
               </div>
 
               {/* Status Badge */}
