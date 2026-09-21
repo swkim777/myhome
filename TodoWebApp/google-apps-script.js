@@ -211,6 +211,19 @@ function doPost(e) {
         return createJsonResponse({ success: true, message: "전체 동기화가 완료되었습니다." });
       }
 
+      case "saveToDriveCsv": {
+        // 구글 드라이브에 todos.csv 파일 생성/갱신
+        const todos = payload.todos || [];
+        const fileInfo = saveTodosToDriveCsv(todos);
+        return createJsonResponse({
+          success: true,
+          message: "구글 드라이브의 todos.csv 파일에 일정이 성공적으로 저장되었습니다.",
+          fileUrl: fileInfo.fileUrl,
+          fileId: fileInfo.fileId,
+          updatedAt: fileInfo.updatedAt
+        });
+      }
+
       default:
         throw new Error("알 수 없는 action 요청입니다: " + action);
     }
@@ -220,6 +233,42 @@ function doPost(e) {
       error: error.toString()
     });
   }
+}
+
+/**
+ * 구글 드라이브에 todos.csv 파일을 생성하거나 기존 파일 내용을 갱신합니다.
+ */
+function saveTodosToDriveCsv(todos) {
+  const fileName = "todos.csv";
+  let csvRows = ["ID,할일내용,완료여부,생성일시(Timestamp),등록일자"];
+
+  (todos || []).forEach(function(t) {
+    const id = String(t.id || "");
+    const safeText = '"' + String(t.text || "").replace(/"/g, '""') + '"';
+    const completed = Boolean(t.completed);
+    const timestamp = Number(t.createdAt || Date.now());
+    const dateStr = new Date(timestamp).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
+    csvRows.push([id, safeText, completed, timestamp, dateStr].join(","));
+  });
+
+  const csvContent = csvRows.join("\r\n");
+
+  let file;
+  const files = DriveApp.getFilesByName(fileName);
+  if (files.hasNext()) {
+    file = files.next();
+    file.setContent(csvContent);
+  } else {
+    file = DriveApp.createFile(fileName, csvContent, MimeType.CSV);
+  }
+
+  return {
+    fileId: file.getId(),
+    fileUrl: file.getUrl(),
+    name: file.getName(),
+    size: file.getSize(),
+    updatedAt: new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })
+  };
 }
 
 /**

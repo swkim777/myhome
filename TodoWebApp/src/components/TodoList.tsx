@@ -3,17 +3,43 @@
  * @description Container component that filters and renders the list of todos.
  * Handles empty states and provides filter controls (All, Active, Completed).
  */
+import { useState } from 'react';
 import { useTodoContext } from '../context/TodoContext';
 import { TodoItem } from './TodoItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ClipboardList, CheckCircle, Circle } from 'lucide-react';
+import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 
 /**
  * TodoList Component.
- * Displays filtered todos and provides a dashboard view of task metrics.
+ * Displays filtered todos and provides a dashboard view of task metrics with Google Drive save support.
  */
 export const TodoList = () => {
-  const { todos, filter, setFilter, clearCompleted } = useTodoContext();
+  const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv } = useTodoContext();
+  const [saveStatus, setSaveStatus] = useState<{
+    type: 'success' | 'error';
+    message: string;
+    fileUrl?: string;
+  } | null>(null);
+
+  const handleSaveToDrive = async () => {
+    const res = await saveToDriveCsv();
+    if (res.success) {
+      setSaveStatus({
+        type: 'success',
+        message: res.message || 'todos.csv 파일로 구글 드라이브에 저장되었습니다.',
+        fileUrl: res.fileUrl,
+      });
+      // 7초 후 알림 자동 닫기
+      setTimeout(() => {
+        setSaveStatus(null);
+      }, 7000);
+    } else {
+      setSaveStatus({
+        type: 'error',
+        message: res.message || '구글 드라이브 저장 중 오류가 발생했습니다.',
+      });
+    }
+  };
 
   const filteredTodos = todos.filter((todo) => {
     if (filter === 'active') return !todo.completed;
@@ -83,20 +109,79 @@ export const TodoList = () => {
         </AnimatePresence>
       </div>
 
-      {todos.length > 0 && (
-        <div className="flex items-center justify-between pt-4 text-sm text-gray-500 font-medium">
-           <div className="flex items-center space-x-4">
-            <span className="flex items-center gap-1.5">
-              <Circle size={14} className="text-blue-500" />
-              {activeCount} active
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle size={14} className="text-green-500" />
-              {todos.length - activeCount} completed
-            </span>
-          </div>
+      {/* Footer Info & Save Action */}
+      <div className="pt-4 border-t border-gray-100/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500 font-medium">
+        <div className="flex items-center space-x-4">
+          <span className="flex items-center gap-1.5">
+            <Circle size={14} className="text-blue-500" />
+            {activeCount} active
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle size={14} className="text-green-500" />
+            {todos.length - activeCount} completed
+          </span>
         </div>
-      )}
+
+        <button
+          onClick={handleSaveToDrive}
+          disabled={isSavingToDrive}
+          title="구글 드라이브의 todos.csv 파일에 현재 일정 저장"
+          className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 font-semibold text-xs border border-blue-200/70 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+        >
+          {isSavingToDrive ? (
+            <Loader2 size={15} className="animate-spin text-blue-600" />
+          ) : (
+            <Save size={15} className="text-blue-600 group-hover:scale-110 transition-transform" />
+          )}
+          <span>{isSavingToDrive ? '드라이브 저장 중...' : 'Save (todos.csv)'}</span>
+        </button>
+      </div>
+
+      {/* Save Feedback Banner */}
+      <AnimatePresence>
+        {saveStatus && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            className={`p-3 rounded-xl border text-xs font-medium flex items-center justify-between gap-2 shadow-sm ${
+              saveStatus.type === 'success'
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                : 'bg-rose-50 text-rose-800 border-rose-200'
+            }`}
+          >
+            <div className="flex items-center space-x-2 truncate">
+              {saveStatus.type === 'success' ? (
+                <CheckCircle size={15} className="text-emerald-600 shrink-0" />
+              ) : (
+                <AlertCircle size={15} className="text-rose-600 shrink-0" />
+              )}
+              <span className="truncate">{saveStatus.message}</span>
+            </div>
+
+            <div className="flex items-center space-x-2 shrink-0">
+              {saveStatus.fileUrl && (
+                <a
+                  href={saveStatus.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors"
+                >
+                  <span>드라이브 파일 보기</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+              <button
+                onClick={() => setSaveStatus(null)}
+                className="text-gray-400 hover:text-gray-600 p-1 text-sm leading-none"
+                title="닫기"
+              >
+                &times;
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

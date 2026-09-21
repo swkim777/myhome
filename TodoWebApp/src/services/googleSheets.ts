@@ -165,3 +165,37 @@ async function sendPostRequest(payload: any): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * 구글 드라이브의 todos.csv 파일로 현재 일정을 저장/반영합니다.
+ */
+export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boolean; message: string; fileUrl?: string }> {
+  const url = getAppsScriptUrl();
+  if (!url) {
+    return { success: false, message: 'Google Apps Script URL이 설정되지 않았습니다. 상단 설정에서 등록해 주세요.' };
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify({ action: 'saveToDriveCsv', todos }),
+    });
+
+    if (!response.ok) {
+      return { success: false, message: `서버 응답 오류 (HTTP ${response.status})` };
+    }
+
+    const result = await response.json();
+    return {
+      success: Boolean(result.success),
+      message: result.message || (result.success ? '구글 드라이브에 저장되었습니다.' : '저장 실패'),
+      fileUrl: result.fileUrl
+    };
+  } catch (err: any) {
+    console.error('[GoogleSheets] Drive CSV 저장 실패:', err);
+    return { success: false, message: `저장 실패: ${err.message || '네트워크 오류'}` };
+  }
+}

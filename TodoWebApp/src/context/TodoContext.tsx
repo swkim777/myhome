@@ -12,7 +12,8 @@ import {
   updateTodoInSheet, 
   deleteTodoFromSheet, 
   clearCompletedFromSheet, 
-  syncAllTodosToSheet 
+  syncAllTodosToSheet,
+  saveTodosToDriveCsv 
 } from '../services/googleSheets';
 
 export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
@@ -34,6 +35,8 @@ interface TodoContextType {
   lastSyncedAt: number | null;
   refreshFromSheet: () => Promise<void>;
   syncAllToSheet: () => Promise<boolean>;
+  isSavingToDrive: boolean;
+  saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string }>;
 }
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
@@ -57,6 +60,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     return getAppsScriptUrl() ? 'synced' : 'idle';
   });
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+  const [isSavingToDrive, setIsSavingToDrive] = useState<boolean>(false);
 
   // Save to LocalStorage whenever todos change
   useEffect(() => {
@@ -246,6 +250,19 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /**
+   * 구글 드라이브에 todos.csv 파일로 일정을 저장/반영합니다.
+   */
+  const saveToDriveCsv = async (): Promise<{ success: boolean; message: string; fileUrl?: string }> => {
+    setIsSavingToDrive(true);
+    try {
+      const res = await saveTodosToDriveCsv(todos);
+      return res;
+    } finally {
+      setIsSavingToDrive(false);
+    }
+  };
+
   return (
     <TodoContext.Provider 
       value={{ 
@@ -262,6 +279,8 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         lastSyncedAt,
         refreshFromSheet,
         syncAllToSheet,
+        isSavingToDrive,
+        saveToDriveCsv,
       }}
     >
       {children}
