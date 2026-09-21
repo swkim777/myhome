@@ -1,27 +1,45 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ReadingCard } from '../types';
 
+let cachedApiKey = '';
+
 function getApiKey(): string {
-  // 1. Vite 주입 환경변수 (로컬 개발 환경)
+  // 0. 메모리 캐시 (한번 입력하거나 로드된 키는 세션 내내 재사용)
+  if (cachedApiKey) {
+    return cachedApiKey;
+  }
+
+  // 1. Vite 주입 환경변수 (로컬 개발 서버 실행 시)
   const envKey = process.env.API_KEY || '';
   if (envKey && !envKey.startsWith('YOUR_') && envKey.length > 20) {
-    return envKey;
+    cachedApiKey = envKey;
+    return cachedApiKey;
   }
 
   // 2. 브라우저 localStorage 확인
   if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('GEMINI_API_KEY');
-    if (saved && saved.trim()) {
-      return saved.trim();
+    try {
+      const saved = localStorage.getItem('GEMINI_API_KEY');
+      if (saved && saved.trim()) {
+        cachedApiKey = saved.trim();
+        return cachedApiKey;
+      }
+    } catch (e) {
+      console.warn('localStorage 접근 불가:', e);
     }
 
-    // 3. 키가 없을 경우 사용자에게 입력 요청 (GitHub Pages 배포 환경 등)
+    // 3. 저장된 키가 없을 경우에만 1회 입력 요청
     const inputKey = window.prompt(
-      'Gemini API 키를 입력해 주세요 (Google AI Studio에서 발급):\n* 입력하신 키는 브라우저 로컬 저장소에만 안전하게 보관됩니다.'
+      'Gemini API 키를 입력해 주세요 (Google AI Studio에서 발급):\n* 입력하신 키는 브라우저에 저장되어 다음부터 묻지 않습니다.'
     );
     if (inputKey && inputKey.trim()) {
-      localStorage.setItem('GEMINI_API_KEY', inputKey.trim());
-      return inputKey.trim();
+      cachedApiKey = inputKey.trim();
+      try {
+        localStorage.setItem('GEMINI_API_KEY', cachedApiKey);
+      } catch (e) {
+        console.warn('localStorage 저장 불가:', e);
+      }
+      return cachedApiKey;
     }
   }
 
