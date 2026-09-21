@@ -7,7 +7,7 @@ import { Todo } from '../types/todo';
 
 export const SPREADSHEET_ID = "1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f";
 export const SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit`;
-export const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyb7cyWSAfgbEZ58N2uI-SKh5iDnxxQ8xehvIdPnMhb0gHuzCKba0tp86V0aKC-1N4/exec";
+export const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxtgN6M6hi5MWvWof_0e7C6PNyKbYMHw9Abh9vsDB0/exec";
 const APPS_SCRIPT_STORAGE_KEY = 'todo_apps_script_url';
 
 /**
