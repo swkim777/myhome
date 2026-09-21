@@ -11,8 +11,15 @@ import { CheckCircle, Sparkles, Layout, RefreshCw, Settings, ArrowLeft } from 'l
 import { motion } from 'framer-motion';
 
 function TodoAppContent() {
-  const { syncStatus, isSyncing, refreshFromSheet } = useTodo();
+  const { syncStatus, isSyncing, refreshFromSheet, refreshFromDriveCsv } = useTodo();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleRefresh = async () => {
+    const res = await refreshFromDriveCsv();
+    if (!res.success) {
+      await refreshFromSheet();
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden py-8 sm:py-12 px-4 selection:bg-blue-100 selection:text-blue-900">
@@ -33,9 +40,9 @@ function TodoAppContent() {
 
           <div className="flex items-center space-x-2">
             <button 
-              onClick={() => refreshFromSheet()}
+              onClick={handleRefresh}
               disabled={isSyncing}
-              title="구글 시트에서 최신 일정 새로고침"
+              title="구글 드라이브(todos.csv) 및 시트에서 최신 일정 새로고침"
               className="p-2 rounded-xl bg-white/80 backdrop-blur-md border border-slate-200/80 text-slate-600 hover:text-blue-600 hover:bg-white transition-all shadow-sm disabled:opacity-50"
             >
               <RefreshCw size={14} className={isSyncing ? 'animate-spin text-blue-600' : ''} />
@@ -51,7 +58,7 @@ function TodoAppContent() {
                 syncStatus === 'error' ? 'bg-rose-500' : 'bg-amber-400'
               }`} />
               <span>{
-                syncStatus === 'synced' ? '구글 시트 연동됨' :
+                syncStatus === 'synced' ? '드라이브/시트 연동됨' :
                 syncStatus === 'syncing' ? '동기화 중...' :
                 syncStatus === 'error' ? '연동 오류' : '로컬 모드'
               }</span>
@@ -96,18 +103,18 @@ function TodoAppContent() {
           transition={{ delay: 1 }}
           className="mt-12 flex flex-col items-center justify-center space-y-4"
         >
-          <div className="flex items-center space-x-6 text-gray-400">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-gray-400">
             <div className="flex items-center space-x-2">
               <CheckCircle size={14} />
-              <span className="text-xs font-bold uppercase tracking-widest">Google Sheets Sync</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Drive todos.csv Sync</span>
             </div>
             <div className="flex items-center space-x-2">
               <Layout size={14} />
-              <span className="text-xs font-bold uppercase tracking-widest">Context Flow</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Google Sheets Sync</span>
             </div>
           </div>
-          <p className="text-xs text-gray-400 text-center">
-            &copy; 2026 FocusMode Application &bull; Google Sheets ID: 1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f
+          <p className="text-xs text-gray-400 text-center leading-relaxed">
+            &copy; 2026 FocusMode Application &bull; Drive Folder: 1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J &bull; Sheet ID: 1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f
           </p>
         </motion.footer>
 

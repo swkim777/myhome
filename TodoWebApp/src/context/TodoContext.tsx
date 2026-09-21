@@ -8,12 +8,13 @@ import { Todo } from '../types/todo';
 import { 
   getAppsScriptUrl, 
   fetchTodosFromSheet, 
+  fetchTodosFromDriveCsv,
   addTodoToSheet, 
   updateTodoInSheet, 
   deleteTodoFromSheet, 
   clearCompletedFromSheet, 
   syncAllTodosToSheet,
-  saveTodosToDriveCsv 
+  saveTodosToDriveCsv
 } from '../services/googleSheets';
 
 export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
@@ -34,6 +35,7 @@ interface TodoContextType {
   syncStatus: SyncStatus;
   lastSyncedAt: number | null;
   refreshFromSheet: () => Promise<void>;
+  refreshFromDriveCsv: () => Promise<{ success: boolean; count: number; message?: string }>;
   syncAllToSheet: () => Promise<boolean>;
   isSavingToDrive: boolean;
   saveToDriveCsv: () => Promise<{ success: boolean; message: string; fileUrl?: string }>;
@@ -98,13 +100,53 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   /**
-   * 앱 시작 시 구글 시트 연동 URL이 있다면 원격 데이터 조회
+   * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일로부터 최신 일정을 불러옵니다.
+   */
+  const refreshFromDriveCsv = useCallback(async (): Promise<{ success: boolean; count: number; message?: string }> => {
+    const url = getAppsScriptUrl();
+    if (!url) {
+      setSyncStatus('idle');
+      return { success: false, count: 0, message: 'Apps Script URL 미설정' };
+    }
+
+    setIsSyncing(true);
+    setSyncStatus('syncing');
+
+    try {
+      const res = await fetchTodosFromDriveCsv();
+      if (res.success && Array.isArray(res.data)) {
+        if (res.data.length > 0) {
+          setTodos(res.data);
+        }
+        setSyncStatus('synced');
+        setLastSyncedAt(Date.now());
+        return { success: true, count: res.data.length, message: res.message };
+      } else {
+        setSyncStatus('error');
+        return { success: false, count: 0, message: res.message };
+      }
+    } catch (err: any) {
+      console.error('Refresh from Drive todos.csv failed:', err);
+      setSyncStatus('error');
+      return { success: false, count: 0, message: err.message };
+    } finally {
+      setIsSyncing(false);
+    }
+  }, []);
+
+  /**
+   * 앱이 처음 실행될 때 구글 드라이브 지정 폴더의 todos.csv 파일을 우선 로드하여 화면에 표시합니다.
+   * 드라이브 로드 실패 시 구글 시트 데이터로 fallback합니다.
    */
   useEffect(() => {
     if (getAppsScriptUrl()) {
-      refreshFromSheet();
+      refreshFromDriveCsv().then((res) => {
+        if (!res.success) {
+          refreshFromSheet();
+        }
+      });
     }
-  }, [refreshFromSheet]);
+  }, [refreshFromDriveCsv, refreshFromSheet]);
 
   /**
    * 새 일정 추가 (낙관적 UI + 구글 시트 비동기 저장)
@@ -278,6 +320,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         syncStatus,
         lastSyncedAt,
         refreshFromSheet,
+        refreshFromDriveCsv,
         syncAllToSheet,
         isSavingToDrive,
         saveToDriveCsv,

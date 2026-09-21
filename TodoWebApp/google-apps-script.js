@@ -26,6 +26,19 @@
 
 const SPREADSHEET_ID = "1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f";
 const SHEET_NAME = "Todos";
+const DRIVE_FOLDER_ID = "1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J";
+const CSV_FILE_NAME = "todos.csv";
+
+/**
+ * 지정된 구글 드라이브 폴더 객체를 반환합니다.
+ */
+function getDriveFolder() {
+  try {
+    return DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  } catch (err) {
+    throw new Error("구글 드라이브 폴더(ID: " + DRIVE_FOLDER_ID + ")에 접근할 수 없습니다: " + err.toString());
+  }
+}
 
 /**
  * 스프레드시트 및 'Todos' 시트 객체를 반환하며, 시트나 헤더가 없을 시 자동 생성합니다.
@@ -48,7 +61,7 @@ function getOrCreateSheet() {
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     // 기본 헤더 생성
-    sheet.appendRow(["ID", "할일내용", "완료여부", "생성일시(Timestamp)", "등록일자"]);
+    sheet.appendRow(["ID", "할일내용", "완료여부", "생성일시(Timestamp),등록일자"]);
     // 헤더 스타일링
     const headerRange = sheet.getRange("A1:E1");
     headerRange.setBackground("#2563eb");
@@ -60,31 +73,42 @@ function getOrCreateSheet() {
 }
 
 /**
- * GET 요청 처리: 구글 시트에 저장된 모든 Todo 목록을 JSON으로 반환합니다.
+ * GET 요청 처리:
+ * - 기본 또는 source === "driveCsv": 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 데이터를 읽어 반환합니다.
+ * - source === "sheet": 구글 스프레드시트에 저장된 Todo 목록을 반환합니다.
  */
 function doGet(e) {
   try {
-    const sheet = getOrCreateSheet();
-    const data = sheet.getDataRange().getValues();
-    const todos = [];
+    const source = (e && e.parameter && e.parameter.source) ? String(e.parameter.source) : "driveCsv";
 
-    // 1행은 헤더이므로 2행(인덱스 1)부터 시작
-    for (let i = 1; i < data.length; i++) {
-      const row = data[i];
-      if (!row[0] && !row[1]) continue; // 빈 행 건너뛰기
+    if (source === "sheet") {
+      const sheet = getOrCreateSheet();
+      const data = sheet.getDataRange().getValues();
+      const todos = [];
 
-      todos.push({
-        id: String(row[0]),
-        text: String(row[1] || ""),
-        completed: Boolean(row[2] === true || String(row[2]).toLowerCase() === "true"),
-        createdAt: Number(row[3]) || Date.now()
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        if (!row[0] && !row[1]) continue;
+
+        todos.push({
+          id: String(row[0]),
+          text: String(row[1] || ""),
+          completed: Boolean(row[2] === true || String(row[2]).toLowerCase() === "true"),
+          createdAt: Number(row[3]) || Date.now()
+        });
+      }
+
+      return createJsonResponse({
+        success: true,
+        data: todos,
+        source: "sheet"
       });
     }
 
-    return createJsonResponse({
-      success: true,
-      data: todos
-    });
+    // 기본값: 구글 드라이브 폴더의 todos.csv 읽기
+    const driveResult = getTodosFromDriveCsv();
+    return createJsonResponse(driveResult);
+
   } catch (error) {
     return createJsonResponse({
       success: false,
@@ -240,10 +264,98 @@ function doPost(e) {
 }
 
 /**
- * 구글 드라이브에 todos.csv 파일을 생성하거나 기존 파일 내용을 갱신합니다.
+ * 따옴표와 쉼표를 고려하여 CSV 한 행을 안전하게 파싱합니다.
+ */
+function parseCsvLine(line) {
+  const values = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      if (insideQuotes && i + 1 < line.length && line[i + 1] === '"') {
+        current += '"';
+        i++; // 이스케이프된 이중 따옴표 건너뛰기
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === ',' && !insideQuotes) {
+      values.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  values.push(current);
+  return values;
+}
+
+/**
+ * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J) 내 todos.csv 파일을 읽어와 Todo 배열로 반환합니다.
+ */
+function getTodosFromDriveCsv() {
+  const folder = getDriveFolder();
+  const files = folder.getFilesByName(CSV_FILE_NAME);
+
+  if (!files.hasNext()) {
+    return {
+      success: true,
+      data: [],
+      message: "지정된 드라이브 폴더에 todos.csv 파일이 아직 없습니다. 앱에서 'Save'를 누르면 자동 생성됩니다.",
+      fileFound: false,
+      folderId: DRIVE_FOLDER_ID
+    };
+  }
+
+  const file = files.next();
+  const content = file.getBlob().getDataAsString("UTF-8");
+  const rawLines = content.split(/\r\n|\n|\r/);
+  const lines = rawLines.filter(function(line) { return line.trim().length > 0; });
+
+  const todos = [];
+  // 1행이 헤더인 경우 건너뜁니다
+  const startIndex = (lines.length > 0 && lines[0].toLowerCase().indexOf("id") !== -1) ? 1 : 0;
+
+  for (let i = startIndex; i < lines.length; i++) {
+    const cols = parseCsvLine(lines[i]);
+    if (!cols || cols.length === 0) continue;
+
+    const id = String(cols[0] || "").trim();
+    const text = String(cols[1] || "").trim();
+    if (!id && !text) continue;
+
+    const completed = String(cols[2] || "").toLowerCase() === "true" || String(cols[2] || "") === "1";
+    let createdAt = Number(cols[3]);
+    if (!createdAt || isNaN(createdAt)) {
+      createdAt = Date.now();
+    }
+
+    todos.push({
+      id: id || ("todo_" + Date.now() + "_" + i),
+      text: text,
+      completed: completed,
+      createdAt: createdAt
+    });
+  }
+
+  return {
+    success: true,
+    data: todos,
+    fileId: file.getId(),
+    fileUrl: file.getUrl(),
+    folderId: DRIVE_FOLDER_ID,
+    folderName: folder.getName(),
+    count: todos.length,
+    fileFound: true
+  };
+}
+
+/**
+ * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J) 내 todos.csv 파일로 일정을 저장/덮어씁니다.
  */
 function saveTodosToDriveCsv(todos) {
-  const fileName = "todos.csv";
+  const folder = getDriveFolder();
   let csvRows = ["ID,할일내용,완료여부,생성일시(Timestamp),등록일자"];
 
   (todos || []).forEach(function(t) {
@@ -258,18 +370,20 @@ function saveTodosToDriveCsv(todos) {
   const csvContent = csvRows.join("\r\n");
 
   let file;
-  const files = DriveApp.getFilesByName(fileName);
+  const files = folder.getFilesByName(CSV_FILE_NAME);
   if (files.hasNext()) {
     file = files.next();
     file.setContent(csvContent);
   } else {
-    file = DriveApp.createFile(fileName, csvContent, MimeType.CSV);
+    file = folder.createFile(CSV_FILE_NAME, csvContent, MimeType.CSV);
   }
 
   return {
     fileId: file.getId(),
     fileUrl: file.getUrl(),
     name: file.getName(),
+    folderId: DRIVE_FOLDER_ID,
+    folderName: folder.getName(),
     size: file.getSize(),
     updatedAt: new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })
   };
@@ -284,20 +398,34 @@ function createJsonResponse(obj) {
 }
 
 /**
- * [테스트용 함수] Google Drive 권한 승인 및 CSV 생성 테스트
- * Apps Script 편집기 상단 툴바에서 'testDriveSave' 함수를 선택하고 [실행] 버튼을 누르세요.
+ * [테스트용 함수] Google Drive 지정 폴더 권한 승인 및 읽기/쓰기 테스트
+ * Apps Script 편집기 상단 툴바에서 'testDriveReadWrite' 함수를 선택하고 [실행] 버튼을 누르세요.
  * '승인 필요' 팝업에서 [권한 검토] -> 계정 선택 -> [고급] -> [이동(안전하지 않음)] -> [허용]을 차례로 누르면
- * 드라이브 접근 권한이 정식 승인되며, 사용자의 구글 드라이브에 todos.csv가 생성됩니다.
+ * 드라이브 폴더 접근 권한이 정식 승인되며, 지정 폴더 안에 todos.csv가 생성되고 읽어옵니다.
  */
-function testDriveSave() {
+function testDriveReadWrite() {
+  Logger.log("1. 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J) 접근 테스트...");
+  const folder = getDriveFolder();
+  Logger.log("-> 폴더명: " + folder.getName() + " (ID: " + folder.getId() + ")");
+
+  Logger.log("2. 지정 폴더에 todos.csv 저장 테스트...");
   const sampleTodos = [
-    { id: "1", text: "테스트 일정 1", completed: false, createdAt: Date.now() },
-    { id: "2", text: "테스트 일정 2 (완료됨)", completed: true, createdAt: Date.now() }
+    { id: "101", text: "구글 드라이브 폴더 연동 일정 1", completed: false, createdAt: Date.now() },
+    { id: "102", text: "구글 드라이브 폴더 연동 일정 2 (완료)", completed: true, createdAt: Date.now() }
   ];
-  const result = saveTodosToDriveCsv(sampleTodos);
-  Logger.log("=== Google Drive todos.csv 저장 테스트 성공 ===");
-  Logger.log("파일 URL: " + result.fileUrl);
-  Logger.log("결과 객체: " + JSON.stringify(result));
-  return result;
+  const saveRes = saveTodosToDriveCsv(sampleTodos);
+  Logger.log("-> 저장 결과: " + JSON.stringify(saveRes));
+
+  Logger.log("3. 지정 폴더의 todos.csv 읽기 테스트...");
+  const readRes = getTodosFromDriveCsv();
+  Logger.log("-> 읽어온 데이터 개수: " + (readRes.data ? readRes.data.length : 0));
+  Logger.log("-> 읽기 결과: " + JSON.stringify(readRes));
+
+  return { saveRes: saveRes, readRes: readRes };
 }
+
+function testDriveSave() {
+  return testDriveReadWrite();
+}
+
 

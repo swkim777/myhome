@@ -7,6 +7,7 @@ import { Todo } from '../types/todo';
 
 export const SPREADSHEET_ID = "1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f";
 export const SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit`;
+export const DRIVE_FOLDER_ID = "1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J";
 export const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxtgN6M6hi5MWvWof_0e7C6PNyKbYMHw9Abh9vsDB0/exec";
 const APPS_SCRIPT_STORAGE_KEY = 'todo_apps_script_url';
 
@@ -167,7 +168,72 @@ async function sendPostRequest(payload: any): Promise<boolean> {
 }
 
 /**
- * 구글 드라이브의 todos.csv 파일로 현재 일정을 저장/반영합니다.
+ * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에서 일정 목록을 불러옵니다.
+ */
+export async function fetchTodosFromDriveCsv(): Promise<{
+  success: boolean;
+  data: Todo[];
+  message?: string;
+  fileUrl?: string;
+  fileFound?: boolean;
+}> {
+  const url = getAppsScriptUrl();
+  if (!url) {
+    return {
+      success: false,
+      data: [],
+      message: 'Apps Script URL이 설정되지 않았습니다.',
+    };
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+    const targetUrl = url.includes('?') 
+      ? `${url}&source=driveCsv` 
+      : `${url}?source=driveCsv`;
+
+    const response = await fetch(targetUrl, {
+      method: 'GET',
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    if (result.success && Array.isArray(result.data)) {
+      return {
+        success: true,
+        data: result.data as Todo[],
+        message: result.message,
+        fileUrl: result.fileUrl,
+        fileFound: result.fileFound,
+      };
+    }
+    return {
+      success: false,
+      data: [],
+      message: result.error || result.message || '데이터를 불러오지 못했습니다.',
+    };
+  } catch (err: any) {
+    console.warn('[GoogleSheets] Drive todos.csv 로드 실패:', err);
+    const msg = String(err?.message || '');
+    return {
+      success: false,
+      data: [],
+      message: msg.includes('Failed to fetch')
+        ? '구글 드라이브 연결 실패 (Failed to fetch). Apps Script 배포 설정([액세스 권한: 모든 사용자]) 및 드라이브 접근 승인을 확인해 주세요.'
+        : `로드 실패: ${msg}`,
+    };
+  }
+}
+
+/**
+ * 구글 드라이브 지정 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일로 현재 일정을 저장/반영합니다.
  */
 export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boolean; message: string; fileUrl?: string }> {
   const url = getAppsScriptUrl();
@@ -181,7 +247,11 @@ export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boo
       headers: {
         'Content-Type': 'text/plain;charset=utf-8',
       },
-      body: JSON.stringify({ action: 'saveToDriveCsv', todos }),
+      body: JSON.stringify({ 
+        action: 'saveToDriveCsv', 
+        todos,
+        folderId: DRIVE_FOLDER_ID 
+      }),
     });
 
     if (!response.ok) {
@@ -191,7 +261,7 @@ export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boo
     const result = await response.json();
     return {
       success: Boolean(result.success),
-      message: result.message || (result.success ? '구글 드라이브에 저장되었습니다.' : '저장 실패'),
+      message: result.message || (result.success ? '구글 드라이브 폴더의 todos.csv에 저장되었습니다.' : '저장 실패'),
       fileUrl: result.fileUrl
     };
   } catch (err: any) {
@@ -200,7 +270,7 @@ export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boo
     if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) {
       return { 
         success: false, 
-        message: 'Google Apps Script 연결 실패 (Failed to fetch). 구글 시트의 [Apps Script]에서 최신 코드를 붙여넣은 뒤, [testDriveSave] 함수 실행으로 드라이브 권한을 승인하고 [액세스 권한: 모든 사용자(Anyone)]로 새 버전을 배포해 주세요.' 
+        message: 'Google Apps Script 연결 실패 (Failed to fetch). 구글 시트의 [Apps Script]에서 최신 코드를 붙여넣은 뒤, [testDriveReadWrite] 함수 실행으로 드라이브 권한을 승인하고 [액세스 권한: 모든 사용자(Anyone)]로 새 버전을 배포해 주세요.' 
       };
     }
     return { success: false, message: `저장 실패: ${msg || '네트워크 오류'}` };

@@ -129,7 +129,7 @@ export const TodoList = () => {
         <button
           onClick={handleSaveToDrive}
           disabled={isSavingToDrive}
-          title="구글 드라이브의 todos.csv 파일에 현재 일정 저장"
+          title="구글 드라이브 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에 저장"
           className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 font-semibold text-xs border border-blue-200/70 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
         >
           {isSavingToDrive ? (
