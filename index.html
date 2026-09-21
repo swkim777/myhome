@@ -51,6 +51,11 @@
             color: #2563eb; /* blue-600 */
             border-right: 3px solid #2563eb;
         }
+        .subnav-item.active {
+            background-color: #eff6ff; /* blue-50 */
+            color: #2563eb; /* blue-600 */
+            font-weight: 600;
+        }
     </style>
     <!-- Chosen Palette: Slate (Neutral Background) + Blue (Primary Action) + Green (Success/Buttons from Source) -->
     <!-- Application Structure Plan: 
@@ -101,10 +106,29 @@
                     </button>
                 </li>
                 <li>
-                    <button onclick="router.navigate('apps')" id="nav-apps" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                    <button onclick="router.navigate('apps', 'all')" id="nav-apps" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
                         <span>🚀</span>
                         <span>앱 & 도구 (Apps)</span>
                     </button>
+                    <!-- 앱 & 도구 하위 카테고리 버튼 -->
+                    <div id="subnav-apps" class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                        <button onclick="router.navigate('apps', '일반 앱')" id="subnav-apps-general" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>📱</span>
+                            <span>일반앱</span>
+                        </button>
+                        <button onclick="router.navigate('apps', '업무')" id="subnav-apps-work" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>💼</span>
+                            <span>업무</span>
+                        </button>
+                        <button onclick="router.navigate('apps', '미디어')" id="subnav-apps-media" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🎬</span>
+                            <span>미디어</span>
+                        </button>
+                        <button onclick="router.navigate('apps', '게임')" id="subnav-apps-game" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🎮</span>
+                            <span>게임</span>
+                        </button>
+                    </div>
                 </li>
                 <li>
                     <button onclick="router.navigate('activities')" id="nav-activities" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
@@ -166,7 +190,15 @@
         <div id="mobileNav" class="md:hidden absolute top-16 left-0 w-full bg-white shadow-xl border-b border-slate-200 hidden z-30 transition-all">
             <ul class="py-2">
                 <li><button onclick="router.navigate('overview')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📊 대시보드</button></li>
-                <li><button onclick="router.navigate('apps')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🚀 앱 & 도구</button></li>
+                <li>
+                    <button onclick="router.navigate('apps', 'all')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium">🚀 앱 & 도구</button>
+                    <div class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                        <button onclick="router.navigate('apps', '일반 앱')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📱 일반앱</button>
+                        <button onclick="router.navigate('apps', '업무')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💼 업무</button>
+                        <button onclick="router.navigate('apps', '미디어')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 미디어</button>
+                        <button onclick="router.navigate('apps', '게임')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎮 게임</button>
+                    </div>
+                </li>
                 <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
                 <li><button onclick="router.navigate('blog')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</button></li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
@@ -266,7 +298,7 @@
         <div class="max-w-3xl mx-auto space-y-8 animate-fade-in">
             <div class="text-center mb-8">
                 <h2 class="text-2xl font-bold text-slate-900">Latest Activities</h2>
-                <p class="text-slate-500">최신 블로그 포스팅과 프로젝트 업데이트 내역입니다.</p>
+                <p class="text-slate-500">오늘까지 진행된 프로젝트 개발 및 주요 작업 내역입니다.</p>
             </div>
             
             <div class="relative border-l-2 border-slate-200 ml-4 space-y-8 pb-8" id="activity-timeline">
@@ -345,13 +377,62 @@
                 { id: 32, name: "Mobile Portfolio", category: "업무", icon: "📱", link: "MobileApp/index.html", desc: "모바일 우선 반응형 UI/UX 개발자 개인 포트폴리오" }
             ],
             activities: [
-                { type: "Project", title: "TodoWebApp 개발 및 배포", link: "TodoWebApp/index.html", date: "New", desc: "React 및 Vite 기반의 모던 할 일 관리(Todo) 웹 애플리케이션 구축 및 GitHub Pages 프로덕션 배포 완료" },
-                { type: "Project", title: "MobileApp 모바일 포트폴리오 웹앱 구축", link: "MobileApp/index.html", date: "New", desc: "모바일 뷰포트 최적화 반응형 개인 포트폴리오 웹앱 개발, 다크모드 및 동적 데이터 렌더링 지원" },
-                { type: "Project", title: "전체 서비스 카테고리 대규모 개편", link: "index.html?route=apps", date: "2026.08", desc: "myhome에 존재하는 타로, 이미지 생성, 금융 뉴스, 보고서 등 전체 29개 앱 반영 및 동적 카운트 연동" },
-                { type: "Blog", title: "제미니 타로 운세", link: "Tarot/dist/index.html", date: "2026.08", desc: "React 및 Gemini API를 연동하여 제작한 타로 카드 운세 및 해설 도구" },
-                { type: "Tool", title: "이미지 생성 스튜디오", link: "nanobanana/dist/index.html", date: "2026.08", desc: "Gemini Imagen AI를 활용해 프롬프트로 고화질 이미지를 그리는 창작 도구" },
-                { type: "Project", title: "2026년 한국경제 전망 보고서", link: "finance/korea26.html", date: "2026.08", desc: "2026년대 한국 경제 트렌드 분석 및 전망 보고서 작성" },
-                { type: "Game", title: "Space Runner", link: "https://aistudio.google.com/apps/bundled/gemini_runner?showPreview=true&showAssistant=true", date: "2026.08", desc: "Gemini 기반 웹 러너 게임" }
+                { 
+                    type: "Update", 
+                    title: "홈 대시보드(myhome) 카테고리 네비게이션 개편", 
+                    link: "index.html?route=apps", 
+                    date: "2026.09.21 (오늘)", 
+                    desc: "좌측 대시보드 '앱 & 도구' 아래 일반앱, 업무, 미디어, 게임 서브 버튼 추가 및 클릭 시 해당 카테고리 카드만 필터링 렌더링되도록 인터랙션 구현" 
+                },
+                { 
+                    type: "Feature", 
+                    title: "TodoWebApp 구글 스프레드시트(Todos) 실시간 양방향 연동", 
+                    link: "TodoWebApp/index.html", 
+                    date: "2026.09.21 (오늘)", 
+                    desc: "앱 시작 시 구글 스프레드시트(Todos) 데이터 우선 자동 로드, 첫 화면 Save 버튼으로 기존 데이터 갱신 및 쓰기, Reload 버튼 연동 구현" 
+                },
+                { 
+                    type: "Feature", 
+                    title: "TodoWebApp 구글 드라이브 지정 폴더 파일 연동 & 권한 설정", 
+                    link: "TodoWebApp/index.html", 
+                    date: "2026.09.21 (오늘)", 
+                    desc: "지정 구글 드라이브 폴더 내 todos.csv 자동 이동/저장 보장, Apps Script OAuth 권한 차단 이슈 해결 및 폴더 바로가기 링크 제공" 
+                },
+                { 
+                    type: "Update", 
+                    title: "제미니 타로(Tarot) API 키 캐싱 및 빌드 최적화", 
+                    link: "Tarot/dist/index.html", 
+                    date: "2026.09.21 (오늘)", 
+                    desc: "Gemini API 키 로컬 스토리지 캐싱 적용 및 프로덕션 빌드 번들 에셋 최적화 업데이트" 
+                },
+                { 
+                    type: "Project", 
+                    title: "MobileApp 모바일 포트폴리오 웹앱 구축", 
+                    link: "MobileApp/index.html", 
+                    date: "2026.09", 
+                    desc: "모바일 뷰포트 최적화 반응형 개인 포트폴리오 웹앱 개발, 다크모드 및 동적 데이터 렌더링 지원" 
+                },
+                { 
+                    type: "Project", 
+                    title: "TodoWebApp 모던 할 일 관리 웹앱 최초 배포", 
+                    link: "TodoWebApp/index.html", 
+                    date: "2026.09", 
+                    desc: "React 및 Vite 기반의 모던 할 일 관리(Todo) 웹 애플리케이션 구축 및 GitHub Pages 배포" 
+                },
+                { 
+                    type: "Tool", 
+                    title: "이미지 생성 스튜디오 (NanoBanana)", 
+                    link: "nanobanana/dist/index.html", 
+                    date: "2026.08", 
+                    desc: "Gemini Imagen AI를 활용해 프롬프트로 고화질 이미지를 그리는 창작 도구" 
+                },
+                { 
+                    type: "Report", 
+                    title: "2026년 한국경제 전망 보고서", 
+                    link: "finance/korea26.html", 
+                    date: "2026.08", 
+                    desc: "2026년대 한국 경제 트렌드 분석 및 전망 보고서 작성" 
+                }
             ],
             social: [
                 { name: "GitHub", link: "https://github.com/swkim777", icon: "💻", color: "bg-gray-800" },
@@ -363,15 +444,44 @@
         // Router & Navigation System
         const router = {
             currentRoute: 'overview',
+            currentCategory: 'all',
             init: function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const routeParam = urlParams.get('route');
+                const categoryParam = urlParams.get('category');
                 const initialRoute = routeParam || 'overview';
-                this.navigate(initialRoute);
+                this.navigate(initialRoute, categoryParam || 'all');
                 this.setupMobileMenu();
             },
-            navigate: function(route) {
+            normalizeCategory: function(cat) {
+                if (!cat || cat === 'all') return 'all';
+                if (cat === '일반앱' || cat === '일반 앱') return '일반 앱';
+                return cat;
+            },
+            updateSubnavUI: function(route, category) {
+                const subnavMap = {
+                    '일반 앱': 'subnav-apps-general',
+                    '업무': 'subnav-apps-work',
+                    '미디어': 'subnav-apps-media',
+                    '게임': 'subnav-apps-game'
+                };
+                
+                document.querySelectorAll('.subnav-item').forEach(el => {
+                    el.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'font-semibold');
+                    el.classList.add('text-slate-500');
+                });
+
+                if (route === 'apps' && category && subnavMap[category]) {
+                    const targetSubnav = document.getElementById(subnavMap[category]);
+                    if (targetSubnav) {
+                        targetSubnav.classList.remove('text-slate-500');
+                        targetSubnav.classList.add('active', 'bg-blue-50', 'text-blue-600', 'font-semibold');
+                    }
+                }
+            },
+            navigate: function(route, category = 'all') {
                 this.currentRoute = route;
+                this.currentCategory = this.normalizeCategory(category);
                 
                 // Update Nav UI
                 document.querySelectorAll('.nav-item').forEach(el => {
@@ -381,13 +491,16 @@
                     }
                 });
 
+                // Update Subnav UI
+                this.updateSubnavUI(route, this.currentCategory);
+
                 // Hide Mobile Menu if open
                 document.getElementById('mobileNav').classList.add('hidden');
 
                 // Render View
-                this.render(route);
+                this.render(route, this.currentCategory);
             },
-            render: function(route) {
+            render: function(route, category = 'all') {
                 const contentArea = document.getElementById('content-area');
                 const template = document.getElementById(`view-${route}`);
                 
@@ -409,7 +522,7 @@
 
                 // Initialize View Specific Logic
                 if (route === 'overview') views.overview();
-                if (route === 'apps') views.apps();
+                if (route === 'apps') views.apps(category);
                 if (route === 'activities') views.activities();
                 if (route === 'connect') views.connect();
             },
@@ -491,9 +604,10 @@
                 });
             },
 
-            apps: function() {
+            apps: function(initialCategory = 'all') {
                 const grid = document.getElementById('apps-grid');
                 const filters = document.querySelectorAll('.filter-btn');
+                const activeFilter = router.normalizeCategory(initialCategory);
 
                 // Render Function
                 const renderCards = (filter) => {
@@ -525,28 +639,31 @@
                     });
                 };
 
-                // Initial Render
-                renderCards('all');
+                const updateFilterButtons = (targetFilter) => {
+                    filters.forEach(b => {
+                        if (b.dataset.filter === targetFilter) {
+                            b.classList.remove('bg-white', 'text-slate-600');
+                            b.classList.add('bg-slate-800', 'text-white');
+                        } else {
+                            b.classList.remove('bg-slate-800', 'text-white');
+                            b.classList.add('bg-white', 'text-slate-600');
+                        }
+                    });
+                };
 
                 // Filter Logic
                 filters.forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        // UI Update
-                        filters.forEach(b => {
-                            b.classList.remove('bg-slate-800', 'text-white');
-                            b.classList.add('bg-white', 'text-slate-600');
-                        });
-                        e.target.classList.remove('bg-white', 'text-slate-600');
-                        e.target.classList.add('bg-slate-800', 'text-white');
-
-                        // Data Update
-                        renderCards(e.target.dataset.filter);
+                        const selectedFilter = e.currentTarget.dataset.filter;
+                        updateFilterButtons(selectedFilter);
+                        renderCards(selectedFilter);
+                        router.updateSubnavUI('apps', selectedFilter);
                     });
                 });
-                
-                // Set initial active state manually for visual consistency
-                filters[0].classList.remove('bg-white', 'text-slate-600');
-                filters[0].classList.add('bg-slate-800', 'text-white');
+
+                // Apply initial active filter and render
+                updateFilterButtons(activeFilter);
+                renderCards(activeFilter);
             },
 
             activities: function() {
@@ -555,8 +672,20 @@
                     const item = document.createElement('div');
                     item.className = "relative pl-8";
                     
-                    // Icon logic
-                    let iconColor = act.type === 'Project' ? 'bg-purple-500' : 'bg-blue-500';
+                    // Icon color logic
+                    let iconColor = 'bg-blue-500';
+                    if (act.type === 'Feature') iconColor = 'bg-emerald-500';
+                    else if (act.type === 'Update') iconColor = 'bg-blue-600';
+                    else if (act.type === 'Project') iconColor = 'bg-purple-500';
+                    else if (act.type === 'Tool') iconColor = 'bg-amber-500';
+                    else if (act.type === 'Report') iconColor = 'bg-teal-500';
+                    else if (act.type === 'Game') iconColor = 'bg-pink-500';
+
+                    // Date badge style logic
+                    const isToday = act.date.includes('오늘');
+                    const badgeStyle = isToday 
+                        ? 'bg-blue-100 text-blue-800 border border-blue-200 font-bold' 
+                        : 'bg-slate-100 text-slate-700 font-medium';
                     
                     const isLocalRoute = act.link.includes('?route=');
                     const routeName = isLocalRoute ? new URLSearchParams(act.link.split('?')[1]).get('route') : null;
@@ -566,14 +695,14 @@
                         <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">${act.type}</span>
-                                <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">${act.date}</span>
+                                <span class="${badgeStyle} text-xs px-2.5 py-0.5 rounded-full">${act.date}</span>
                             </div>
                             <h3 class="text-lg font-bold text-slate-800 mb-1">
                                 <a href="${act.link}" class="timeline-link hover:text-blue-600 transition-colors">${act.title}</a>
                             </h3>
                             <p class="text-sm text-slate-500 mb-3">${act.desc}</p>
                             <a href="${act.link}" class="timeline-link text-sm font-medium text-blue-600 hover:text-blue-800 inline-flex items-center">
-                                자세히 보기 &rarr;
+                                바로가기 &rarr;
                             </a>
                         </div>
                     `;
