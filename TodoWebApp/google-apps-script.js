@@ -8,11 +8,12 @@
  * 1. 구글 스프레드시트(1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f) 열기
  * 2. 상단 메뉴 [확장 프로그램] > [Apps Script] 클릭
  * 3. 기존 코드를 모두 지우고 본 스크립트 전체를 복사하여 붙여넣기 후 [저장(💾)] 클릭
- * 4. ★드라이브 권한 승인★:
- *    - 상단 툴바의 함수 선택창에서 'testDriveSave'를 선택하고 [실행(▶)] 클릭
+ * 4. ★드라이브 권한 승인 (가장 중요)★:
+ *    - 상단 툴바의 함수 선택창에서 'authorizeDrive'를 선택하고 [실행(▶)] 클릭
+ *    - (또는 구글 스프레드시트 화면의 상단 메뉴 [📁 Todo 드라이브 연동] > [1. Google Drive 권한 승인] 클릭)
  *    - '승인 필요' 팝업이 뜨면 [권한 검토] 클릭
  *    - 본인 구글 계정 선택 -> [고급] 클릭 -> [(안전하지 않음)으로 이동] 클릭 -> [허용] 클릭
- *    - 실행 로그에 '저장 성공 결과'가 뜨면 권한 승인 완료!
+ *    - 실행 로그에 '권한 승인 성공'이 뜨면 승인 완료!
  * 5. ★웹 앱 배포 (CORS/Failed to fetch 방지 필수 설정)★:
  *    - 우측 상단 파란색 [배포] > [배포 관리] 클릭 (처음 배포 시 [새 배포])
  *    - 좌측 상단 연필 아이콘(수정) 클릭
@@ -30,14 +31,39 @@ const DRIVE_FOLDER_ID = "1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J";
 const CSV_FILE_NAME = "todos.csv";
 
 /**
+ * 스프레드시트 열림 시 커스텀 메뉴 생성
+ * 스프레드시트 상단 메뉴에서 클릭하여 간편하게 권한을 승인할 수 있습니다.
+ */
+function onOpen() {
+  try {
+    SpreadsheetApp.getUi()
+      .createMenu("📁 Todo 드라이브 연동")
+      .addItem("1. Google Drive 권한 승인", "authorizeDrive")
+      .addItem("2. todos.csv 읽기/쓰기 테스트", "testDriveReadWrite")
+      .addToUi();
+  } catch (e) {
+    // 웹앱 실행 시 UI 예외 무시
+  }
+}
+
+/**
+ * ★ Google Drive 권한 승인 전용 함수 (try-catch 없음) ★
+ * Apps Script 편집기 상단에서 'authorizeDrive'를 선택하고 [실행]을 누르면
+ * Google Apps Script 런타임이 즉시 [권한 검토] 팝업창을 띄웁니다.
+ */
+function authorizeDrive() {
+  const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  const name = folder.getName();
+  Logger.log("✅ Google Drive 권한 승인 성공! 폴더명: " + name);
+  return "권한 승인 완료: " + name;
+}
+
+/**
  * 지정된 구글 드라이브 폴더 객체를 반환합니다.
+ * (권한 승인 팝업을 가로채지 않도록 try-catch를 사용하지 않습니다)
  */
 function getDriveFolder() {
-  try {
-    return DriveApp.getFolderById(DRIVE_FOLDER_ID);
-  } catch (err) {
-    throw new Error("구글 드라이브 폴더(ID: " + DRIVE_FOLDER_ID + ")에 접근할 수 없습니다: " + err.toString());
-  }
+  return DriveApp.getFolderById(DRIVE_FOLDER_ID);
 }
 
 /**
