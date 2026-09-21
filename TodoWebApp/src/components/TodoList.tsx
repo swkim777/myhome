@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useTodoContext } from '../context/TodoContext';
 import { TodoItem } from './TodoItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings, Folder } from 'lucide-react';
+import { ClipboardList, CheckCircle, Circle, Save, Loader2, AlertCircle, ExternalLink, Settings, Folder, RotateCw } from 'lucide-react';
 
 interface TodoListProps {
   onOpenSettings?: () => void;
@@ -18,7 +18,7 @@ interface TodoListProps {
  * Displays filtered todos and provides a dashboard view of task metrics with Google Drive save support.
  */
 export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
-  const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv, isDriveLoading } = useTodoContext();
+  const { todos, filter, setFilter, clearCompleted, isSavingToDrive, saveToDriveCsv, isDriveLoading, refreshFromDriveCsv } = useTodoContext();
   const [saveStatus, setSaveStatus] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -48,6 +48,30 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
       setTimeout(() => {
         setSaveStatus(null);
       }, 15000);
+    }
+  };
+
+  const handleReloadFromDrive = async () => {
+    const res = await refreshFromDriveCsv();
+    if (res.success) {
+      setSaveStatus({
+        type: 'success',
+        message: res.message || `구글 드라이브(todos.csv)에서 ${res.count}개의 최신 일정을 성공적으로 불러왔습니다.`,
+        folderUrl: 'https://drive.google.com/drive/folders/1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J',
+      });
+      // 7초 후 성공 알림 자동 닫기
+      setTimeout(() => {
+        setSaveStatus(null);
+      }, 7000);
+    } else {
+      setSaveStatus({
+        type: 'error',
+        message: res.message || '구글 드라이브(todos.csv) 일정을 불러오지 못했습니다.',
+      });
+      // 실패 시 12초 후 닫기
+      setTimeout(() => {
+        setSaveStatus(null);
+      }, 12000);
     }
   };
 
@@ -149,19 +173,33 @@ export const TodoList: React.FC<TodoListProps> = ({ onOpenSettings }) => {
           </span>
         </div>
 
-        <button
-          onClick={handleSaveToDrive}
-          disabled={isSavingToDrive}
-          title="구글 드라이브 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에 저장"
-          className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 font-semibold text-xs border border-blue-200/70 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
-        >
-          {isSavingToDrive ? (
-            <Loader2 size={15} className="animate-spin text-blue-600" />
-          ) : (
-            <Save size={15} className="text-blue-600 group-hover:scale-110 transition-transform" />
-          )}
-          <span>{isSavingToDrive ? '드라이브 저장 중...' : 'Save (todos.csv)'}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Reload Button */}
+          <button
+            onClick={handleReloadFromDrive}
+            disabled={isDriveLoading || isSavingToDrive}
+            title="구글 드라이브 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에서 최신 일정을 다시 읽어옵니다"
+            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold text-xs border border-gray-200/80 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+          >
+            <RotateCw size={14} className={`text-gray-600 transition-transform ${isDriveLoading ? 'animate-spin text-blue-600' : 'group-hover:rotate-180'}`} />
+            <span>{isDriveLoading ? '불러오는 중...' : 'Reload (todos.csv)'}</span>
+          </button>
+
+          {/* Save Button */}
+          <button
+            onClick={handleSaveToDrive}
+            disabled={isSavingToDrive || isDriveLoading}
+            title="구글 드라이브 폴더(1iOCkY5GlDNgul7V-rd3kpVOq0AFGYA-J)의 todos.csv 파일에 저장"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-700 font-semibold text-xs border border-blue-200/70 shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+          >
+            {isSavingToDrive ? (
+              <Loader2 size={14} className="animate-spin text-blue-600" />
+            ) : (
+              <Save size={14} className="text-blue-600 group-hover:scale-110 transition-transform" />
+            )}
+            <span>{isSavingToDrive ? '드라이브 저장 중...' : 'Save (todos.csv)'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Save Feedback Banner */}
