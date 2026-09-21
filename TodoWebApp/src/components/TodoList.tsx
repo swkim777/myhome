@@ -29,15 +29,19 @@ export const TodoList = () => {
         message: res.message || 'todos.csv 파일로 구글 드라이브에 저장되었습니다.',
         fileUrl: res.fileUrl,
       });
-      // 7초 후 알림 자동 닫기
+      // 8초 후 성공 알림 자동 닫기
       setTimeout(() => {
         setSaveStatus(null);
-      }, 7000);
+      }, 8000);
     } else {
       setSaveStatus({
         type: 'error',
         message: res.message || '구글 드라이브 저장 중 오류가 발생했습니다.',
       });
+      // 실패 시 15초 후 닫기
+      setTimeout(() => {
+        setSaveStatus(null);
+      }, 15000);
     }
   };
 
@@ -144,19 +148,19 @@ export const TodoList = () => {
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            className={`p-3 rounded-xl border text-xs font-medium flex items-center justify-between gap-2 shadow-sm ${
+            className={`p-3.5 rounded-xl border text-xs font-medium flex items-start justify-between gap-3 shadow-sm ${
               saveStatus.type === 'success'
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                 : 'bg-rose-50 text-rose-800 border-rose-200'
             }`}
           >
-            <div className="flex items-center space-x-2 truncate">
+            <div className="flex items-start space-x-2.5 flex-1 min-w-0">
               {saveStatus.type === 'success' ? (
-                <CheckCircle size={15} className="text-emerald-600 shrink-0" />
+                <CheckCircle size={16} className="text-emerald-600 shrink-0 mt-0.5" />
               ) : (
-                <AlertCircle size={15} className="text-rose-600 shrink-0" />
+                <AlertCircle size={16} className="text-rose-600 shrink-0 mt-0.5" />
               )}
-              <span className="truncate">{saveStatus.message}</span>
+              <span className="leading-relaxed break-words">{saveStatus.message}</span>
             </div>
 
             <div className="flex items-center space-x-2 shrink-0">

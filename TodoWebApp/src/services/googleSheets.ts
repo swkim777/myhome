@@ -196,6 +196,13 @@ export async function saveTodosToDriveCsv(todos: Todo[]): Promise<{ success: boo
     };
   } catch (err: any) {
     console.error('[GoogleSheets] Drive CSV 저장 실패:', err);
-    return { success: false, message: `저장 실패: ${err.message || '네트워크 오류'}` };
+    const msg = String(err?.message || '');
+    if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) {
+      return { 
+        success: false, 
+        message: 'Google Apps Script 연결 실패 (Failed to fetch). 구글 시트의 [Apps Script]에서 최신 코드를 붙여넣은 뒤, [testDriveSave] 함수 실행으로 드라이브 권한을 승인하고 [액세스 권한: 모든 사용자(Anyone)]로 새 버전을 배포해 주세요.' 
+      };
+    }
+    return { success: false, message: `저장 실패: ${msg || '네트워크 오류'}` };
   }
 }

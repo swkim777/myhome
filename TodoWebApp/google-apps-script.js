@@ -4,19 +4,23 @@
  * ============================================================================
  * 연동 구글 스프레드시트 ID: 1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f
  * 
- * [배포 방법]
+ * [배포 및 권한 승인 방법 (★필독★)]
  * 1. 구글 스프레드시트(1O_ze8NwS2YGQ-7KiX2zWG21WXYSuVQ-f) 열기
  * 2. 상단 메뉴 [확장 프로그램] > [Apps Script] 클릭
- * 3. 기존 코드를 모두 지우고 본 스크립트 전체를 복사하여 붙여넣기
- * 4. 상단 [저장] 아이콘 클릭
- * 5. 우측 상단 파란색 [배포] > [새 배포] 클릭
- * 6. 유형 선택(톱니바퀴) > [웹 앱] 선택
- * 7. 설정:
- *    - 설명: Todo WebApp API
+ * 3. 기존 코드를 모두 지우고 본 스크립트 전체를 복사하여 붙여넣기 후 [저장(💾)] 클릭
+ * 4. ★드라이브 권한 승인★:
+ *    - 상단 툴바의 함수 선택창에서 'testDriveSave'를 선택하고 [실행(▶)] 클릭
+ *    - '승인 필요' 팝업이 뜨면 [권한 검토] 클릭
+ *    - 본인 구글 계정 선택 -> [고급] 클릭 -> [(안전하지 않음)으로 이동] 클릭 -> [허용] 클릭
+ *    - 실행 로그에 '저장 성공 결과'가 뜨면 권한 승인 완료!
+ * 5. ★웹 앱 배포 (CORS/Failed to fetch 방지 필수 설정)★:
+ *    - 우측 상단 파란색 [배포] > [배포 관리] 클릭 (처음 배포 시 [새 배포])
+ *    - 좌측 상단 연필 아이콘(수정) 클릭
+ *    - 버전: [새 버전] 선택
  *    - 다음 사용자 권한으로 실행: '나(내 계정)'
- *    - 액세스 권한이 있는 사용자: '모든 사용자(Anyone)' (★매우 중요★)
- * 8. [배포] 클릭 후 '웹 앱 URL' (https://script.google.com/macros/s/.../exec) 복사
- * 9. TodoWebApp의 '동기화 설정'에 해당 URL을 입력하면 실시간 동기화 완료!
+ *    - 액세스 권한이 있는 사용자: '모든 사용자(Anyone)' (★반드시 '모든 사용자'여야 웹에서 통신 가능)
+ *    - [배포] 클릭 후 '웹 앱 URL' (https://script.google.com/macros/s/.../exec) 확인
+ * 6. TodoWebApp 화면 우측 상단 설정(⚙️) 아이콘을 눌러 배포된 URL을 등록하면 연동 완료!
  * ============================================================================
  */
 
@@ -278,3 +282,22 @@ function createJsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+/**
+ * [테스트용 함수] Google Drive 권한 승인 및 CSV 생성 테스트
+ * Apps Script 편집기 상단 툴바에서 'testDriveSave' 함수를 선택하고 [실행] 버튼을 누르세요.
+ * '승인 필요' 팝업에서 [권한 검토] -> 계정 선택 -> [고급] -> [이동(안전하지 않음)] -> [허용]을 차례로 누르면
+ * 드라이브 접근 권한이 정식 승인되며, 사용자의 구글 드라이브에 todos.csv가 생성됩니다.
+ */
+function testDriveSave() {
+  const sampleTodos = [
+    { id: "1", text: "테스트 일정 1", completed: false, createdAt: Date.now() },
+    { id: "2", text: "테스트 일정 2 (완료됨)", completed: true, createdAt: Date.now() }
+  ];
+  const result = saveTodosToDriveCsv(sampleTodos);
+  Logger.log("=== Google Drive todos.csv 저장 테스트 성공 ===");
+  Logger.log("파일 URL: " + result.fileUrl);
+  Logger.log("결과 객체: " + JSON.stringify(result));
+  return result;
+}
+
