@@ -1,0 +1,17 @@
+{
+  "name": "myhome",
+  "version": "1.0.0",
+  "description": "Jowon Home - Interactive Digital Hub",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "portfolio",
+    "dashboard",
+    "web-server"
+  ],
+  "author": "Jowon",
+  "license": "ISC"
+}

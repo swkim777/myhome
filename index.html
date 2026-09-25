@@ -131,24 +131,21 @@
                     </div>
                 </li>
                 <li>
-                    <button onclick="router.navigate('activities')" id="nav-activities" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
-                        <span>📝</span>
-                        <span>최신 활동 (Activity)</span>
-                    </button>
-                </li>
-                <li>
                     <button onclick="router.navigate('portfolio')" id="nav-portfolio" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
                         <span>📂</span>
                         <span>포트폴리오 (Portfolio)</span>
                     </button>
                 </li>
                 <li>
-                    <button onclick="router.navigate('blog', 'all')" id="nav-blog" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
-                        <span>✍️</span>
-                        <span>블로그 (Blog)</span>
+                    <button onclick="router.handleBlogClick()" id="nav-blog" class="nav-item w-full flex items-center justify-between px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <div class="flex items-center space-x-3">
+                            <span>✍️</span>
+                            <span>블로그 (Blog)</span>
+                        </div>
+                        <span id="blog-toggle-arrow" class="text-xs text-slate-400">▶</span>
                     </button>
                     <!-- 블로그 하위 카테고리 버튼 -->
-                    <div id="subnav-blog" class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                    <div id="subnav-blog" class="hidden ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
                         <button onclick="router.navigate('blog', 'AI')" id="subnav-blog-AI" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>🤖</span>
                             <span>AI</span>
@@ -177,7 +174,17 @@
                             <span>💵</span>
                             <span>재테크</span>
                         </button>
+                        <button onclick="router.navigate('blog', 'cook')" id="subnav-blog-cook" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🍳</span>
+                            <span>요리</span>
+                        </button>
                     </div>
+                </li>
+                <li>
+                    <button onclick="router.navigate('activities')" id="nav-activities" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>📝</span>
+                        <span>최신 활동 (Activity)</span>
+                    </button>
                 </li>
                 <li>
                     <button onclick="router.navigate('connect')" id="nav-connect" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
@@ -236,11 +243,13 @@
                         <button onclick="router.navigate('apps', '게임')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎮 게임</button>
                     </div>
                 </li>
-                <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
                 <li><button onclick="router.navigate('portfolio')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📂 포트폴리오 (Portfolio)</button></li>
                 <li>
-                    <button onclick="router.navigate('blog', 'all')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium">✍️ 블로그 (Blog)</button>
-                    <div class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                    <button onclick="router.handleBlogClick(true)" class="w-full flex items-center justify-between px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium text-left">
+                        <span>✍️ 블로그 (Blog)</span>
+                        <span id="blog-toggle-arrow-mobile" class="text-xs text-slate-400">▶</span>
+                    </button>
+                    <div id="subnav-blog-mobile" class="hidden ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
                         <button onclick="router.navigate('blog', 'AI')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🤖 AI</button>
                         <button onclick="router.navigate('blog', 'IT')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💻 IT</button>
                         <button onclick="router.navigate('blog', 'novel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
@@ -248,8 +257,10 @@
                         <button onclick="router.navigate('blog', 'music')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎵 음악</button>
                         <button onclick="router.navigate('blog', 'movie')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 영화</button>
                         <button onclick="router.navigate('blog', 'finance')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💵 재테크</button>
+                        <button onclick="router.navigate('blog', 'cook')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🍳 요리</button>
                     </div>
                 </li>
+                <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
             </ul>
         </div>
@@ -382,45 +393,55 @@
     </template>
 
     <template id="view-blog">
-        <div class="max-w-5xl mx-auto space-y-6 animate-fade-in">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Jowon Blog & Stories</h2>
-                    <p class="text-slate-500">생각과 일상, IT 기술 및 다양한 이야기들을 만나보세요.</p>
-                </div>
-                <!-- Filter Controls -->
-                <div class="flex space-x-2 overflow-x-auto pb-2 md:pb-0" id="blog-filters">
-                    <button class="blog-filter-btn active px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="all">🌐 전체보기</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="AI">🤖 AI</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="IT">💻 IT</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="novel">📖 소설</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="travel">✈️ 여행</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="music">🎵 음악</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="movie">🎬 영화</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="finance">💵 재테크</button>
-                </div>
-            </div>
-
-            <!-- Blog Category Status Banner -->
-            <div id="blog-category-banner" class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center justify-between shadow-sm">
-                <div class="flex items-center space-x-3">
-                    <span class="text-2xl" id="blog-category-icon">🌐</span>
+        <div class="max-w-6xl mx-auto space-y-6 animate-fade-in pb-10">
+            <!-- 1. 카테고리 카드 목록 뷰 (블로그 메인 진입 시 표시) -->
+            <div id="blog-categories-view" class="space-y-6">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-base" id="blog-category-title">전체 포스팅</h3>
-                        <p class="text-xs text-slate-500" id="blog-category-desc">모든 주제의 블로그 포스팅을 확인하실 수 있습니다.</p>
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold mb-2">
+                            <span>✍️ BLOG ARCHIVE</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Jowon Blog Categories</h2>
+                        <p class="text-slate-500 mt-1">관심 있는 세부 카테고리 카드를 선택하시면 해당 블로그 페이지로 연결됩니다.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="router.navigate('overview')" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-50 hover:text-blue-600 transition-colors shadow-sm">
+                            <span>🏠 홈 으로</span>
+                            <span>&rarr;</span>
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-700 rounded-full" id="blog-category-badge">총 18개 포스팅</span>
-                    <button onclick="window.open('blog/index.html', '_blank')" class="hidden sm:inline-flex items-center text-xs font-semibold px-3 py-1 bg-white border border-slate-200 text-slate-700 rounded-full hover:bg-slate-50 transition-colors">
-                        🌸 원본 감성 블로그 보기 &rarr;
-                    </button>
+
+                <!-- Category Cards Grid -->
+                <div id="blog-category-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- JS injected -->
                 </div>
             </div>
 
-            <!-- Blog Posts Cards Grid -->
-            <div id="blog-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cards Injected via JS -->
+            <!-- 2. 세부 카테고리 index.html iframe 뷰 (특정 카테고리 선택 시 표시) -->
+            <div id="blog-category-detail-view" class="hidden space-y-4 flex flex-col h-[calc(100vh-8rem)]">
+                <!-- Navigation Bar -->
+                <div class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm flex-shrink-0">
+                    <button id="blog-back-to-categories-btn" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                        <span>&larr;</span>
+                        <span>카테고리 목록으로 돌아가기</span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <span id="detail-category-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700"></span>
+                        <a id="detail-category-extlink" href="#" target="_blank" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline font-medium">
+                            <span>새 탭에서 열기</span>
+                            <span>↗</span>
+                        </a>
+                        <button onclick="router.navigate('overview')" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50 hover:text-blue-600 transition-colors shadow-sm">
+                            <span>🏠 홈 으로</span>
+                            <span>&rarr;</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Embedded Category index.html -->
+                <iframe id="blog-category-iframe" src="" class="w-full flex-1 border border-slate-200 rounded-xl bg-white shadow-sm min-h-[70vh]"></iframe>
             </div>
         </div>
     </template>
@@ -532,7 +553,90 @@
                 { name: "Notion", link: "https://notion.so/swkim777", icon: "📓", color: "bg-slate-700" },
                 { name: "Email", link: "mailto:swkim777@gmail.com", icon: "📧", color: "bg-blue-600" }
             ],
-            // 7개 세부 카테고리 폴더별 포스트 (각 카테고리당 3개씩, 총 21개)
+            // 세부 카테고리 메타데이터 (각 폴더의 index.html 연결)
+            blogCategories: [
+                {
+                    key: 'AI',
+                    name: 'AI & 인공지능',
+                    icon: '🤖',
+                    link: 'blog/AI/index.html',
+                    desc: '생성형 AI, LLM 프롬프팅, 로컬 온디바이스 모델 및 자율 에이전트 시스템 탐구 기록',
+                    tag: 'blog/AI',
+                    color: 'purple',
+                    postCount: 3
+                },
+                {
+                    key: 'IT',
+                    name: 'IT & 테크 트렌드',
+                    icon: '💻',
+                    link: 'blog/IT/index.html',
+                    desc: '모던 웹 프론트엔드, 클라우드 네이티브, 도커 및 마이크로서비스 아키텍처 실무 패턴',
+                    tag: 'blog/IT',
+                    color: 'emerald',
+                    postCount: 3
+                },
+                {
+                    key: 'novel',
+                    name: '소설 & 문학 창작',
+                    icon: '📖',
+                    link: 'blog/novel/index.html',
+                    desc: '감성 SF 단편, 도시 야경 문학, 사색적 에세이 및 일상 속 영감을 담은 창작 스토리',
+                    tag: 'blog/novel',
+                    color: 'amber',
+                    postCount: 3
+                },
+                {
+                    key: 'travel',
+                    name: '여행 & 공간 탐방',
+                    icon: '✈️',
+                    link: 'blog/travel/index.html',
+                    desc: '제주 올레길 힐링, 교토 감성 골목길, 강릉 바다 및 숨겨진 로컬 공간 탐방 이야기',
+                    tag: 'blog/travel',
+                    color: 'sky',
+                    postCount: 3
+                },
+                {
+                    key: 'music',
+                    name: '음악 & 음반 감상',
+                    icon: '🎵',
+                    link: 'blog/music/index.html',
+                    desc: '미드나잇 재즈의 위로, 빈티지 아날로그 LP 음반 수집기, 인생 영화 감성 OST 추천',
+                    tag: 'blog/music',
+                    color: 'pink',
+                    postCount: 3
+                },
+                {
+                    key: 'movie',
+                    name: '영화 & 미디어 리뷰',
+                    icon: '🎬',
+                    link: 'blog/movie/index.html',
+                    desc: 'SF 명작 인터스텔라 심층 해석, 라라랜드 영상미학, 인간 본성을 담은 명작 다큐멘터리',
+                    tag: 'blog/movie',
+                    color: 'rose',
+                    postCount: 3
+                },
+                {
+                    key: 'finance',
+                    name: '재테크 & 금융 인사이트',
+                    icon: '💵',
+                    link: 'blog/finance/index.html',
+                    desc: '2026 경제 전망 시나리오, 미국 빅테크 주식 적립식 포트폴리오 및 외환 리스크 관리',
+                    tag: 'blog/finance',
+                    color: 'teal',
+                    postCount: 3
+                },
+                {
+                    key: 'cook',
+                    name: '요리 & 레시피',
+                    icon: '🍳',
+                    link: 'blog/cook/index.html',
+                    desc: '스마트 파스타 레시피, 집에서 즐기는 홈카페 에스프레소 & 디저트 및 웰빙 요리 가이드',
+                    tag: 'blog/cook',
+                    color: 'orange',
+                    postCount: 3
+                }
+            ],
+            // 8개 세부 카테고리 폴더별 포스트 (각 카테고리당 3개씩, 총 24개)
             blogPosts: [
                 // AI 카테고리 (blog/AI/)
                 {
@@ -798,6 +902,44 @@
                     tags: ['#환율', '#자산배분', '#리스크관리'],
                     link: 'blog/finance/post3.html',
                     content: '환율 변동성 확대 시기에 원화 예금과 외화 달러 자산의 최적 보유 비중을 제시하고 위기 대응 시스템을 구축하는 노하우.'
+                },
+
+                // 요리 카테고리 (blog/cook/)
+                {
+                    id: 'cook-1',
+                    category: 'cook',
+                    icon: '🍝',
+                    title: '남은 재료로 만드는 15분 스마트 파스타 레시피',
+                    desc: '냉장고 속 남은 채소와 소스로 빠르게 만드는 고품격 파스타 요리 노하우.',
+                    date: '2026.09.25',
+                    readTime: '5분 읽기',
+                    tags: ['#요리', '#파스타', '#스마트레시피'],
+                    link: 'blog/cook/post1.html',
+                    content: '냉장고에 남은 양파, 마늘, 방울토마토와 올리브 오일만으로 15분 만에 근사한 알리오 올리오 및 아라비아따 파스타를 완성하는 실전 팁을 공유합니다.'
+                },
+                {
+                    id: 'cook-2',
+                    category: 'cook',
+                    icon: '☕',
+                    title: '집에서 즐기는 홈카페 감성 에스프레소 & 디저트',
+                    desc: '원두 추출 노하우와 간단하게 완성하는 핑거 푸드 및 티타임 디저트 팁.',
+                    date: '2026.09.24',
+                    readTime: '6분 읽기',
+                    tags: ['#홈카페', '#에스프레소', '#디저트'],
+                    link: 'blog/cook/post2.html',
+                    content: '핸드드립과 가정용 에스프레소 머신을 활용한 풍부한 크레마 추출 팁과 스콘, 티라미수 등 에스프레소와 어울리는 디저트 페어링 가이드를 소개합니다.'
+                },
+                {
+                    id: 'cook-3',
+                    category: 'cook',
+                    icon: '🥗',
+                    title: '초보자를 위한 제철 식재료 웰빙 요리 가이드',
+                    desc: '신선한 계절 식재료 선택법과 영양소를 지키는 조리법 모음.',
+                    date: '2026.09.23',
+                    readTime: '7분 읽기',
+                    tags: ['#웰빙요리', '#제철식재료', '#건강식'],
+                    link: 'blog/cook/post3.html',
+                    content: '계절별 제철 채소와 해산물의 영양 가치를 극대화하는 수비드, 찜 조리 기법과 소금/설탕 사용을 줄이면서도 감칠맛을 살리는 건강 웰빙 레시피.'
                 }
             ]
         };
@@ -806,11 +948,17 @@
         const router = {
             currentRoute: 'overview',
             currentCategory: 'all',
+            isBlogOpen: false,
+
             init: function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const routeParam = urlParams.get('route');
                 const categoryParam = urlParams.get('category');
                 const initialRoute = routeParam || 'overview';
+                
+                // 블로그 경로로 진입 시 서브메뉴 열기, 아니면 닫기
+                this.setBlogSubnav(initialRoute === 'blog');
+
                 this.navigate(initialRoute, categoryParam || 'all');
                 this.setupMobileMenu();
             },
@@ -818,6 +966,47 @@
                 if (!cat || cat === 'all' || cat === '전체보기') return 'all';
                 if (cat === '일반앱' || cat === '일반 앱') return '일반 앱';
                 return cat;
+            },
+            // 블로그 버튼 클릭 시 토글링 수행
+            handleBlogClick: function(isMobile = false) {
+                if (this.currentRoute === 'blog') {
+                    // 이미 블로그 화면일 때 블로그 버튼을 다시 누르면 토글
+                    this.setBlogSubnav(!this.isBlogOpen);
+                } else {
+                    // 다른 화면에서 블로그 버튼을 누르면 서브메뉴를 열고 블로그 전체 목록으로 이동
+                    this.setBlogSubnav(true);
+                    this.navigate('blog', 'all');
+                }
+            },
+            // 블로그 서브메뉴 열림/닫힘 UI 제어
+            setBlogSubnav: function(open) {
+                this.isBlogOpen = open;
+                const subnav = document.getElementById('subnav-blog');
+                const arrow = document.getElementById('blog-toggle-arrow');
+                const subnavMobile = document.getElementById('subnav-blog-mobile');
+                const arrowMobile = document.getElementById('blog-toggle-arrow-mobile');
+
+                if (subnav) {
+                    if (open) {
+                        subnav.classList.remove('hidden');
+                    } else {
+                        subnav.classList.add('hidden');
+                    }
+                }
+                if (arrow) {
+                    arrow.textContent = open ? '▼' : '▶';
+                }
+
+                if (subnavMobile) {
+                    if (open) {
+                        subnavMobile.classList.remove('hidden');
+                    } else {
+                        subnavMobile.classList.add('hidden');
+                    }
+                }
+                if (arrowMobile) {
+                    arrowMobile.textContent = open ? '▼' : '▶';
+                }
             },
             updateSubnavUI: function(route, category) {
                 const subnavMap = {
@@ -832,7 +1021,8 @@
                     'travel': 'subnav-blog-travel',
                     'music': 'subnav-blog-music',
                     'movie': 'subnav-blog-movie',
-                    'finance': 'subnav-blog-finance'
+                    'finance': 'subnav-blog-finance',
+                    'cook': 'subnav-blog-cook'
                 };
                 
                 document.querySelectorAll('.subnav-item').forEach(el => {
@@ -852,6 +1042,14 @@
                 this.currentRoute = route;
                 this.currentCategory = this.normalizeCategory(category);
                 
+                // 블로그 화면으로 이동 시(서브메뉴 클릭 등) 서브메뉴 열림 유지
+                if (route === 'blog') {
+                    this.setBlogSubnav(true);
+                } else {
+                    // 다른 화면(대시보드, 앱, 활동, 포트폴리오, 연락처)으로 이동 시 블로그 서브메뉴 자동 접기
+                    this.setBlogSubnav(false);
+                }
+
                 // Update Nav UI
                 document.querySelectorAll('.nav-item').forEach(el => {
                     el.classList.remove('active', 'bg-blue-50', 'text-blue-600');
@@ -1113,156 +1311,88 @@
             },
 
             blog: function(initialCategory = 'all') {
-                const grid = document.getElementById('blog-posts-grid');
-                const filters = document.querySelectorAll('.blog-filter-btn');
+                const categoriesView = document.getElementById('blog-categories-view');
+                const detailView = document.getElementById('blog-category-detail-view');
+                const cardsGrid = document.getElementById('blog-category-cards-grid');
+                const iframe = document.getElementById('blog-category-iframe');
+                const backBtn = document.getElementById('blog-back-to-categories-btn');
+                const badge = document.getElementById('detail-category-badge');
+                const extLink = document.getElementById('detail-category-extlink');
+
                 const activeCategory = router.normalizeCategory(initialCategory);
 
-                const categoryInfo = {
-                    'all': { title: '전체 포스팅', icon: '🌐', desc: '모든 세부 카테고리 폴더의 포스팅(총 21개)을 조회합니다.', label: '전체보기' },
-                    'AI': { title: 'AI & 인공지능 (blog/AI)', icon: '🤖', desc: '생성형 AI, LLM 및 AI 에이전트 관련 최신 기술 글입니다.', label: 'AI' },
-                    'IT': { title: 'IT & 테크 트렌드 (blog/IT)', icon: '💻', desc: '소프트웨어 개발, 웹 프론트엔드 및 DevOps 정보입니다.', label: 'IT' },
-                    'novel': { title: '소설 & 문학 창작 (blog/novel)', icon: '📖', desc: '감성 단편 소설, SF 및 사색적 글 모음입니다.', label: '소설' },
-                    'travel': { title: '여행 & 탐방기 (blog/travel)', icon: '✈️', desc: '국내외 여행 후기 및 로컬 공간 탐방 이야기입니다.', label: '여행' },
-                    'music': { title: '음악 & 감상 (blog/music)', icon: '🎵', desc: '재즈, LP 음반 및 영화 OST 음악 추천 이야기입니다.', label: '음악' },
-                    'movie': { title: '영화 & 미디어 리뷰 (blog/movie)', icon: '🎬', desc: '영화, 드라마다큐 감상평 및 영화 심층 분석 리뷰입니다.', label: '영화' },
-                    'finance': { title: '재테크 & 금융 (blog/finance)', icon: '💵', desc: '2026 경제 전망, 자산 관리 전략 및 금융 인사이트 글입니다.', label: '재테크' }
-                };
+                // 뒤로가기 버튼 클릭 시 전체 카테고리 목록으로 복귀
+                if (backBtn) {
+                    backBtn.onclick = () => {
+                        router.navigate('blog', 'all');
+                    };
+                }
 
-                const renderBlogCards = (cat) => {
-                    if (!grid) return;
-                    grid.innerHTML = '';
-                    
-                    const filteredPosts = appData.blogPosts.filter(post => cat === 'all' || post.category === cat);
+                // 1) 전체보기 모드 (8개 세부 카테고리 연결 카드 나열)
+                if (activeCategory === 'all') {
+                    if (categoriesView) categoriesView.classList.remove('hidden');
+                    if (detailView) detailView.classList.add('hidden');
 
-                    filteredPosts.forEach(post => {
-                        const card = document.createElement('div');
-                        card.className = "group bg-white rounded-xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer relative overflow-hidden";
-                        
-                        // Category badge color & display name
-                        let catBg = 'bg-blue-50 text-blue-700 border-blue-100';
-                        let catName = post.category;
-                        if (post.category === 'AI') { catBg = 'bg-purple-50 text-purple-700 border-purple-100'; catName = 'AI'; }
-                        else if (post.category === 'IT') { catBg = 'bg-emerald-50 text-emerald-700 border-emerald-100'; catName = 'IT'; }
-                        else if (post.category === 'novel') { catBg = 'bg-amber-50 text-amber-700 border-amber-100'; catName = '소설'; }
-                        else if (post.category === 'travel') { catBg = 'bg-sky-50 text-sky-700 border-sky-100'; catName = '여행'; }
-                        else if (post.category === 'music') { catBg = 'bg-pink-50 text-pink-700 border-pink-100'; catName = '음악'; }
-                        else if (post.category === 'movie') { catBg = 'bg-rose-50 text-rose-700 border-rose-100'; catName = '영화'; }
-                        else if (post.category === 'finance') { catBg = 'bg-teal-50 text-teal-700 border-teal-100'; catName = '재테크'; }
+                    if (cardsGrid) {
+                        cardsGrid.innerHTML = '';
+                        appData.blogCategories.forEach(cat => {
+                            const card = document.createElement('div');
+                            
+                            // 색상 매핑
+                            const colorMap = {
+                                purple: { border: 'hover:border-purple-400', badge: 'bg-purple-50 text-purple-700 border-purple-100', text: 'group-hover:text-purple-600', link: 'text-purple-600' },
+                                emerald: { border: 'hover:border-emerald-400', badge: 'bg-emerald-50 text-emerald-700 border-emerald-100', text: 'group-hover:text-emerald-600', link: 'text-emerald-600' },
+                                amber: { border: 'hover:border-amber-400', badge: 'bg-amber-50 text-amber-700 border-amber-100', text: 'group-hover:text-amber-600', link: 'text-amber-600' },
+                                sky: { border: 'hover:border-sky-400', badge: 'bg-sky-50 text-sky-700 border-sky-100', text: 'group-hover:text-sky-600', link: 'text-sky-600' },
+                                pink: { border: 'hover:border-pink-400', badge: 'bg-pink-50 text-pink-700 border-pink-100', text: 'group-hover:text-pink-600', link: 'text-pink-600' },
+                                rose: { border: 'hover:border-rose-400', badge: 'bg-rose-50 text-rose-700 border-rose-100', text: 'group-hover:text-rose-600', link: 'text-rose-600' },
+                                teal: { border: 'hover:border-teal-400', badge: 'bg-teal-50 text-teal-700 border-teal-100', text: 'group-hover:text-teal-600', link: 'text-teal-600' },
+                                orange: { border: 'hover:border-orange-400', badge: 'bg-orange-50 text-orange-700 border-orange-100', text: 'group-hover:text-orange-600', link: 'text-orange-600' }
+                            };
+                            const c = colorMap[cat.color] || colorMap.purple;
 
-                        const tagsHtml = post.tags.map(t => `<span class="text-[11px] text-slate-400">${t}</span>`).join(' ');
+                            card.className = `group bg-white rounded-2xl p-6 border border-slate-200 ${c.border} hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer relative overflow-hidden`;
 
-                        card.innerHTML = `
-                            <div>
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${catBg} flex items-center gap-1">
-                                        <span>${post.icon}</span>
-                                        <span>${catName}</span>
-                                    </span>
-                                    <span class="text-xs text-slate-400 font-medium">⏱️ ${post.readTime}</span>
+                            card.innerHTML = `
+                                <div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span class="text-4xl filter group-hover:scale-110 transition-transform duration-200">${cat.icon}</span>
+                                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full border ${c.badge}">
+                                            ${cat.tag}
+                                        </span>
+                                    </div>
+                                    <h3 class="font-bold text-xl text-slate-800 ${c.text} transition-colors mb-2">${cat.name}</h3>
+                                    <p class="text-sm text-slate-500 leading-relaxed mb-6">${cat.desc}</p>
                                 </div>
-                                <h3 class="font-bold text-base text-slate-800 group-hover:text-blue-600 transition-colors leading-snug mb-2">${post.title}</h3>
-                                <p class="text-xs text-slate-500 leading-relaxed mb-4 line-clamp-2">${post.desc}</p>
-                            </div>
-                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                                <div class="flex space-x-1">${tagsHtml}</div>
-                                <span class="text-xs text-slate-400">${post.date}</span>
-                            </div>
-                        `;
+                                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                                    <span class="text-xs text-slate-400 font-medium">📄 3개 포스팅</span>
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold ${c.link} group-hover:translate-x-1 transition-transform">
+                                        <span>카테고리 홈 열기</span>
+                                        <span>&rarr;</span>
+                                    </span>
+                                </div>
+                            `;
 
-                        card.addEventListener('click', () => {
-                            views.openBlogModal(post);
+                            // 카드 클릭 시 각 세부 카테고리의 index.html 연결
+                            card.addEventListener('click', () => {
+                                router.navigate('blog', cat.key);
+                            });
+
+                            cardsGrid.appendChild(card);
                         });
+                    }
+                } else {
+                    // 2) 특정 카테고리 선택 모드 (해당 카테고리의 index.html iframe 로드)
+                    if (categoriesView) categoriesView.classList.add('hidden');
+                    if (detailView) detailView.classList.remove('hidden');
 
-                        grid.appendChild(card);
-                    });
-                };
-
-                const updateBlogViewUI = (cat) => {
-                    const info = categoryInfo[cat] || categoryInfo['all'];
-                    const count = appData.blogPosts.filter(p => cat === 'all' || p.category === cat).length;
-                    
-                    const iconEl = document.getElementById('blog-category-icon');
-                    const titleEl = document.getElementById('blog-category-title');
-                    const descEl = document.getElementById('blog-category-desc');
-                    const badgeEl = document.getElementById('blog-category-badge');
-
-                    if (iconEl) iconEl.textContent = info.icon;
-                    if (titleEl) titleEl.textContent = info.title;
-                    if (descEl) descEl.textContent = info.desc;
-                    if (badgeEl) badgeEl.textContent = `${info.label}: ${count}개 포스팅`;
-
-                    filters.forEach(btn => {
-                        const btnCat = btn.dataset.filter === 'all' ? 'all' : btn.dataset.filter;
-                        if (btnCat === cat || (cat === 'all' && btn.dataset.filter === 'all')) {
-                            btn.classList.remove('bg-white', 'text-slate-600');
-                            btn.classList.add('bg-slate-800', 'text-white');
-                        } else {
-                            btn.classList.remove('bg-slate-800', 'text-white');
-                            btn.classList.add('bg-white', 'text-slate-600');
-                        }
-                    });
-
-                    renderBlogCards(cat);
-                };
-
-                filters.forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const selectedCat = e.currentTarget.dataset.filter;
-                        router.navigate('blog', selectedCat);
-                    });
-                });
-
-                updateBlogViewUI(activeCategory);
-            },
-
-            openBlogModal: function(post) {
-                const existingModal = document.getElementById('blog-detail-modal');
-                if (existingModal) existingModal.remove();
-
-                const modal = document.createElement('div');
-                modal.id = 'blog-detail-modal';
-                modal.className = "fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in";
-                
-                modal.innerHTML = `
-                    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 md:p-8 space-y-6 relative">
-                        <button id="close-blog-modal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold p-2 focus:outline-none">&times;</button>
-                        
-                        <div class="flex items-center space-x-2">
-                            <span class="text-2xl">${post.icon}</span>
-                            <span class="text-xs font-bold px-3 py-1 bg-blue-100 text-blue-700 rounded-full">${post.category}</span>
-                            <span class="text-xs text-slate-400">⏱️ ${post.readTime}</span>
-                            <span class="text-xs text-slate-400 ml-auto">${post.date}</span>
-                        </div>
-
-                        <div>
-                            <h2 class="text-2xl font-bold text-slate-900 mb-2 leading-snug">${post.title}</h2>
-                            <p class="text-sm text-slate-500 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">${post.desc}</p>
-                        </div>
-
-                        <div class="prose prose-slate max-w-none text-slate-700 leading-relaxed space-y-4 text-sm md:text-base border-t border-b border-slate-100 py-6">
-                            <p>${post.content}</p>
-                            <p class="text-slate-500 italic text-xs">본 포스팅은 Jowon Blog 세부 카테고리 샘플 콘텐츠입니다.</p>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-2">
-                            <div class="flex space-x-2">
-                                ${post.tags.map(t => `<span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">${t}</span>`).join('')}
-                            </div>
-                            <button onclick="window.open('${post.link}', '_blank')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm">
-                                원본 블로그 페이지 읽기 &rarr;
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                document.body.appendChild(modal);
-
-                document.getElementById('close-blog-modal').addEventListener('click', () => {
-                    modal.remove();
-                });
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) modal.remove();
-                });
+                    const categoryData = appData.blogCategories.find(c => c.key === activeCategory) || appData.blogCategories[0];
+                    if (categoryData) {
+                        if (iframe) iframe.src = categoryData.link;
+                        if (badge) badge.textContent = `${categoryData.icon} ${categoryData.name} (${categoryData.link})`;
+                        if (extLink) extLink.href = categoryData.link;
+                    }
+                }
             }
         };
 
