@@ -137,6 +137,12 @@
                     </button>
                 </li>
                 <li>
+                    <button onclick="router.navigate('portfolio')" id="nav-portfolio" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>📂</span>
+                        <span>포트폴리오 (Portfolio)</span>
+                    </button>
+                </li>
+                <li>
                     <button onclick="router.navigate('blog')" id="nav-blog" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
                         <span>✍️</span>
                         <span>블로그 (Blog)</span>
@@ -200,6 +206,7 @@
                     </div>
                 </li>
                 <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
+                <li><button onclick="router.navigate('portfolio')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📂 포트폴리오 (Portfolio)</button></li>
                 <li><button onclick="router.navigate('blog')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</button></li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
             </ul>
@@ -326,9 +333,15 @@
         </div>
     </template>
 
+    <template id="view-portfolio">
+        <div class="w-full h-full min-h-[calc(100vh-4rem)] md:min-h-screen animate-fade-in flex flex-col">
+            <iframe src="MobileApp/blog/index.html" class="w-full flex-1 border-none min-h-[85vh] h-full" id="portfolio-iframe"></iframe>
+        </div>
+    </template>
+
     <template id="view-blog">
         <div class="w-full h-full min-h-[calc(100vh-4rem)] md:min-h-screen animate-fade-in flex flex-col">
-            <iframe src="MobileApp/blog/index.html" class="w-full flex-1 border-none min-h-[85vh] h-full" id="blog-iframe"></iframe>
+            <iframe src="blog/index.html" class="w-full flex-1 border-none min-h-[85vh] h-full" id="blog-iframe"></iframe>
         </div>
     </template>
 
@@ -511,8 +524,8 @@
                 const clone = template.content.cloneNode(true);
                 contentArea.appendChild(clone);
 
-                // Toggle padding for iframe compatibility on blog view
-                if (route === 'blog') {
+                // Toggle padding for iframe compatibility on blog and portfolio views
+                if (route === 'blog' || route === 'portfolio') {
                     contentArea.classList.remove('p-4', 'md:p-8', 'overflow-y-auto');
                     contentArea.classList.add('p-0', 'overflow-hidden');
                 } else {
@@ -620,6 +633,12 @@
                                 card.addEventListener('click', (e) => {
                                     e.preventDefault();
                                     router.navigate('blog');
+                                });
+                            } else if (app.name === 'Portfolio' || app.name === 'Mobile Portfolio') {
+                                card.href = '#';
+                                card.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    router.navigate('portfolio');
                                 });
                             } else {
                                 card.href = app.link;
