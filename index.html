@@ -149,33 +149,33 @@
                     </button>
                     <!-- 블로그 하위 카테고리 버튼 -->
                     <div id="subnav-blog" class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
-                        <button onclick="router.navigate('blog', 'all')" id="subnav-blog-all" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
-                            <span>🌐</span>
-                            <span>전체보기</span>
-                        </button>
-                        <button onclick="router.navigate('blog', 'AI')" id="subnav-blog-ai" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <button onclick="router.navigate('blog', 'AI')" id="subnav-blog-AI" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>🤖</span>
                             <span>AI</span>
                         </button>
-                        <button onclick="router.navigate('blog', 'IT')" id="subnav-blog-it" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <button onclick="router.navigate('blog', 'IT')" id="subnav-blog-IT" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>💻</span>
                             <span>IT</span>
                         </button>
-                        <button onclick="router.navigate('blog', '소설')" id="subnav-blog-novel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <button onclick="router.navigate('blog', 'novel')" id="subnav-blog-novel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>📖</span>
                             <span>소설</span>
                         </button>
-                        <button onclick="router.navigate('blog', '여행')" id="subnav-blog-travel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <button onclick="router.navigate('blog', 'travel')" id="subnav-blog-travel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>✈️</span>
                             <span>여행</span>
                         </button>
-                        <button onclick="router.navigate('blog', '음악')" id="subnav-blog-music" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <button onclick="router.navigate('blog', 'music')" id="subnav-blog-music" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>🎵</span>
                             <span>음악</span>
                         </button>
-                        <button onclick="router.navigate('blog', '영화')" id="subnav-blog-movie" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <button onclick="router.navigate('blog', 'movie')" id="subnav-blog-movie" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>🎬</span>
                             <span>영화</span>
+                        </button>
+                        <button onclick="router.navigate('blog', 'finance')" id="subnav-blog-finance" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>💵</span>
+                            <span>재테크</span>
                         </button>
                     </div>
                 </li>
@@ -241,13 +241,13 @@
                 <li>
                     <button onclick="router.navigate('blog', 'all')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium">✍️ 블로그 (Blog)</button>
                     <div class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
-                        <button onclick="router.navigate('blog', 'all')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🌐 전체보기</button>
                         <button onclick="router.navigate('blog', 'AI')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🤖 AI</button>
                         <button onclick="router.navigate('blog', 'IT')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💻 IT</button>
-                        <button onclick="router.navigate('blog', '소설')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
-                        <button onclick="router.navigate('blog', '여행')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</button>
-                        <button onclick="router.navigate('blog', '음악')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎵 음악</button>
-                        <button onclick="router.navigate('blog', '영화')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 영화</button>
+                        <button onclick="router.navigate('blog', 'novel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
+                        <button onclick="router.navigate('blog', 'travel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</button>
+                        <button onclick="router.navigate('blog', 'music')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎵 음악</button>
+                        <button onclick="router.navigate('blog', 'movie')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 영화</button>
+                        <button onclick="router.navigate('blog', 'finance')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💵 재테크</button>
                     </div>
                 </li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
@@ -393,10 +393,11 @@
                     <button class="blog-filter-btn active px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="all">🌐 전체보기</button>
                     <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="AI">🤖 AI</button>
                     <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="IT">💻 IT</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="소설">📖 소설</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="여행">✈️ 여행</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="음악">🎵 음악</button>
-                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="영화">🎬 영화</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="novel">📖 소설</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="travel">✈️ 여행</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="music">🎵 음악</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="movie">🎬 영화</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="finance">💵 재테크</button>
                 </div>
             </div>
 
@@ -531,9 +532,9 @@
                 { name: "Notion", link: "https://notion.so/swkim777", icon: "📓", color: "bg-slate-700" },
                 { name: "Email", link: "mailto:swkim777@gmail.com", icon: "📧", color: "bg-blue-600" }
             ],
-            // 6개 세부 카테고리별 샘플 포스트 (각 카테고리당 3개씩, 총 18개)
+            // 7개 세부 카테고리 폴더별 포스트 (각 카테고리당 3개씩, 총 21개)
             blogPosts: [
-                // AI 카테고리
+                // AI 카테고리 (blog/AI/)
                 {
                     id: 'ai-1',
                     category: 'AI',
@@ -543,7 +544,7 @@
                     date: '2026.09.20',
                     readTime: '5분 읽기',
                     tags: ['#AI', '#Gemini', '#멀티모달'],
-                    link: 'blog/index.html',
+                    link: 'blog/AI/post1.html',
                     content: 'Gemini 1.5 Pro는 대규모 컨텍스트 윈도우와 강력한 멀티모달 능력을 제공합니다. 본 글에서는 비디오 및 오디오 입력을 활용하여 복잡한 데이터를 다루는 프롬프팅 기법과 실제 구현 예제를 상세히 살펴봅니다.'
                 },
                 {
@@ -555,7 +556,7 @@
                     date: '2026.09.15',
                     readTime: '7분 읽기',
                     tags: ['#Ollama', '#Llama3', '#로컬AI'],
-                    link: 'blog/index.html',
+                    link: 'blog/AI/post2.html',
                     content: '보안이 중요한 프로젝트에서는 데이터 유출 위험이 없는 로컬 LLM 환경 조성이 필수적입니다. Ollama를 이용한 로컬 API 서버 구축 과 및 GPU 가속 설정 가이드를 제공합니다.'
                 },
                 {
@@ -567,11 +568,11 @@
                     date: '2026.09.10',
                     readTime: '6분 읽기',
                     tags: ['#Agent', '#AutoGPT', '#인공지능'],
-                    link: 'blog/index.html',
+                    link: 'blog/AI/post3.html',
                     content: '단순 대화형 AI를 넘어 스스로 계획을 수립하고 피드백 루프를 거쳐 임무를 완성하는 자율형 AI 에이전트 개발 트렌드와 파이썬 오케스트레이션 프레임워크를 다룹니다.'
                 },
 
-                // IT 카테고리
+                // IT 카테고리 (blog/IT/)
                 {
                     id: 'it-1',
                     category: 'IT',
@@ -581,7 +582,7 @@
                     date: '2026.09.22',
                     readTime: '4분 읽기',
                     tags: ['#Web', '#Frontend', '#Vite'],
-                    link: 'blog/index.html',
+                    link: 'blog/IT/post1.html',
                     content: '번들링 속도의 획기적 개선과 React Server Components의 정착으로 웹 프론트엔드 환경은 더 빠르고 효율적으로 진화하고 있습니다. 최신 프론트엔드 아키텍처 패턴을 공유합니다.'
                 },
                 {
@@ -593,7 +594,7 @@
                     date: '2026.09.18',
                     readTime: '8분 읽기',
                     tags: ['#Docker', '#DevOps', '#Cloud'],
-                    link: 'blog/index.html',
+                    link: 'blog/IT/post2.html',
                     content: '도커 이미지 용량을 경량화하여 프로덕션 배포 속도를 대폭 개선하는 빌드 패턴 기법과 보안 취약점 점검 자동화 모범 사례를 담았습니다.'
                 },
                 {
@@ -605,160 +606,198 @@
                     date: '2026.09.08',
                     readTime: '4분 읽기',
                     tags: ['#Git', '#Workflow', '#개발문화'],
-                    link: 'blog/index.html',
+                    link: 'blog/IT/post3.html',
                     content: '명확한 커밋 히스토리는 코드 리뷰 시간을 단축시키고 변경 사항 추적을 용이하게 해줍니다. 표준화된 커밋 템플릿과 Husky 도입 과정을 소개합니다.'
                 },
 
-                // 소설 카테고리
+                // 소설 카테고리 (blog/novel/)
                 {
                     id: 'novel-1',
-                    category: '소설',
+                    category: 'novel',
                     icon: '🌆',
                     title: '시작되는 봄, 사이버펑크 도시의 파수꾼',
                     desc: '네온사인이 비로 젖어 드는 먼 미래의 도시에서, 잊힌 인간성을 찾아 헤매는 비구름 탐정 이야기.',
                     date: '2026.09.24',
                     readTime: '10분 읽기',
                     tags: ['#단편소설', '#SF', '#사이버펑크'],
-                    link: 'blog/index.html',
+                    link: 'blog/novel/post1.html',
                     content: '비가 내리는 2099년의 서울 지하상가. 홀로그램 간판 아래에서 그는 오래된 종이책 한 권을 펼쳐 들었다. 그 속에 새겨진 봄이라는 단어가 낯설게 반짝였다.'
                 },
                 {
                     id: 'novel-2',
-                    category: '소설',
+                    category: 'novel',
                     icon: '🌙',
                     title: '달빛 서점의 12시 밤 이야기',
                     desc: '자정에만 문을 열고 기억이 담긴 따뜻한 차 한 잔을 건네는 비밀스러운 달빛 서점 이야기.',
                     date: '2026.09.12',
                     readTime: '8분 읽기',
                     tags: ['#힐링소설', '#판타지', '#감성에세이'],
-                    link: 'blog/index.html',
+                    link: 'blog/novel/post2.html',
                     content: '시계 바늘이 12시를 가리키자 골목길 끝의 작은 나무 문이 열렸다. 찻잔에서 피어오르는 은은한 은하수 향기가 지친 나그네의 마음에 온기를 가득 안겨주었다.'
                 },
                 {
                     id: 'novel-3',
-                    category: '소설',
+                    category: 'novel',
                     icon: '🌸',
                     title: '겨울 끝자락에서 쓰는 봄 편지',
                     desc: '차가운 계절을 견뎌내고 다시 피어날 당신의 따뜻한 순간을 기다리며 보내는 문학 수필.',
                     date: '2026.08.30',
                     readTime: '5분 읽기',
                     tags: ['#감성소설', '#수필', '#봄'],
-                    link: 'blog/index.html',
-                    content: '차가운 창가에 서서 입김을 불어봅니다. 유리창 너머 시린 바람 속에서도 대지 밑 수만 개의 씨앗은 봄을 준비하며 숨죽이고 있습니다. 조금만 더 힘을 내어 희망을 노래합니다.'
+                    link: 'blog/novel/post3.html',
+                    content: '차가운 창가에 서서 입김을 불어봅니다. 유리창 너머 시린 바람 속에서도 대지 밑 수만 개의 씨앗은 봄을 준비하며 숨죽이고 있습니다.'
                 },
 
-                // 여행 카테고리
+                // 여행 카테고리 (blog/travel/)
                 {
                     id: 'travel-1',
-                    category: '여행',
+                    category: 'travel',
                     icon: '🏝️',
                     title: '제주 한 달 살기: 오름과 바다의 숨결',
                     desc: '숲길 따라 거닐며 만난 제주의 비밀스러운 비경과 느긋한 로컬 라이프 기록.',
                     date: '2026.09.19',
                     readTime: '6분 읽기',
                     tags: ['#제주여행', '#한달살기', '#힐링'],
-                    link: 'blog/index.html',
+                    link: 'blog/travel/post1.html',
                     content: '함덕 바다의 파도 소리로 아침을 열고, 안돌오름 비밀의 숲에서 삼나무 향을 마십니다. 도시의 번잡함을 잊게 해준 한 달간의 소중한 여정 기록.'
                 },
                 {
                     id: 'travel-2',
-                    category: '여행',
+                    category: 'travel',
                     icon: '🍁',
                     title: '교토 고즈넉한 단풍 길과 전통 가옥 탐방',
                     desc: '천년 고도의 정취를 간직한 오카자키 운하와 아라시야마 대나무 숲 밤길 이야기.',
                     date: '2026.09.05',
                     readTime: '7분 읽기',
                     tags: ['#일본여행', '#교토', '#단풍'],
-                    link: 'blog/index.html',
+                    link: 'blog/travel/post2.html',
                     content: '붉게 물든 단풍잎이 기요미즈데라의 목조 무대 위로 조용히 떨어집니다. 따뜻한 말차 한 잔과 함께 만난 일본 전통 공간의 유려함.'
                 },
                 {
                     id: 'travel-3',
-                    category: '여행',
+                    category: 'travel',
                     icon: '🏔️',
                     title: '스위스 알프스 트레킹: 융프라우의 만년설',
                     desc: '만년설이 펼쳐진 인터라켄과 하이킹 코스에서 만난 대자연의 압도적인 풍경.',
                     date: '2026.08.25',
                     readTime: '9분 읽기',
                     tags: ['#스위스', '#알프스', '#트레킹'],
-                    link: 'blog/index.html',
+                    link: 'blog/travel/post3.html',
                     content: '해발 3,454m의 융프라우요흐에 오르자 눈부신 하얀 만년설이 지평선 끝까지 피어났습니다. 맑은 공기와 빙하 호수가 전해주는 압도적 대자연의 감동.'
                 },
 
-                // 음악 카테고리
+                // 음악 카테고리 (blog/music/)
                 {
                     id: 'music-1',
-                    category: '음악',
+                    category: 'music',
                     icon: '🎷',
                     title: '비 오는 날 듣기 좋은 감성 재즈 플레이리스트 10선',
                     desc: '빌 에반스와 체트 베이커의 트럼펫 선율이 전하는 따뜻하고 조용한 밤의 LP 감성.',
                     date: '2026.09.21',
                     readTime: '4분 읽기',
                     tags: ['#Jazz', '#Playlist', '#음악추천'],
-                    link: 'blog/index.html',
+                    link: 'blog/music/post1.html',
                     content: '빗소리가 창문을 두드릴 때 서정적인 피아노 앤 재즈 트리오 선율은 공간을 아늑하게 채워줍니다. 지친 일상에 편안한 휴식을 건네는 재즈 트랙을 소개합니다.'
                 },
                 {
                     id: 'music-2',
-                    category: '음악',
+                    category: 'music',
                     icon: '📻',
                     title: '아날로그 LP 바이닐 입문과 턴테이블 수집 취미',
                     desc: '따뜻한 질감의 아날로그 사운드를 찾아서: 턴테이블 셋업과 LP 음반 보관 노하우.',
                     date: '2026.09.14',
                     readTime: '6분 읽기',
                     tags: ['#LP', '#Vinyl', '#아날로그'],
-                    link: 'blog/index.html',
+                    link: 'blog/music/post2.html',
                     content: '턴테이블 바늘이 턴테이블 위 홈을 따라 도는 순간 발생하는 미세한 아날로그 노이즈와 온기는 디지털 음원이 줄 수 없는 깊은 질감의 매력을 선사합니다.'
                 },
                 {
                     id: 'music-3',
-                    category: '음악',
+                    category: 'music',
                     icon: '🎼',
                     title: '영화 음악의 거장 한스 짐머(Hans Zimmer) 사운드트랙 조명',
                     desc: '인셉션, 인터스텔라, 듄의 대규모 오케스트레이션과 실험적 악기 조합 분석.',
                     date: '2026.09.02',
                     readTime: '8분 읽기',
                     tags: ['#영화음악', '#OST', '#HansZimmer'],
-                    link: 'blog/index.html',
+                    link: 'blog/music/post3.html',
                     content: '웅장한 파이프 오르간 소리와 묵직한 베이스 묵음으로 영화의 감정을 극대화하는 한스 짐머만의 독창적인 음악 감독 철학을 다룹니다.'
                 },
 
-                // 영화 카테고리
+                // 영화 카테고리 (blog/movie/)
                 {
                     id: 'movie-1',
-                    category: '영화',
+                    category: 'movie',
                     icon: '🎬',
                     title: '영화 <인셉션> 심층 분석: 꿈의 계층과 팽이의 진짜 의미',
                     desc: '크리스토퍼 놀란 감독이 설계한 무의식 4단계와 붉은 토템에 숨겨진 서사적 연출.',
                     date: '2026.09.23',
                     readTime: '9분 읽기',
                     tags: ['#영화리뷰', '#인셉션', '#SF'],
-                    link: 'blog/index.html',
+                    link: 'blog/movie/post1.html',
                     content: '꿈속의 꿈을 넘어 림보 상태에 다다른 코브와 맬의 이야기. 마지막 순간 빙글빙글 도는 팽이는 코브가 마침내 현실의 삶을 선택했음을 시사합니다.'
                 },
                 {
                     id: 'movie-2',
-                    category: '영화',
+                    category: 'movie',
                     icon: '🎹',
                     title: '영화 <라라랜드>: 꿈꾸는 보헤미안들의 사랑과 안녕',
                     desc: '미아와 세바스찬의 뜨거운 열정과 마지막 10분간의 아련한 평행세계 연출 헌사.',
                     date: '2026.09.11',
                     readTime: '6분 읽기',
                     tags: ['#라라랜드', '#뮤지컬', '#영화추천'],
-                    link: 'blog/index.html',
+                    link: 'blog/movie/post2.html',
                     content: '꿈을 이룬 두 사람이 서로를 바라보며 짓는 마지막 미소. 달콤하면서도 쌉싸름한 라라랜드의 음악과 스크린을 채우는 미장센 재해석.'
                 },
                 {
                     id: 'movie-3',
-                    category: '영화',
+                    category: 'movie',
                     icon: '🚀',
                     title: '영화 <인터스텔라>: 시공간을 초월한 아버지의 약속',
                     desc: '상대성 이론과 5차원 공간 텍서렉트 속 테이프 소리로 전달한 사랑과 유대감.',
                     date: '2026.08.28',
                     readTime: '7분 읽기',
                     tags: ['#인터스텔라', '#우주', '#SF영화'],
-                    link: 'blog/index.html',
+                    link: 'blog/movie/post3.html',
                     content: '사랑은 시공간을 초월하는 유일한 차원이다. 블랙홀 밀러 행성에서의 1시간과 서재 뒤 5차원 공간의 잊을 수 없는 가슴 먹먹한 울림.'
+                },
+
+                // 재테크 카테고리 (blog/finance/)
+                {
+                    id: 'finance-1',
+                    category: 'finance',
+                    icon: '💵',
+                    title: '2026년 한국 경제 트렌드 분석 보고서',
+                    desc: '글로벌 금리 인하 기조와 한국 경제 시나리오별 자산 관리 방향.',
+                    date: '2026.09.21',
+                    readTime: '5분 읽기',
+                    tags: ['#경제전망', '#재테크', '#금융'],
+                    link: 'blog/finance/post1.html',
+                    content: '금리 환경 변화와 거시 경제 지표 분석을 통해 2026년 가계 자산 배분 전략 및 투자 위험 관리 가이드를 제공합니다.'
+                },
+                {
+                    id: 'finance-2',
+                    category: 'finance',
+                    icon: '📈',
+                    title: '미국 빅테크 주식 적립식 포트폴리오 가이드',
+                    desc: 'AI 산업 성장에 따른 기술주 장기 적립식 투자 분산 전략.',
+                    date: '2026.09.16',
+                    readTime: '6분 읽기',
+                    tags: ['#미국주식', '#적립식투자', '#포트폴리오'],
+                    link: 'blog/finance/post2.html',
+                    content: '빅테크 기업들의 기술 혁신과 글로벌 경쟁력을 바탕으로 한 적립식 장기 포트폴리오 운용법과 분시 배분 모델 분석.'
+                },
+                {
+                    id: 'finance-3',
+                    category: 'finance',
+                    icon: '🏦',
+                    title: '금리와 환율 변동에 대비하는 위험 관리법',
+                    desc: '환율 상승기 원화/달러 자산 배분 비율 설계 가이드.',
+                    date: '2026.09.07',
+                    readTime: '4분 읽기',
+                    tags: ['#환율', '#자산배분', '#리스크관리'],
+                    link: 'blog/finance/post3.html',
+                    content: '환율 변동성 확대 시기에 원화 예금과 외화 달러 자산의 최적 보유 비중을 제시하고 위기 대응 시스템을 구축하는 노하우.'
                 }
             ]
         };
@@ -787,13 +826,13 @@
                     '미디어': 'subnav-apps-media',
                     '게임': 'subnav-apps-game',
                     'all': 'subnav-blog-all',
-                    '전체보기': 'subnav-blog-all',
-                    'AI': 'subnav-blog-ai',
-                    'IT': 'subnav-blog-it',
-                    '소설': 'subnav-blog-novel',
-                    '여행': 'subnav-blog-travel',
-                    '음악': 'subnav-blog-music',
-                    '영화': 'subnav-blog-movie'
+                    'AI': 'subnav-blog-AI',
+                    'IT': 'subnav-blog-IT',
+                    'novel': 'subnav-blog-novel',
+                    'travel': 'subnav-blog-travel',
+                    'music': 'subnav-blog-music',
+                    'movie': 'subnav-blog-movie',
+                    'finance': 'subnav-blog-finance'
                 };
                 
                 document.querySelectorAll('.subnav-item').forEach(el => {
@@ -1079,13 +1118,14 @@
                 const activeCategory = router.normalizeCategory(initialCategory);
 
                 const categoryInfo = {
-                    'all': { title: '전체 포스팅', icon: '🌐', desc: '모든 세부 카테고리의 포스팅(총 18개)을 조회합니다.', label: '전체보기' },
-                    'AI': { title: 'AI & 인공지능', icon: '🤖', desc: '생성형 AI, LLM 및 AI 에이전트 관련 최신 기술 글입니다.', label: 'AI' },
-                    'IT': { title: 'IT & 테크 트렌드', icon: '💻', desc: '소프트웨어 개발, 웹 프론트엔드 및 DevOps 정보입니다.', label: 'IT' },
-                    '소설': { title: '소설 & 문학 창작', icon: '📖', desc: '감성 단편 소설, SF 및 사색적 글 모음입니다.', label: '소설' },
-                    '여행': { title: '여행 & 탐방기', icon: '✈️', desc: '국내외 여행 후기 및 로컬 공간 탐방 이야기입니다.', label: '여행' },
-                    '음악': { title: '음악 & 감상', icon: '🎵', desc: '재즈, LP 음반 및 영화 OST 음악 추천 이야기입니다.', label: '음악' },
-                    '영화': { title: '영화 & 미디어 리뷰', icon: '🎬', desc: '영화, 드라마다큐 감상평 및 영화 심층 분석 리뷰입니다.', label: '영화' }
+                    'all': { title: '전체 포스팅', icon: '🌐', desc: '모든 세부 카테고리 폴더의 포스팅(총 21개)을 조회합니다.', label: '전체보기' },
+                    'AI': { title: 'AI & 인공지능 (blog/AI)', icon: '🤖', desc: '생성형 AI, LLM 및 AI 에이전트 관련 최신 기술 글입니다.', label: 'AI' },
+                    'IT': { title: 'IT & 테크 트렌드 (blog/IT)', icon: '💻', desc: '소프트웨어 개발, 웹 프론트엔드 및 DevOps 정보입니다.', label: 'IT' },
+                    'novel': { title: '소설 & 문학 창작 (blog/novel)', icon: '📖', desc: '감성 단편 소설, SF 및 사색적 글 모음입니다.', label: '소설' },
+                    'travel': { title: '여행 & 탐방기 (blog/travel)', icon: '✈️', desc: '국내외 여행 후기 및 로컬 공간 탐방 이야기입니다.', label: '여행' },
+                    'music': { title: '음악 & 감상 (blog/music)', icon: '🎵', desc: '재즈, LP 음반 및 영화 OST 음악 추천 이야기입니다.', label: '음악' },
+                    'movie': { title: '영화 & 미디어 리뷰 (blog/movie)', icon: '🎬', desc: '영화, 드라마다큐 감상평 및 영화 심층 분석 리뷰입니다.', label: '영화' },
+                    'finance': { title: '재테크 & 금융 (blog/finance)', icon: '💵', desc: '2026 경제 전망, 자산 관리 전략 및 금융 인사이트 글입니다.', label: '재테크' }
                 };
 
                 const renderBlogCards = (cat) => {
@@ -1098,14 +1138,16 @@
                         const card = document.createElement('div');
                         card.className = "group bg-white rounded-xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer relative overflow-hidden";
                         
-                        // Category badge color
+                        // Category badge color & display name
                         let catBg = 'bg-blue-50 text-blue-700 border-blue-100';
-                        if (post.category === 'AI') catBg = 'bg-purple-50 text-purple-700 border-purple-100';
-                        else if (post.category === 'IT') catBg = 'bg-emerald-50 text-emerald-700 border-emerald-100';
-                        else if (post.category === '소설') catBg = 'bg-amber-50 text-amber-700 border-amber-100';
-                        else if (post.category === '여행') catBg = 'bg-sky-50 text-sky-700 border-sky-100';
-                        else if (post.category === '음악') catBg = 'bg-pink-50 text-pink-700 border-pink-100';
-                        else if (post.category === '영화') catBg = 'bg-rose-50 text-rose-700 border-rose-100';
+                        let catName = post.category;
+                        if (post.category === 'AI') { catBg = 'bg-purple-50 text-purple-700 border-purple-100'; catName = 'AI'; }
+                        else if (post.category === 'IT') { catBg = 'bg-emerald-50 text-emerald-700 border-emerald-100'; catName = 'IT'; }
+                        else if (post.category === 'novel') { catBg = 'bg-amber-50 text-amber-700 border-amber-100'; catName = '소설'; }
+                        else if (post.category === 'travel') { catBg = 'bg-sky-50 text-sky-700 border-sky-100'; catName = '여행'; }
+                        else if (post.category === 'music') { catBg = 'bg-pink-50 text-pink-700 border-pink-100'; catName = '음악'; }
+                        else if (post.category === 'movie') { catBg = 'bg-rose-50 text-rose-700 border-rose-100'; catName = '영화'; }
+                        else if (post.category === 'finance') { catBg = 'bg-teal-50 text-teal-700 border-teal-100'; catName = '재테크'; }
 
                         const tagsHtml = post.tags.map(t => `<span class="text-[11px] text-slate-400">${t}</span>`).join(' ');
 
@@ -1114,7 +1156,7 @@
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${catBg} flex items-center gap-1">
                                         <span>${post.icon}</span>
-                                        <span>${post.category}</span>
+                                        <span>${catName}</span>
                                     </span>
                                     <span class="text-xs text-slate-400 font-medium">⏱️ ${post.readTime}</span>
                                 </div>
