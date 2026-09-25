@@ -143,10 +143,41 @@
                     </button>
                 </li>
                 <li>
-                    <button onclick="router.navigate('blog')" id="nav-blog" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                    <button onclick="router.navigate('blog', 'all')" id="nav-blog" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
                         <span>✍️</span>
                         <span>블로그 (Blog)</span>
                     </button>
+                    <!-- 블로그 하위 카테고리 버튼 -->
+                    <div id="subnav-blog" class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                        <button onclick="router.navigate('blog', 'all')" id="subnav-blog-all" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🌐</span>
+                            <span>전체보기</span>
+                        </button>
+                        <button onclick="router.navigate('blog', 'AI')" id="subnav-blog-ai" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🤖</span>
+                            <span>AI</span>
+                        </button>
+                        <button onclick="router.navigate('blog', 'IT')" id="subnav-blog-it" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>💻</span>
+                            <span>IT</span>
+                        </button>
+                        <button onclick="router.navigate('blog', '소설')" id="subnav-blog-novel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>📖</span>
+                            <span>소설</span>
+                        </button>
+                        <button onclick="router.navigate('blog', '여행')" id="subnav-blog-travel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>✈️</span>
+                            <span>여행</span>
+                        </button>
+                        <button onclick="router.navigate('blog', '음악')" id="subnav-blog-music" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🎵</span>
+                            <span>음악</span>
+                        </button>
+                        <button onclick="router.navigate('blog', '영화')" id="subnav-blog-movie" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🎬</span>
+                            <span>영화</span>
+                        </button>
+                    </div>
                 </li>
                 <li>
                     <button onclick="router.navigate('connect')" id="nav-connect" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
@@ -207,7 +238,18 @@
                 </li>
                 <li><button onclick="router.navigate('activities')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📝 최신 활동</button></li>
                 <li><button onclick="router.navigate('portfolio')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📂 포트폴리오 (Portfolio)</button></li>
-                <li><button onclick="router.navigate('blog')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">✍️ 블로그 (Blog)</button></li>
+                <li>
+                    <button onclick="router.navigate('blog', 'all')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium">✍️ 블로그 (Blog)</button>
+                    <div class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                        <button onclick="router.navigate('blog', 'all')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🌐 전체보기</button>
+                        <button onclick="router.navigate('blog', 'AI')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🤖 AI</button>
+                        <button onclick="router.navigate('blog', 'IT')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💻 IT</button>
+                        <button onclick="router.navigate('blog', '소설')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
+                        <button onclick="router.navigate('blog', '여행')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</button>
+                        <button onclick="router.navigate('blog', '음악')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎵 음악</button>
+                        <button onclick="router.navigate('blog', '영화')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 영화</button>
+                    </div>
+                </li>
                 <li><button onclick="router.navigate('connect')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">🤝 연락처</button></li>
             </ul>
         </div>
@@ -340,8 +382,40 @@
     </template>
 
     <template id="view-blog">
-        <div class="w-full h-full min-h-[calc(100vh-4rem)] md:min-h-screen animate-fade-in flex flex-col">
-            <iframe src="blog/index.html" class="w-full flex-1 border-none min-h-[85vh] h-full" id="blog-iframe"></iframe>
+        <div class="max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Jowon Blog</h2>
+                    <p class="text-slate-500">생각과 일상, IT 기술 및 다양한 이야기들을 만나보세요.</p>
+                </div>
+                <!-- Filter Controls -->
+                <div class="flex space-x-2 overflow-x-auto pb-2 md:pb-0" id="blog-filters">
+                    <button class="blog-filter-btn active px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="all">🌐 전체보기</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="AI">🤖 AI</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="IT">💻 IT</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="소설">📖 소설</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="여행">✈️ 여행</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="음악">🎵 음악</button>
+                    <button class="blog-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="영화">🎬 영화</button>
+                </div>
+            </div>
+
+            <!-- Blog Category Status Banner -->
+            <div id="blog-category-banner" class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl" id="blog-category-icon">🌐</span>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base" id="blog-category-title">전체 포스팅</h3>
+                        <p class="text-xs text-slate-500" id="blog-category-desc">모든 주제의 블로그 포스팅을 확인하실 수 있습니다.</p>
+                    </div>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-700 rounded-full" id="blog-category-badge">카테고리: 전체보기</span>
+            </div>
+
+            <!-- Iframe Wrapper -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm min-h-[650px] flex flex-col">
+                <iframe src="blog/index.html" class="w-full flex-1 border-none min-h-[650px] h-full" id="blog-iframe"></iframe>
+            </div>
         </div>
     </template>
 
@@ -467,7 +541,7 @@
                 this.setupMobileMenu();
             },
             normalizeCategory: function(cat) {
-                if (!cat || cat === 'all') return 'all';
+                if (!cat || cat === 'all' || cat === '전체보기') return 'all';
                 if (cat === '일반앱' || cat === '일반 앱') return '일반 앱';
                 return cat;
             },
@@ -476,7 +550,15 @@
                     '일반 앱': 'subnav-apps-general',
                     '업무': 'subnav-apps-work',
                     '미디어': 'subnav-apps-media',
-                    '게임': 'subnav-apps-game'
+                    '게임': 'subnav-apps-game',
+                    'all': 'subnav-blog-all',
+                    '전체보기': 'subnav-blog-all',
+                    'AI': 'subnav-blog-ai',
+                    'IT': 'subnav-blog-it',
+                    '소설': 'subnav-blog-novel',
+                    '여행': 'subnav-blog-travel',
+                    '음악': 'subnav-blog-music',
+                    '영화': 'subnav-blog-movie'
                 };
                 
                 document.querySelectorAll('.subnav-item').forEach(el => {
@@ -484,7 +566,7 @@
                     el.classList.add('text-slate-500');
                 });
 
-                if (route === 'apps' && category && subnavMap[category]) {
+                if ((route === 'apps' || route === 'blog') && category && subnavMap[category]) {
                     const targetSubnav = document.getElementById(subnavMap[category]);
                     if (targetSubnav) {
                         targetSubnav.classList.remove('text-slate-500');
@@ -524,8 +606,8 @@
                 const clone = template.content.cloneNode(true);
                 contentArea.appendChild(clone);
 
-                // Toggle padding for iframe compatibility on blog and portfolio views
-                if (route === 'blog' || route === 'portfolio') {
+                // Toggle padding for iframe compatibility on portfolio view
+                if (route === 'portfolio') {
                     contentArea.classList.remove('p-4', 'md:p-8', 'overflow-y-auto');
                     contentArea.classList.add('p-0', 'overflow-hidden');
                 } else {
@@ -538,6 +620,7 @@
                 if (route === 'apps') views.apps(category);
                 if (route === 'activities') views.activities();
                 if (route === 'connect') views.connect();
+                if (route === 'blog') views.blog(category);
             },
             setupMobileMenu: function() {
                 const btn = document.getElementById('mobileMenuBtn');
@@ -753,6 +836,60 @@
                     `;
                     container.appendChild(card);
                 });
+            },
+
+            blog: function(initialCategory = 'all') {
+                const filters = document.querySelectorAll('.blog-filter-btn');
+                const activeCategory = router.normalizeCategory(initialCategory);
+
+                const categoryInfo = {
+                    'all': { title: '전체 포스팅', icon: '🌐', desc: '모든 주제의 블로그 포스팅을 조회합니다.', label: '전체보기' },
+                    'AI': { title: 'AI & 인공지능', icon: '🤖', desc: '생성형 AI, LLM 및 AI 관련 포스팅 및 소식입니다.', label: 'AI' },
+                    'IT': { title: 'IT & 테크 트렌드', icon: '💻', desc: '소프트웨어 개발, 기술 정보 및 IT 소식입니다.', label: 'IT' },
+                    '소설': { title: '소설 & 문학 창작', icon: '📖', desc: '창작 소설 및 에세이 글 모음입니다.', label: '소설' },
+                    '여행': { title: '여행 & 탐방기', icon: '✈️', desc: '국내외 여행 후기 및 공간 탐방 이야기입니다.', label: '여행' },
+                    '음악': { title: '음악 & 감상', icon: '🎵', desc: '추천 음악, 앨범 리뷰 및 음악 이야기입니다.', label: '음악' },
+                    '영화': { title: '영화 & 미디어 리뷰', icon: '🎬', desc: '영화, 드라마 및 문화 예술 리뷰입니다.', label: '영화' }
+                };
+
+                const updateBlogViewUI = (cat) => {
+                    const info = categoryInfo[cat] || categoryInfo['all'];
+                    
+                    const iconEl = document.getElementById('blog-category-icon');
+                    const titleEl = document.getElementById('blog-category-title');
+                    const descEl = document.getElementById('blog-category-desc');
+                    const badgeEl = document.getElementById('blog-category-badge');
+
+                    if (iconEl) iconEl.textContent = info.icon;
+                    if (titleEl) titleEl.textContent = info.title;
+                    if (descEl) descEl.textContent = info.desc;
+                    if (badgeEl) badgeEl.textContent = `카테고리: ${info.label}`;
+
+                    filters.forEach(btn => {
+                        const btnCat = btn.dataset.filter === 'all' ? 'all' : btn.dataset.filter;
+                        if (btnCat === cat || (cat === 'all' && btn.dataset.filter === 'all')) {
+                            btn.classList.remove('bg-white', 'text-slate-600');
+                            btn.classList.add('bg-slate-800', 'text-white');
+                        } else {
+                            btn.classList.remove('bg-slate-800', 'text-white');
+                            btn.classList.add('bg-white', 'text-slate-600');
+                        }
+                    });
+
+                    const iframe = document.getElementById('blog-iframe');
+                    if (iframe) {
+                        iframe.src = `blog/index.html?category=${encodeURIComponent(cat)}`;
+                    }
+                };
+
+                filters.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const selectedCat = e.currentTarget.dataset.filter;
+                        router.navigate('blog', selectedCat);
+                    });
+                });
+
+                updateBlogViewUI(activeCategory);
             }
         };
 
