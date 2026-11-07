@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowLeft, ArrowUpRight, Check, ChevronDown, CircleHelp, Code2, Copy, Download, FileText, GraduationCap, Layers3, LockKeyhole, MessageSquareText, PanelRightClose, PenLine, Plus, RotateCcw, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ArrowUpRight, Check, ChevronDown, CircleHelp, Code2, Copy, Download, FileText, GraduationCap, Globe2, Layers3, MessageSquareText, PanelRightClose, PenLine, Plus, RotateCcw, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { SOURCE_URL, STORAGE_KEY, STEP_NAMES, defaults, categories, detectCategory, branchInfo, validateStep, buildSections, buildPrompt, restoreSession } from '@/lib/prompt-engine.mjs';
 type Answers = ReturnType<typeof defaults>;
 const icons = [FileText, GraduationCap, Code2, PenLine];
@@ -55,10 +55,10 @@ export default function Home() {
       <button className="sidebar-item" onClick={()=>setModal('guide')}><CircleHelp size={18}/>프롬프팅 가이드<ArrowUpRight size={14} className="push"/></button>
       <div className="steps-heading">만들어 가는 순서 <span>{completed}/7</span></div>
       <nav aria-label="질문 진행 단계" className="steps-nav">{STEP_NAMES.map((name:string,i:number)=><button key={name} disabled={i>reached} onClick={()=>go(i)} className={`step-link ${i===step?'current':''} ${i<reached?'done':''}`} aria-current={i===step?'step':undefined}><span className="step-dot">{i<reached?<Check size={12}/>:String(i+1).padStart(2,'0')}</span>{name}{i===step&&<span className="step-pulse"/>}</button>)}</nav>
-      <div className="sidebar-bottom"><div className="private-box"><ShieldCheck size={19}/><div>나만의 작업 공간<p>비공개로 사용하는 스튜디오</p></div></div><div className="user-line"><span className="avatar">J</span><span>조원님의 스튜디오<small>PERSONAL WORKSPACE</small></span><LockKeyhole size={13}/></div></div>
+      <div className="sidebar-bottom"><div className="private-box"><ShieldCheck size={19}/><div>모두를 위한 작업 공간<p>누구나 이용할 수 있는 스튜디오</p></div></div><div className="user-line"><span className="avatar">J</span><span>조원님의 스튜디오<small>PUBLIC WORKSPACE</small></span><Globe2 size={13}/></div></div>
     </aside>
     <div className="page-area">
-      <header className="topbar"><div className="breadcrumb">워크스페이스 <span>/</span><strong>프롬프트 생성기</strong></div><div className="top-actions"><span className="private-badge"><LockKeyhole size={12}/>비공개</span><button className="new-button" onClick={()=>setModal('reset')}><Plus size={15}/>새로 만들기</button></div></header>
+      <header className="topbar"><div className="breadcrumb">워크스페이스 <span>/</span><strong>프롬프트 생성기</strong></div><div className="top-actions"><span className="private-badge"><Globe2 size={12}/>공개</span><button className="new-button" onClick={()=>setModal('reset')}><Plus size={15}/>새로 만들기</button></div></header>
       <main>
         <section className="hero"><div><div className="eyebrow"><span/>THINK CLEARLY. PROMPT BETTER.</div><h1>좋은 프롬프트는,<br/>좋은 <span>질문</span>에서.</h1><p>막막한 생각을 명확한 요청으로.<br className="mobile-break"/> 질문에 답하며 나만의 프롬프트를 완성해 보세요.</p></div><button className="guide-chip" onClick={()=>setModal('guide')}><span className="gemini-star">✦</span><span>Gemini 프롬프팅 전략 기반<small>명확한 지시 · 충분한 맥락 · 일관된 형식</small></span><ArrowUpRight size={17}/></button></section>
         <div className="mobile-progress"><span>{step===7?'프롬프트 완성':`${step+1}번째 질문`}</span><select aria-label="질문 단계 이동" value={step} onChange={e=>go(Number(e.target.value))}>{STEP_NAMES.map((s:string,i:number)=><option key={s} value={i} disabled={i>reached}>{i+1}. {s}</option>)}{reached===7&&<option value={7}>완성된 프롬프트</option>}</select></div>
