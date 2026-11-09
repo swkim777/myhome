@@ -128,6 +128,10 @@
                             <span>🎮</span>
                             <span>게임</span>
                         </button>
+                        <button onclick="router.navigate('apps', '프롬프트')" id="subnav-apps-prompt" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>✨</span>
+                            <span>프롬프트</span>
+                        </button>
                     </div>
                 </li>
                 <li>
@@ -241,6 +245,7 @@
                         <button onclick="router.navigate('apps', '업무')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💼 업무</button>
                         <button onclick="router.navigate('apps', '미디어')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 미디어</button>
                         <button onclick="router.navigate('apps', '게임')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎮 게임</button>
+                        <button onclick="router.navigate('apps', '프롬프트')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✨ 프롬프트</button>
                     </div>
                 </li>
                 <li><button onclick="router.navigate('portfolio')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📂 포트폴리오 (Portfolio)</button></li>
@@ -344,6 +349,7 @@
                     <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="업무">💼 업무</button>
                     <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="미디어">🎬 미디어</button>
                     <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="게임">🎮 게임</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap" data-filter="프롬프트">✨ 프롬프트</button>
                 </div>
             </div>
 
@@ -488,7 +494,8 @@
                 { id: 29, name: "스마트 요리 가이드", category: "일반 앱", icon: "🍳", link: "opal/cook.html", desc: "남은 요리 재료 활용을 돕는 스마트 요리 가이드" },
                 { id: 30, name: "캐릭터 시트", category: "미디어", icon: "🎭", link: "char-sheet/index.html", desc: "AI 기반 멀티뷰 캐릭터 시트 생성기" },
                 { id: 31, name: "Todo WebApp", category: "업무", icon: "✅", link: "TodoWebApp/index.html", desc: "React & Vite 기반 모던 할 일 관리 및 생산성 업무 도구" },
-                { id: 32, name: "Mobile Portfolio", category: "업무", icon: "📱", link: "MobileApp/blog/index.html", desc: "모바일 우선 반응형 UI/UX 개발자 개인 포트폴리오" }
+                { id: 32, name: "Mobile Portfolio", category: "업무", icon: "📱", link: "MobileApp/blog/index.html", desc: "모바일 우선 반응형 UI/UX 개발자 개인 포트폴리오" },
+                { id: 33, name: "Prompt Studio", category: "프롬프트", icon: "✨", link: "prompt/prompt-creator/index.html", desc: "Gemini 전략 기반 7단계 대화형 프롬프트 생성기" }
             ],
             activities: [
                 { 
@@ -1014,6 +1021,7 @@
                     '업무': 'subnav-apps-work',
                     '미디어': 'subnav-apps-media',
                     '게임': 'subnav-apps-game',
+                    '프롬프트': 'subnav-apps-prompt',
                     'all': 'subnav-blog-all',
                     'AI': 'subnav-blog-AI',
                     'IT': 'subnav-blog-IT',
@@ -1142,7 +1150,7 @@
                 // Prepare Data
                 const labels = Object.keys(distribution);
                 const data = Object.values(distribution);
-                const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']; // Tailwind blue-500, green-500, amber-500, violet-500, pink-500
+                const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#06b6d4']; // Tailwind blue, green, amber, violet, pink, indigo, cyan
 
                 new Chart(ctx, {
                     type: 'doughnut',
