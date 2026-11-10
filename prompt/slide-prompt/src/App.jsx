@@ -18,7 +18,9 @@ import {
   Presentation,
   FileUp,
   File,
-  Trash2
+  Trash2,
+  Home,
+  ArrowLeft
 } from 'lucide-react';
 
 // 독자 대상 목록
@@ -351,9 +353,34 @@ ${p.imagePromptEn}
     document.body.removeChild(element);
   };
 
+  // Jowon Home 대시보드로 이동
+  const handleGoHome = (e) => {
+    e.preventDefault();
+    const path = window.location.pathname;
+    if (path.includes('/dist/')) {
+      window.location.href = '../../../index.html';
+    } else if (path.includes('/slide-prompt/')) {
+      window.location.href = '../../index.html';
+    } else {
+      window.location.href = '/index.html';
+    }
+  };
+
   return (
-    <div className="min-h-screen py-10 px-4 flex flex-col items-center justify-center font-sans antialiased text-slate-800">
+    <div className="min-h-screen py-10 px-4 flex flex-col items-center justify-center font-sans antialiased text-slate-800 relative">
       
+      {/* 우측 상단 Jowon Home 돌아가기 버튼 */}
+      <a
+        href="../../../index.html"
+        onClick={handleGoHome}
+        className="fixed top-4 right-4 md:top-6 md:right-8 z-40 flex items-center gap-2 px-3.5 py-2 bg-white/95 hover:bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 hover:border-indigo-300 rounded-xl shadow-xs hover:shadow-md backdrop-blur-sm transition-all text-xs md:text-sm font-semibold group cursor-pointer"
+        title="Jowon Home 대시보드로 이동"
+      >
+        <Home className="w-4 h-4 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+        <span>Jowon Home</span>
+        <ArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:-translate-x-0.5 transition-transform" />
+      </a>
+
       {/* 1. 상단 헤더 타이틀 */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-extrabold text-[#111827] tracking-tight">
