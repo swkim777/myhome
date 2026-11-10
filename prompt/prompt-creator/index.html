@@ -36,6 +36,140 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.1); }
         }
+
+        /* Light (White) Theme Overrides */
+        body.light-theme {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        body.light-theme aside {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme aside .border-slate-800 {
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme aside .bg-slate-900\/50,
+        body.light-theme aside .bg-slate-800\/60 {
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme aside .text-slate-200,
+        body.light-theme aside .text-white {
+            color: #0f172a !important;
+        }
+        body.light-theme aside .text-slate-400,
+        body.light-theme aside .text-slate-500 {
+            color: #64748b !important;
+        }
+        body.light-theme main {
+            background-color: #f1f5f9 !important;
+        }
+        body.light-theme header {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme header .text-white {
+            color: #0f172a !important;
+        }
+        body.light-theme header .text-slate-400 {
+            color: #64748b !important;
+        }
+        body.light-theme header .border-slate-700,
+        body.light-theme header .border-slate-800 {
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme section {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+        body.light-theme section.hero-banner {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #eff6ff 100%) !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme section.hero-banner h1,
+        body.light-theme section h1,
+        body.light-theme section h2,
+        body.light-theme section h3 {
+            color: #0f172a !important;
+        }
+        body.light-theme section p {
+            color: #64748b !important;
+        }
+        body.light-theme .border-slate-800,
+        body.light-theme .border-slate-700,
+        body.light-theme .border-slate-900 {
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme textarea,
+        body.light-theme select {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme textarea:focus,
+        body.light-theme select:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 1px #2563eb !important;
+        }
+        body.light-theme textarea::placeholder {
+            color: #94a3b8 !important;
+        }
+        body.light-theme #preview-content-box {
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+        body.light-theme #preview-content-box .bg-slate-900\/80 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme #preview-content-box p.text-slate-300 {
+            color: #334155 !important;
+        }
+        body.light-theme #preview-content-box pre {
+            color: #0f172a !important;
+        }
+        body.light-theme .bg-slate-950 {
+            background-color: #f8fafc !important;
+        }
+        body.light-theme .bg-slate-800,
+        body.light-theme .bg-slate-800\/80,
+        body.light-theme .bg-slate-800\/60,
+        body.light-theme .bg-slate-800\/40 {
+            background-color: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #334155 !important;
+        }
+        body.light-theme .hover\:bg-slate-700:hover,
+        body.light-theme .hover\:bg-slate-800:hover {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        body.light-theme .text-slate-200,
+        body.light-theme .text-slate-300 {
+            color: #1e293b !important;
+        }
+        body.light-theme .modal-card {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        body.light-theme .modal-card .text-white {
+            color: #0f172a !important;
+        }
+        body.light-theme .modal-card .bg-slate-800\/60 {
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme .modal-card .text-slate-300,
+        body.light-theme .modal-card .text-slate-400 {
+            color: #475569 !important;
+        }
+        body.light-theme footer {
+            border-color: #e2e8f0 !important;
+        }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden selection:bg-blue-600 selection:text-white">
@@ -111,10 +245,15 @@
                     <span class="text-blue-400">✨</span> 프롬프트 생성기 (Prompt Studio)
                 </span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
                 <span class="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 규칙 기반 엔진
                 </span>
+                <!-- Theme Toggle Button (Dark / White) -->
+                <button id="theme-toggle-btn" onclick="toggleTheme()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all cursor-pointer shadow-sm" title="다크 / 화이트 모드 전환">
+                    <span id="theme-icon">☀️</span>
+                    <span id="theme-text">White</span>
+                </button>
                 <button onclick="openModal('reset')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors">
                     <span>↺</span> 새로 만들기
                 </button>
@@ -124,7 +263,7 @@
         <!-- Content Area -->
         <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 space-y-6">
             <!-- Hero Banner -->
-            <section class="bg-gradient-to-r from-slate-900 via-slate-900 to-blue-950/40 border border-slate-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden shadow-xl">
+            <section class="hero-banner bg-gradient-to-r from-slate-900 via-slate-900 to-blue-950/40 border border-slate-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden shadow-xl">
                 <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="space-y-2 relative z-10 max-w-2xl">
                     <div class="inline-flex items-center gap-2 text-xs font-semibold text-blue-400 tracking-wider uppercase">
@@ -234,7 +373,7 @@
 
     <!-- Guide Modal -->
     <div id="modal-guide" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative space-y-5 animate-fade-in">
+        <div class="modal-card bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative space-y-5 animate-fade-in">
             <button onclick="closeModal('guide')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">✕</button>
             <div class="space-y-1">
                 <span class="text-[11px] font-bold text-blue-400 uppercase tracking-wider">THE METHOD BEHIND THE PROMPT</span>
@@ -291,7 +430,7 @@
 
     <!-- Reset Confirm Modal -->
     <div id="modal-reset" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4 animate-fade-in">
+        <div class="modal-card bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4 animate-fade-in">
             <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mx-auto">
                 ↺
             </div>
@@ -318,6 +457,7 @@
     <!-- Application Script (Rule Engine & Interaction) -->
     <script>
         const STORAGE_KEY = 'jowon-prompt-studio-v1';
+        const THEME_KEY = 'jowon-prompt-studio-theme';
         const STEP_NAMES = ['목적 정하기', '대상 이해하기', '배경 더하기', '요구사항 정하기', '출력 설계하기', '조건 다듬기', '예시 더하기'];
         
         const categories = [
@@ -902,8 +1042,53 @@
             }, 3000);
         }
 
+        // Theme Management (Dark / White)
+        function applyTheme(theme) {
+            const isLight = theme === 'light';
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            const btn = document.getElementById('theme-toggle-btn');
+
+            if (isLight) {
+                document.body.classList.add('light-theme');
+                if (icon) icon.textContent = '🌙';
+                if (text) text.textContent = 'Dark';
+                if (btn) {
+                    btn.classList.remove('bg-slate-800', 'text-slate-200');
+                    btn.classList.add('bg-white', 'text-slate-800', 'border-slate-300', 'shadow-sm');
+                }
+            } else {
+                document.body.classList.remove('light-theme');
+                if (icon) icon.textContent = '☀️';
+                if (text) text.textContent = 'White';
+                if (btn) {
+                    btn.classList.remove('bg-white', 'text-slate-800', 'border-slate-300', 'shadow-sm');
+                    btn.classList.add('bg-slate-800', 'text-slate-200');
+                }
+            }
+            try {
+                localStorage.setItem(THEME_KEY, theme);
+            } catch (e) {}
+        }
+
+        function toggleTheme() {
+            const isCurrentLight = document.body.classList.contains('light-theme');
+            const nextTheme = isCurrentLight ? 'dark' : 'light';
+            applyTheme(nextTheme);
+            showToast(`${nextTheme === 'light' ? '화이트(White)' : '다크(Dark)'} 모드로 전환되었습니다.`);
+        }
+
+        function initTheme() {
+            let saved = 'dark';
+            try {
+                saved = localStorage.getItem(THEME_KEY) || 'dark';
+            } catch (e) {}
+            applyTheme(saved);
+        }
+
         // Initialize App
         window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
             restoreSession();
             renderNav();
             renderQuestion();
