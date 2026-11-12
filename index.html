@@ -162,10 +162,10 @@
                             <span>📖</span>
                             <span>소설</span>
                         </button>
-                        <button onclick="router.navigate('blog', 'travel')" id="subnav-blog-travel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                        <a href="blog/travel/index.html" id="subnav-blog-travel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>✈️</span>
                             <span>여행</span>
-                        </button>
+                        </a>
                         <button onclick="router.navigate('blog', 'music')" id="subnav-blog-music" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>🎵</span>
                             <span>음악</span>
@@ -258,7 +258,7 @@
                         <button onclick="router.navigate('blog', 'AI')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🤖 AI</button>
                         <button onclick="router.navigate('blog', 'IT')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💻 IT</button>
                         <button onclick="router.navigate('blog', 'novel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
-                        <button onclick="router.navigate('blog', 'travel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</button>
+                        <a href="blog/travel/index.html" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</a>
                         <button onclick="router.navigate('blog', 'music')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎵 음악</button>
                         <button onclick="router.navigate('blog', 'movie')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 영화</button>
                         <button onclick="router.navigate('blog', 'finance')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💵 재테크</button>
@@ -1406,7 +1406,11 @@
 
                             // 카드 클릭 시 각 세부 카테고리의 index.html 연결
                             card.addEventListener('click', () => {
-                                router.navigate('blog', cat.key);
+                                if (cat.key === 'travel') {
+                                    window.location.href = 'blog/travel/index.html';
+                                } else {
+                                    router.navigate('blog', cat.key);
+                                }
                             });
 
                             cardsGrid.appendChild(card);
