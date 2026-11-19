@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     destGrid.innerHTML = items.map(dest => `
       <article class="dest-card" data-id="${dest.id}">
         <div class="card-img-wrap">
-          <img src="${dest.heroImage}" alt="${dest.keyword}" loading="lazy">
+          <img src="${dest.heroImage}" alt="${dest.keyword}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
           <span class="card-badge">${dest.badge || dest.region}</span>
           <span class="card-likes">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -173,13 +173,20 @@ document.addEventListener("DOMContentLoaded", () => {
               </svg>
               <span id="spots-toggle-label">추가 추천지</span>
             </button>
+            <button class="btn-action btn-photo-edit" id="btn-edit-photos" title="웹 검색을 통해 여행장소에 알맞는 사진을 찾아 교체합니다">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              <span>사진 수정</span>
+            </button>
           </div>
         </div>
 
         <!-- 아티클 헤더 (히어로 배너) -->
         <article class="article-header">
           <div class="article-hero-media">
-            <img src="${destination.heroImage}" alt="${destination.keyword}">
+            <img src="${destination.heroImage}" alt="${destination.keyword}" id="article-hero-img" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80';">
             <div class="hero-gradient-overlay"></div>
             <div class="hero-meta-overlay">
               <span class="hero-category-tag">${destination.region || '추천 여행'} · 5대 명소 완벽 정복</span>
@@ -282,7 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsContainer.innerHTML = list.map(spot => `
           <section class="spot-card" id="spot-${spot.order}">
             <div class="spot-img-container">
-              <img src="${spot.image}" alt="${spot.name}" loading="lazy">
+              <img src="${spot.image}" alt="${spot.name}" id="spot-img-${spot.order}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80';">
               <span class="spot-order-pill">${isExtra ? '추천 0' + spot.order : '스팟 0' + spot.order}</span>
               <span class="spot-rating-pill">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -415,6 +422,288 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btn-print-post").addEventListener("click", () => {
       window.print();
     });
+
+    // 사진 수정 탭메뉴 버튼 이벤트 바인딩
+    const btnEditPhotos = document.getElementById("btn-edit-photos");
+    if (btnEditPhotos) {
+      btnEditPhotos.addEventListener("click", () => {
+        openPhotoEditModal(destination, showingExtra);
+      });
+    }
+  }
+
+  // 4-1. 사진 수정 & 실시간 웹 검색 모달 제어 함수
+  function openPhotoEditModal(destination, isExtra = false) {
+    const modalOverlay = document.getElementById("photo-modal-overlay");
+    const modalTitle = document.getElementById("photo-modal-title");
+    const modalSubtitle = document.getElementById("photo-modal-subtitle");
+    const modalList = document.getElementById("photo-modal-list");
+    const btnCloseModal = document.getElementById("btn-close-photo-modal");
+    const btnDoneModal = document.getElementById("btn-done-photo-modal");
+    const btnAutoSearchAll = document.getElementById("btn-auto-search-all");
+
+    if (!modalOverlay || !modalList) return;
+
+    modalTitle.textContent = `'${destination.keyword}' 여행 사진 수정 & 웹 검색`;
+    modalSubtitle.textContent = `웹 검색을 통해 각 명소에 가장 잘 어울리는 실제 사진을 찾아 교체하거나 직접 업로드할 수 있습니다.`;
+
+    const activeSpots = isExtra ? (destination.extraSpots || destination.spots) : destination.spots;
+
+    // 편집 대상 아이템 리스트 (0: 대표 히어로 이미지, 1~5: 각 명소)
+    const editItems = [
+      {
+        id: "hero",
+        type: "hero",
+        order: 0,
+        title: `[대표 배너] ${destination.keyword} 메인 사진`,
+        currentImage: destination.heroImage,
+        searchTerm: `${destination.keyword} 명소`,
+        category: "메인 랜드마크"
+      },
+      ...activeSpots.map(s => ({
+        id: `spot_${s.order}`,
+        type: "spot",
+        order: s.order,
+        title: `스팟 0${s.order}: ${s.name}`,
+        currentImage: s.image,
+        searchTerm: s.name.replace(/&.*/, '').trim(),
+        category: s.category,
+        spotRef: s
+      }))
+    ];
+
+    // 카드 목록 렌더링
+    function renderEditCards() {
+      modalList.innerHTML = editItems.map(item => `
+        <div class="photo-edit-card" data-item-id="${item.id}">
+          <div class="photo-edit-card-header">
+            <div class="photo-edit-spot-name">
+              <span>${item.order === 0 ? '🌟' : '📍'}</span>
+              <span>${item.title}</span>
+            </div>
+            <span class="photo-edit-tag">${item.category}</span>
+          </div>
+
+          <div class="photo-edit-content-grid">
+            <!-- 현재 적용된 사진 프리뷰 -->
+            <div class="photo-current-wrap">
+              <span class="photo-current-label">현재 적용된 사진</span>
+              <div class="photo-current-img-box">
+                <img id="preview-img-${item.id}" src="${item.currentImage}" alt="${item.title}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80';">
+              </div>
+            </div>
+
+            <!-- 웹 검색 및 업로드 제어부 -->
+            <div class="photo-controls-wrap">
+              <div class="search-input-group">
+                <input type="text" class="search-photo-input" id="input-query-${item.id}" value="${item.searchTerm}" placeholder="명소 검색어 또는 웹/이미지 URL(https://...) 입력">
+                <button type="button" class="btn-trigger-search" data-item-id="${item.id}">
+                  🔍 웹 검색
+                </button>
+              </div>
+
+              <div class="upload-trigger-row">
+                <label class="btn-upload-file">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                  </svg>
+                  <span>내 PC 사진 업로드</span>
+                  <input type="file" accept="image/*" class="file-input-${item.id}" style="display:none;">
+                </label>
+                <span style="font-size: 0.72rem; color: #94a3b8;">명소 검색어나 사진이 있는 웹 URL을 넣고 '🔍 웹 검색'을 눌러보세요.</span>
+              </div>
+
+              <!-- 웹 검색 결과 썸네일 그리드 -->
+              <div class="web-results-container" id="results-container-${item.id}">
+                <div class="web-results-label">
+                  <span>추천 사진 후보</span>
+                  <span style="font-size:0.7rem; color:#94a3b8; font-weight:normal;">(클릭 시 즉시 적용)</span>
+                </div>
+                <div class="web-results-grid" id="results-grid-${item.id}">
+                  <div style="grid-column: 1 / -1; font-size: 0.78rem; color: #94a3b8; padding: 0.5rem 0;">
+                    명소 이름 또는 웹 URL을 넣고 '🔍 웹 검색'을 누르면 실시간 사진 후보들을 불러옵니다.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      // 각 카드별 이벤트 리스너 바인딩
+      editItems.forEach(item => {
+        const cardEl = modalList.querySelector(`[data-item-id="${item.id}"]`);
+        if (!cardEl) return;
+
+        const btnSearch = cardEl.querySelector(".btn-trigger-search");
+        const inputQuery = cardEl.querySelector(`#input-query-${item.id}`);
+        const resultsGrid = cardEl.querySelector(`#results-grid-${item.id}`);
+        const fileInput = cardEl.querySelector(`.file-input-${item.id}`);
+
+        // 1) 웹 검색 버튼 클릭 (키워드 또는 웹 URL 접속 이미지 추출)
+        if (btnSearch && inputQuery && resultsGrid) {
+          const runSearch = async () => {
+            const query = inputQuery.value.trim();
+            if (!query) return;
+
+            const isUrl = /^https?:\/\//i.test(query) || /^www\./i.test(query);
+
+            btnSearch.disabled = true;
+            btnSearch.textContent = isUrl ? "URL 분석 중..." : "검색 중...";
+            resultsGrid.innerHTML = `
+              <div style="grid-column: 1 / -1; font-size: 0.78rem; color: #2563eb; padding: 0.5rem 0;">
+                ${isUrl ? `🌐 웹 URL에 접속하여 사진들을 분석하고 있습니다...` : `위키미디어 및 웹에서 '${query}' 실사 사진을 찾고 있습니다...`}
+              </div>
+            `;
+
+            try {
+              let images = [];
+              if (isUrl) {
+                images = await window.travelSearchEngine.extractImagesFromWebUrl(query);
+              } else {
+                images = await window.travelSearchEngine.searchMultipleSpotImages(query, 6);
+              }
+
+              if (images.length === 0) {
+                if (isUrl) {
+                  resultsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; color:#e11d48; font-size:0.75rem; line-height:1.5;">
+                      해당 웹페이지에서 접근 가능한 이미지를 찾지 못했거나 보안(CORS) 제한이 있습니다.<br>
+                      직접 이미지 파일 링크(.jpg/.png)를 입력하시거나 일반 명소 이름으로 검색해 보세요.
+                    </div>
+                  `;
+                  return;
+                } else {
+                  const fallbackImg = window.travelSearchEngine.getCategoryFallbackPhoto("landscape");
+                  images.push(fallbackImg);
+                }
+              }
+
+              resultsGrid.innerHTML = images.slice(0, 8).map((imgUrl, i) => `
+                <div class="result-photo-thumb" data-url="${imgUrl}" title="이 사진으로 교체하기">
+                  <img src="${imgUrl}" alt="추천 사진 후보 ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80';">
+                </div>
+              `).join("");
+
+              // 썸네일 클릭 시 교체 이벤트
+              resultsGrid.querySelectorAll(".result-photo-thumb").forEach(thumb => {
+                thumb.addEventListener("click", () => {
+                  const selectedUrl = thumb.getAttribute("data-url");
+                  applyNewImage(item, selectedUrl);
+
+                  resultsGrid.querySelectorAll(".result-photo-thumb").forEach(t => t.classList.remove("selected"));
+                  thumb.classList.add("selected");
+                });
+              });
+            } catch (err) {
+              resultsGrid.innerHTML = `<div style="grid-column: 1 / -1; color:#ef4444; font-size:0.75rem;">사진을 가져오는 중 오류가 발생했습니다.</div>`;
+            } finally {
+              btnSearch.disabled = false;
+              btnSearch.textContent = "🔍 웹 검색";
+            }
+          };
+
+          btnSearch.addEventListener("click", runSearch);
+          inputQuery.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              runSearch();
+            }
+          });
+        }
+
+        // 2) 내 PC 파일 업로드
+        if (fileInput) {
+          fileInput.addEventListener("change", (e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                const base64Url = event.target?.result;
+                if (base64Url) {
+                  applyNewImage(item, base64Url);
+                  alert(`'${item.title}' 사진이 성공적으로 업로드되어 교체되었습니다!`);
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
+      });
+    }
+
+    // 사진 교체 적용 함수
+    function applyNewImage(item, newUrl) {
+      if (!newUrl) return;
+
+      // 1) 모달 프리뷰 갱신
+      const previewImg = document.getElementById(`preview-img-${item.id}`);
+      if (previewImg) previewImg.src = newUrl;
+      item.currentImage = newUrl;
+
+      // 2) 데이터 객체 갱신
+      if (item.type === "hero") {
+        destination.heroImage = newUrl;
+        const mainHeroImg = document.getElementById("article-hero-img");
+        if (mainHeroImg) mainHeroImg.src = newUrl;
+      } else if (item.spotRef) {
+        item.spotRef.image = newUrl;
+        const spotDomImg = document.getElementById(`spot-img-${item.spotRef.order}`);
+        if (spotDomImg) spotDomImg.src = newUrl;
+      }
+
+      // 3) 로컬 스토리지에 변경사항 영구 저장
+      if (window.travelSearchEngine) {
+        window.travelSearchEngine.saveCustomToStorage(destination);
+      }
+    }
+
+    // 전체 사진 실시간 자동 웹 검색 & 일괄 교체
+    btnAutoSearchAll.onclick = async () => {
+      btnAutoSearchAll.disabled = true;
+      btnAutoSearchAll.innerHTML = `
+        <span class="loading-spinner" style="width:14px; height:14px; border-width:2px; display:inline-block; vertical-align:middle; margin-right:6px;"></span>
+        <span>웹에서 5대 명소 실제 사진 검색 및 일괄 최적화 중...</span>
+      `;
+
+      try {
+        for (const item of editItems) {
+          const query = item.searchTerm || `${destination.keyword} ${item.title}`;
+          const bestImg = await window.travelSearchEngine.fetchSpotImage(query, "landmark");
+          if (bestImg) {
+            applyNewImage(item, bestImg);
+          }
+        }
+        renderEditCards();
+        alert(`'${destination.keyword}' 5대 명소의 실제 사진이 웹 검색을 통해 모두 최신 사진으로 일괄 교체되었습니다!`);
+      } catch (e) {
+        console.warn("일괄 사진 교체 실패:", e);
+        alert("사진 검색 중 일부 오류가 발생했습니다.");
+      } finally {
+        btnAutoSearchAll.disabled = false;
+        btnAutoSearchAll.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+          </svg>
+          <span>5대 명소 전체 사진 실시간 웹 검색 자동 추천 & 일괄 교체</span>
+        `;
+      }
+    };
+
+    // 모달 닫기
+    const closeModal = () => {
+      modalOverlay.classList.remove("active");
+    };
+
+    btnCloseModal.onclick = closeModal;
+    btnDoneModal.onclick = closeModal;
+    modalOverlay.onclick = (e) => {
+      if (e.target === modalOverlay) closeModal();
+    };
+
+    // 모달 활성화 및 초기 카드 렌더링
+    renderEditCards();
+    modalOverlay.classList.add("active");
   }
 
   function showLandingView() {

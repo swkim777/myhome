@@ -1,0 +1,226 @@
+/* ========================================================
+   VERTEX Mountain Explorer & Trail Lab - Custom Styles
+   ======================================================== */
+
+@charset "UTF-8";
+
+/* Pretendard & JetBrains Mono 기본 설정 */
+:root {
+  --primary-forest: #1b3b2b;
+  --primary-slate: #1e293b;
+  --accent-orange: #f97316;
+  --accent-mint: #10b981;
+  --bg-light: #f8fafc;
+  --bg-dark: #020617;
+}
+
+/* 부드러운 스크롤 */
+html {
+  scroll-behavior: smooth;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+/* 커스텀 스크롤바 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ==================== Glassmorphism ==================== */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==================== Anti-Gravity / Floating Effect ==================== */
+/* 카드에 마우스 호버 시 3D 틸트 및 가벼운 부유 효과 */
+.mountain-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.mountain-card:hover {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 25px 40px -15px rgba(27, 59, 43, 0.18), 0 0 15px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.dark .mountain-card:hover {
+  box-shadow: 0 25px 45px -15px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.25);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+/* 상단 히어로 위젯 미세 부유 애니메이션 */
+@keyframes softFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.hero-peak-card {
+  transition: all 0.3s ease;
+}
+
+.hero-peak-card:hover {
+  animation: softFloat 4s ease-in-out infinite;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+}
+
+/* ==================== Interactive Filter Buttons ==================== */
+.filter-btn {
+  background-color: transparent;
+  color: #64748b;
+  border: 1px solid transparent;
+}
+
+.dark .filter-btn {
+  color: #94a3b8;
+}
+
+.filter-btn:hover {
+  background-color: rgba(226, 232, 240, 0.6);
+  color: #0f172a;
+}
+
+.dark .filter-btn:hover {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #f8fafc;
+}
+
+.filter-btn.active {
+  background-color: #1b3b2b !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(27, 59, 43, 0.25);
+}
+
+.dark .filter-btn.active {
+  background-color: #10b981 !important;
+  color: #0a1711 !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+}
+
+/* ==================== Range Slider Styling ==================== */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1b3b2b;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.dark input[type="range"]::-webkit-slider-thumb {
+  background: #10b981;
+  border-color: #0f172a;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* ==================== Elevation Profile SVG Interactive ==================== */
+.chart-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawChart 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drawChart {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.waypoint-dot {
+  cursor: pointer;
+  transition: r 0.2s ease, fill 0.2s ease;
+}
+
+.waypoint-dot:hover {
+  r: 8px;
+  fill: #f97316 !important;
+}
+
+/* ==================== Bento Grid Item Transition ==================== */
+.gallery-item {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== Checkbox Custom ==================== */
+.trail-checkbox {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 5px;
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dark .trail-checkbox {
+  border-color: #475569;
+  background-color: #0f172a;
+}
+
+.trail-checkbox:checked {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+.trail-checkbox:checked::before {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg) translate(1px, -1px);
+}

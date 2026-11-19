@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VERTEX | 모던 산악 & 등산 익스플로러</title>
+  
+  <!-- Pretendard & JetBrains Mono 폰트 로드 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            forest: {
+              50: '#f2f8f5',
+              100: '#e1f0e9',
+              200: '#c3e1d3',
+              500: '#2d7a56',
+              800: '#1b3b2b',
+              900: '#132b1f',
+              950: '#0a1711',
+            },
+            slate: {
+              850: '#151e2e',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            alpine: {
+              mint: '#10B981',
+              emerald: '#059669',
+              teal: '#0d9488',
+            },
+            sunset: {
+              orange: '#F97316',
+              coral: '#FB923C',
+            }
+          },
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            display: ['"Plus Jakarta Sans"', 'Pretendard', 'sans-serif'],
+          },
+          boxShadow: {
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.12)',
+            'glass-dark': '0 8px 32px 0 rgba(0, 0, 0, 0.4)',
+            'float': '0 20px 40px -15px rgba(27, 59, 43, 0.15)',
+            'float-dark': '0 20px 40px -15px rgba(0, 0, 0, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 font-sans antialiased selection:bg-alpine-mint/30 selection:text-forest-900 dark:selection:text-emerald-300 overflow-x-hidden">
+
+  <!-- ==================== 네비게이션 바 (Glassmorphism Header) ==================== -->
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-white/20 dark:border-slate-800/80 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- 로고 -->
+      <a href="#" class="flex items-center gap-3 group focus:outline-none">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-forest-800 to-alpine-mint flex items-center justify-center text-white shadow-md shadow-forest-800/20 group-hover:scale-105 transition-transform duration-300">
+          <i data-lucide="mountain" class="w-6 h-6 stroke-[2.2]"></i>
+        </div>
+        <div>
+          <span class="font-display font-extrabold text-xl tracking-tight text-forest-900 dark:text-white flex items-center gap-1.5">
+            VERTEX
+            <span class="inline-block w-2 h-2 rounded-full bg-sunset-orange animate-pulse"></span>
+          </span>
+          <span class="text-[10px] tracking-widest text-slate-500 dark:text-slate-400 font-mono block uppercase">Alpine & Trail Lab</span>
+        </div>
+      </a>
+
+      <!-- 데스크톱 네비게이션 링크 -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="#hero" class="text-slate-600 dark:text-slate-300 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">홈</a>
+        <a href="#explorer" class="text-slate-600 dark:text-slate-300 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors flex items-center gap-1">
+          <span>명산 탐색</span>
+          <span class="px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-alpine-mint/10 text-alpine-emerald dark:text-alpine-mint font-semibold">Live</span>
+        </a>
+        <a href="#dashboard" class="text-slate-600 dark:text-slate-300 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">고도·기상 시뮬레이터</a>
+        <a href="#safety" class="text-slate-600 dark:text-slate-300 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">산행 가이드</a>
+        <a href="#gallery" class="text-slate-600 dark:text-slate-300 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">트레일 로그</a>
+      </nav>
+
+      <!-- 우측 컨트롤 버튼 (다크모드 토글, CTA) -->
+      <div class="flex items-center gap-3">
+        <!-- 다크모드 토글 버튼 -->
+        <button id="theme-toggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all focus:outline-none" aria-label="테마 전환">
+          <i data-lucide="moon" class="w-5 h-5 hidden dark:block text-amber-300"></i>
+          <i data-lucide="sun" class="w-5 h-5 block dark:hidden text-sunset-orange"></i>
+        </button>
+
+        <!-- CTA 버튼 -->
+        <a href="#explorer" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-900 text-white font-medium text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 dark:bg-alpine-mint dark:text-forest-950 dark:hover:bg-emerald-400">
+          <i data-lucide="compass" class="w-4 h-4"></i>
+          <span>코스 탐색</span>
+        </a>
+
+        <!-- Jowon Home 복귀 버튼 -->
+        <a href="../../index.html" target="_top" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
+          <i data-lucide="home" class="w-4 h-4 text-forest-800 dark:text-alpine-mint"></i>
+          <span>Jowon Home</span>
+        </a>
+
+        <!-- 모바일 햄버거 토글 -->
+        <button id="mobile-menu-btn" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 focus:outline-none" aria-label="메뉴 열기">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 모바일 메뉴 드롭다운 -->
+    <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-6 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-lg">
+      <nav class="flex flex-col gap-3 font-medium text-slate-700 dark:text-slate-200">
+        <a href="#hero" class="mobile-nav-link p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">홈</a>
+        <a href="#explorer" class="mobile-nav-link p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">명산 탐색 및 필터</a>
+        <a href="#dashboard" class="mobile-nav-link p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">고도·기상 시뮬레이터</a>
+        <a href="#safety" class="mobile-nav-link p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">계절별 안전 수칙</a>
+        <a href="#gallery" class="mobile-nav-link p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">트레일 갤러리</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==================== 1. Hero Section (메인 비주얼 & 패럴랙스) ==================== -->
+    <section id="hero" class="relative min-h-screen pt-28 pb-20 flex flex-col justify-between overflow-hidden">
+      <!-- 배경 레이어 (다층 패럴랙스 & 그라디언트) -->
+      <div class="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+        <!-- 원경 산맥 배경 이미지 -->
+        <div id="parallax-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-75 ease-out scale-105 will-change-transform"
+             style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85');">
+        </div>
+        <!-- 대기 안개 & 비네팅 오버레이 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-950/70 via-slate-900/60 to-slate-950/90 dark:from-slate-950/80 dark:via-slate-950/80 dark:to-slate-950"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.12),transparent_70%)]"></div>
+        <!-- 빛줄기 및 안개 파티클 효과 -->
+        <div class="absolute -bottom-24 left-0 right-0 h-48 bg-gradient-to-t from-slate-50 dark:from-slate-950 to-transparent"></div>
+      </div>
+
+      <!-- 히어로 본문 콘텐츠 -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto z-10 pt-12 pb-16">
+        <div class="max-w-3xl">
+          <!-- 뱃지 -->
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 dark:bg-slate-800/60 border border-white/20 dark:border-slate-700/60 text-white backdrop-blur-md mb-6 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-alpine-mint animate-ping"></span>
+            <span class="text-xs font-mono font-medium tracking-wide uppercase">Interactive Alpine Intelligence</span>
+          </div>
+
+          <!-- 메인 타이틀 -->
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.12] mb-6">
+            산의 고도와 숨결,<br>
+            <span class="bg-gradient-to-r from-emerald-300 via-alpine-mint to-amber-200 bg-clip-text text-transparent">
+              정상으로 이끄는 지형학.
+            </span>
+          </h1>
+
+          <!-- 서브 카피 -->
+          <p class="text-lg sm:text-xl text-slate-200/90 leading-relaxed max-w-2xl font-light mb-10">
+            대한민국 주요 명산의 실시간 고도·기상 분석, 고도 프로필 SVG 시각화, 그리고 고도 상승에 따른 기온 감률 시뮬레이터까지. 완벽한 등정을 준비하세요.
+          </p>
+
+          <!-- CTA 버튼 그룹 -->
+          <div class="flex flex-wrap items-center gap-4">
+            <a href="#explorer" class="inline-flex items-center gap-3 px-7 py-4 rounded-xl bg-sunset-orange hover:bg-orange-600 text-white font-semibold text-base transition-all duration-300 shadow-xl shadow-sunset-orange/25 hover:shadow-sunset-orange/40 hover:-translate-y-1">
+              <span>코스 탐색하기</span>
+              <i data-lucide="arrow-down-right" class="w-5 h-5"></i>
+            </a>
+            <a href="#dashboard" class="inline-flex items-center gap-3 px-7 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium text-base backdrop-blur-md transition-all duration-300 hover:-translate-y-1">
+              <i data-lucide="activity" class="w-5 h-5 text-alpine-mint"></i>
+              <span>고도·기온 계산기</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 실시간 주요 명산 요약 위젯 바 (Hero Bottom) -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- 위젯 1: 지리산 -->
+          <div class="hero-peak-card glass-panel p-5 rounded-2xl flex items-center justify-between border border-white/20 dark:border-slate-800/80 bg-white/15 dark:bg-slate-900/60 backdrop-blur-xl text-white shadow-glass hover:bg-white/20 transition-all cursor-pointer" data-peak-id="jirisan">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-forest-800/80 flex items-center justify-center text-emerald-300 border border-emerald-500/30">
+                <i data-lucide="mountain-snow" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-base text-white">지리산 천왕봉</h4>
+                  <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">상급</span>
+                </div>
+                <p class="text-xs text-slate-300 font-mono mt-0.5">해발 1,915.4m · 남원·구례·하동·산청·함양</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-mono font-bold text-amber-300 flex items-center justify-end gap-1">
+                <i data-lucide="thermometer-snowflake" class="w-3.5 h-3.5"></i>
+                <span class="peak-temp-live" data-base="1.2">1.2°C</span>
+              </div>
+              <span class="text-[10px] text-slate-300">풍속 4.8m/s (강풍주의)</span>
+            </div>
+          </div>
+
+          <!-- 위젯 2: 설악산 -->
+          <div class="hero-peak-card glass-panel p-5 rounded-2xl flex items-center justify-between border border-white/20 dark:border-slate-800/80 bg-white/15 dark:bg-slate-900/60 backdrop-blur-xl text-white shadow-glass hover:bg-white/20 transition-all cursor-pointer" data-peak-id="seoraksan">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-slate-800/80 flex items-center justify-center text-cyan-300 border border-cyan-500/30">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-base text-white">설악산 대청봉</h4>
+                  <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">전문가</span>
+                </div>
+                <p class="text-xs text-slate-300 font-mono mt-0.5">해발 1,708.1m · 강원 속초·인제·양양</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-mono font-bold text-cyan-300 flex items-center justify-end gap-1">
+                <i data-lucide="thermometer-snowflake" class="w-3.5 h-3.5"></i>
+                <span class="peak-temp-live" data-base="-0.8">-0.8°C</span>
+              </div>
+              <span class="text-[10px] text-slate-300">풍속 7.2m/s (체감 -6°C)</span>
+            </div>
+          </div>
+
+          <!-- 위젯 3: 한라산 -->
+          <div class="hero-peak-card glass-panel p-5 rounded-2xl flex items-center justify-between border border-white/20 dark:border-slate-800/80 bg-white/15 dark:bg-slate-900/60 backdrop-blur-xl text-white shadow-glass hover:bg-white/20 transition-all cursor-pointer" data-peak-id="hallasan">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-900/80 flex items-center justify-center text-amber-300 border border-amber-500/30">
+                <i data-lucide="compass" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-base text-white">한라산 백록담</h4>
+                  <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">중상급</span>
+                </div>
+                <p class="text-xs text-slate-300 font-mono mt-0.5">해발 1,947.3m · 제주 제주시·서귀포시</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-mono font-bold text-emerald-300 flex items-center justify-end gap-1">
+                <i data-lucide="thermometer-sun" class="w-3.5 h-3.5"></i>
+                <span class="peak-temp-live" data-base="3.5">3.5°C</span>
+              </div>
+              <span class="text-[10px] text-slate-300">탐방예약제 운영 중</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. Interactive Mountain Explorer (산악 정보 탐색 및 필터) ==================== -->
+    <section id="explorer" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- 섹션 헤더 -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <div class="inline-flex items-center gap-2 text-forest-800 dark:text-alpine-mint font-mono text-xs font-semibold uppercase tracking-wider mb-2">
+            <i data-lucide="map" class="w-4 h-4"></i>
+            <span>Interactive Mountain Explorer</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            지형과 코스로 만나는 명산 탐색
+          </h2>
+          <p class="text-slate-600 dark:text-slate-400 mt-2 text-base max-w-xl">
+            난이도, 지역, 테마별 실시간 필터링을 통해 당신의 체력과 목적에 맞는 최적의 산행 코스를 탐색해 보세요.
+          </p>
+        </div>
+
+        <!-- 정렬 및 결과 카운트 -->
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-mono text-slate-500 dark:text-slate-400">
+            총 <span id="mountain-count" class="font-bold text-forest-800 dark:text-alpine-mint">0</span>개 명산 검색됨
+          </div>
+          <select id="sort-select" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-forest-800 dark:focus:ring-alpine-mint">
+            <option value="altitude-desc">고도 높은 순 (m)</option>
+            <option value="altitude-asc">고도 낮은 순 (m)</option>
+            <option value="distance-desc">거리 긴 순 (km)</option>
+            <option value="duration-desc">소요시간 긴 순</option>
+            <option value="popular">인기 추천순</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 인터랙티브 필터 컨트롤 바 -->
+      <div class="bg-white dark:bg-slate-900/90 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm mb-10">
+        
+        <!-- 검색창 -->
+        <div class="relative mb-6">
+          <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="mountain-search" placeholder="산 이름, 주요 봉우리, 등산 코스 검색 (예: 설악산, 공룡능선, 백록담...)" 
+                 class="w-full pl-12 pr-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-forest-800 dark:focus:ring-alpine-mint transition-all">
+        </div>
+
+        <!-- 다차원 필터 버튼들 -->
+        <div class="space-y-4">
+          <!-- 1. 난이도 필터 -->
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 w-16">난이도:</span>
+            <button class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="difficulty" data-val="all">전체</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="difficulty" data-val="초급">초급 (Beginner)</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="difficulty" data-val="중급">중급 (Intermediate)</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="difficulty" data-val="상급">상급 (Advanced)</button>
+          </div>
+
+          <!-- 2. 지역 필터 -->
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 w-16">지역별:</span>
+            <button class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="region" data-val="all">전체 지역</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="region" data-val="강원">강원권</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="region" data-val="수도권">서울/수도권</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="region" data-val="경상">영남/경상권</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="region" data-val="충청/전라">충청/호남권</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="region" data-val="제주">제주도</button>
+          </div>
+
+          <!-- 3. 테마 필터 -->
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 w-16">테마별:</span>
+            <button class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="all">전체 테마</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="100대 명산">🌲 산림청 100대 명산</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="TOP 20">🏆 높은산 TOP 20</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="일출 명소">🌅 일출 명소</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="설산">❄️ 겨울 설산</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="암릉 산행">🧗 암릉/릿지</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="단풍">🍁 단풍·억새</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all" data-group="theme" data-val="종주 코스">⛺ 장거리 종주</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 산 카드 그리드 컨테이너 -->
+      <div id="mountain-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- JS로 동적 렌더링 -->
+      </div>
+
+      <!-- 검색 결과 없을 시 표시 UI -->
+      <div id="no-results" class="hidden text-center py-20">
+        <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center mx-auto text-slate-400 mb-4">
+          <i data-lucide="compass" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">일치하는 산악 코스가 없습니다</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">필터 조건을 재설정하거나 다른 검색어를 입력해 보세요.</p>
+        <button id="reset-filters-btn" class="mt-4 px-4 py-2 rounded-xl bg-forest-800 text-white text-xs font-medium hover:bg-forest-900 transition-colors">
+          필터 초기화
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ==================== 3. Elevation & Weather Dashboard (고도별 기상 및 안전 정보) ==================== -->
+    <section id="dashboard" class="py-24 bg-slate-100/70 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60 relative overflow-hidden">
+      <!-- 배경 장식 -->
+      <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-forest-800/10 dark:bg-alpine-mint/10 blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        <!-- 섹션 헤더 -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 text-forest-800 dark:text-alpine-mint font-mono text-xs font-semibold uppercase tracking-wider mb-2">
+            <i data-lucide="gauge" class="w-4 h-4"></i>
+            <span>Physics & Atmospheric Calculator</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            해발 고도별 기상 & 대기 시뮬레이터
+          </h2>
+          <p class="text-slate-600 dark:text-slate-400 mt-2 text-base">
+            대기학적 원리(건조 단열 감률 100m당 약 0.65°C 하강)와 풍속에 따른 윈드칠(Wind Chill) 체감 온도를 실시간 계산하여 안전한 산행 장비를 제안합니다.
+          </p>
+        </div>
+
+        <!-- 시뮬레이터 메인 레이아웃 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+          
+          <!-- 좌측 컨트롤 패널 (5 cols) -->
+          <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-float dark:shadow-float-dark">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2.5 mb-6">
+              <i data-lucide="sliders" class="w-5 h-5 text-forest-800 dark:text-alpine-mint"></i>
+              <span>산행 기상 파라미터 조절</span>
+            </h3>
+
+            <!-- 1. 목표 고도 슬라이더 -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label for="altitude-slider" class="text-sm font-semibold text-slate-700 dark:text-slate-300">목표 고도 (Elevation)</label>
+                <span class="font-mono font-bold text-base text-forest-800 dark:text-alpine-mint" id="altitude-val">1,708 m</span>
+              </div>
+              <input type="range" id="altitude-slider" min="0" max="3000" step="50" value="1708" 
+                     class="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-forest-800 dark:accent-alpine-mint">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400 mt-1">
+                <span>0m (해수면)</span>
+                <span>1,000m</span>
+                <span>2,000m (지리·한라)</span>
+                <span>3,000m</span>
+              </div>
+            </div>
+
+            <!-- 2. 기저 기온 (출발지 0m 기준) 슬라이더 -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label for="base-temp-slider" class="text-sm font-semibold text-slate-700 dark:text-slate-300">출발지 지상 기온</label>
+                <span class="font-mono font-bold text-base text-sunset-orange" id="base-temp-val">15.0 °C</span>
+              </div>
+              <input type="range" id="base-temp-slider" min="-15" max="35" step="1" value="15" 
+                     class="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sunset-orange">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400 mt-1">
+                <span>-15°C (한파)</span>
+                <span>10°C (봄/가을)</span>
+                <span>35°C (혹서기)</span>
+              </div>
+            </div>
+
+            <!-- 3. 능선 풍속 슬라이더 -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label for="wind-slider" class="text-sm font-semibold text-slate-700 dark:text-slate-300">정상 능선 풍속</label>
+                <span class="font-mono font-bold text-base text-cyan-600 dark:text-cyan-400" id="wind-val">6.0 m/s</span>
+              </div>
+              <input type="range" id="wind-slider" min="0" max="25" step="0.5" value="6" 
+                     class="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400 mt-1">
+                <span>0 m/s (미풍)</span>
+                <span>10 m/s (몸흔들림)</span>
+                <span>25 m/s (태풍급)</span>
+              </div>
+            </div>
+
+            <!-- 빠른 고도 프리셋 버튼 -->
+            <div>
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">주요 명산 빠른 프리셋 (산림청 공식 고도):</span>
+              <div class="grid grid-cols-3 gap-2">
+                <button class="preset-btn px-2.5 py-2 rounded-xl text-xs font-mono font-medium border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" data-alt="835.6" data-name="북한산 백운대">북한산 (835.6m)</button>
+                <button class="preset-btn px-2.5 py-2 rounded-xl text-xs font-mono font-medium border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" data-alt="1708.1" data-name="설악산 대청봉">설악산 (1708.1m)</button>
+                <button class="preset-btn px-2.5 py-2 rounded-xl text-xs font-mono font-medium border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" data-alt="1947.3" data-name="한라산 백록담">한라산 (1947.3m)</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 우측 실시간 계측 결과 시각화 디스플레이 (7 cols) -->
+          <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-float dark:shadow-float-dark flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="activity" class="w-5 h-5 text-sunset-orange"></i>
+                  <span>실시간 시뮬레이션 지표</span>
+                </h3>
+                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                  표준 대기 모델 (ISA) 적용
+                </span>
+              </div>
+
+              <!-- 4대 핵심 지표 카드 -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                <!-- 예상 기온 -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 text-center">
+                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">정상 예상 기온</span>
+                  <div class="text-2xl font-mono font-extrabold text-forest-800 dark:text-alpine-mint" id="calc-temp">3.9°C</div>
+                  <span class="text-[10px] text-slate-400 font-mono" id="calc-temp-drop">-11.1°C 하강</span>
+                </div>
+
+                <!-- 체감 온도 -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 text-center">
+                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">체감 온도 (Wind Chill)</span>
+                  <div class="text-2xl font-mono font-extrabold text-sunset-orange" id="calc-windchill">-0.8°C</div>
+                  <span class="text-[10px] text-slate-400 font-mono" id="calc-risk-level">주의 (보온 필수)</span>
+                </div>
+
+                <!-- 대기압 -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 text-center">
+                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">대기압 (hPa)</span>
+                  <div class="text-2xl font-mono font-extrabold text-cyan-600 dark:text-cyan-400" id="calc-pressure">824 hPa</div>
+                  <span class="text-[10px] text-slate-400 font-mono">해수면 대비 81%</span>
+                </div>
+
+                <!-- 산소 유효율 -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 text-center">
+                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">유효 산소량</span>
+                  <div class="text-2xl font-mono font-extrabold text-indigo-600 dark:text-indigo-400" id="calc-oxygen">83%</div>
+                  <span class="text-[10px] text-slate-400 font-mono">호흡수 15% 증가</span>
+                </div>
+              </div>
+
+              <!-- 고도 다이어그램 SVG 시각화 인터랙션 -->
+              <div class="relative bg-gradient-to-t from-forest-900/10 dark:from-slate-950/80 to-transparent p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 mb-6">
+                <div class="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">
+                  <span>지형 고도 프로필 시각화</span>
+                  <span id="diagram-alt-label">대청봉 (1,708m)</span>
+                </div>
+                <!-- SVG 일러스트레이션 -->
+                <svg viewBox="0 0 500 160" class="w-full h-32 overflow-visible">
+                  <!-- 등고선 산 라인 -->
+                  <path d="M 0,150 Q 80,140 150,110 T 280,60 T 360,20 Q 420,80 500,150" 
+                        fill="none" stroke="currentColor" class="text-forest-200 dark:text-slate-700" stroke-width="2" stroke-dasharray="4 4" />
+                  
+                  <path id="mountain-svg-shape" d="M 0,150 L 150,110 L 260,70 L 350,30 L 420,90 L 500,150 Z" 
+                        class="fill-forest-800/10 dark:fill-alpine-mint/10 stroke-forest-800 dark:stroke-alpine-mint transition-all duration-300" stroke-width="2.5" />
+                  
+                  <!-- 고도 인디케이터 점 & 라인 -->
+                  <line id="svg-indicator-line" x1="350" y1="30" x2="350" y2="150" 
+                        stroke="#F97316" stroke-width="2" stroke-dasharray="2 2" />
+                  <circle id="svg-indicator-dot" cx="350" cy="30" r="6" 
+                          fill="#F97316" class="animate-pulse" />
+                  
+                  <!-- 텍스트 라벨 -->
+                  <text id="svg-text-peak" x="350" y="20" text-anchor="middle" font-size="11" font-family="JetBrains Mono" font-weight="bold" fill="currentColor" class="text-slate-900 dark:text-white">1,708m</text>
+                  <text x="30" y="145" font-size="10" font-family="JetBrains Mono" fill="#94A3B8">출발점 (0m)</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- 맞춤 장비 추천 알림창 -->
+            <div id="equipment-recommendation-box" class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-slate-800 dark:text-slate-200 flex items-start gap-3.5">
+              <i data-lucide="shield-alert" class="w-5 h-5 text-sunset-orange shrink-0 mt-0.5"></i>
+              <div class="text-xs leading-relaxed">
+                <span class="font-bold text-sunset-orange block text-sm mb-0.5" id="recommendation-title">방풍 및 레이어드 보온 의류 필수</span>
+                <span id="recommendation-desc">정상 체감 온도가 영하권입니다. 체온 손실 방지를 위해 윈드스토퍼 하드쉘 자켓, 넥워머, 고열량 행동식을 배낭에 꼭 챙기세요.</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ==================== 산행 안전 가이드 아코디언 ==================== -->
+        <div id="safety" class="mt-16 pt-8 border-t border-slate-200/80 dark:border-slate-800">
+          <div class="text-center max-w-2xl mx-auto mb-10">
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">
+              계절별 산행 안전 가이드 & 프로토콜
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              산림청 및 국립공원공단 산악 조난 데이터 기반 안전 수칙
+            </p>
+          </div>
+
+          <div class="max-w-4xl mx-auto space-y-4" id="safety-accordion">
+            <!-- 아코디언 1: 3대 레이어링 의류 착용법 -->
+            <div class="accordion-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+              <button class="accordion-toggle w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">
+                <span class="flex items-center gap-3">
+                  <i data-lucide="shirt" class="w-5 h-5 text-emerald-500"></i>
+                  <span>저체온증 예방의 핵심: 3대 레이어링(Layering) 시스템</span>
+                </span>
+                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+              </button>
+              <div class="accordion-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/60 pt-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800">
+                    <span class="font-bold text-emerald-600 dark:text-emerald-400 block mb-1">1. 베이스 레이어 (속옷)</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">땀 흡수 및 신속 건조(속건성 쿨맥스, 메리노 울 소재). 면(Cotton) 소재는 땀을 머금어 급격한 체온 저하를 유발하므로 절대 금지.</p>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800">
+                    <span class="font-bold text-amber-600 dark:text-amber-400 block mb-1">2. 인슐레이션 레이어 (보온)</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">공기층을 형성하여 체온 유지(플리스 재킷, 경량 패딩). 오르막에서 벗고 휴식 및 능선 보행 시 즉시 착용.</p>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800">
+                    <span class="font-bold text-cyan-600 dark:text-cyan-400 block mb-1">3. 아우터 쉘 (하드쉘)</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">비, 눈, 강풍을 차단하는 고어텍스/투습 방풍 재킷. 능선의 급격한 풍속에 의한 윈드칠 방어의 최종 방패.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 아코디언 2: 겨울 설산 필수 장비 -->
+            <div class="accordion-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+              <button class="accordion-toggle w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">
+                <span class="flex items-center gap-3">
+                  <i data-lucide="snowflake" class="w-5 h-5 text-cyan-500"></i>
+                  <span>동계 설산 산행 필수 장비 및 결빙 구간 대처법</span>
+                </span>
+                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+              </button>
+              <div class="accordion-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/60 pt-4">
+                <ul class="list-disc list-inside space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                  <li><strong>아이젠 (Crampons):</strong> 체인젠은 빙판길 필수품이며, 바위가 드러난 구간과 눈길 전환 시 적절히 탈착해야 무릎 관절 보호.</li>
+                  <li><strong>스패츠 (Gaiters):</strong> 깊은 눈이 등산화 안으로 침투하여 양말이 젖는 것을 방지.</li>
+                  <li><strong>스틱 2자루 & 바스켓:</strong> 눈에 파묻히지 않도록 스노우 바스켓을 장착하고 체중의 30%를 분산.</li>
+                  <li><strong>헤드랜턴 & 보조배터리:</strong> 겨울철은 해가 17시면 지며, 저온으로 인해 스마트폰 배터리가 급방전되므로 품속 보관 필수.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 아코디언 3: 조난 시 SOS 프로토콜 -->
+            <div class="accordion-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+              <button class="accordion-toggle w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">
+                <span class="flex items-center gap-3">
+                  <i data-lucide="life-buoy" class="w-5 h-5 text-sunset-orange"></i>
+                  <span>산악 조난 및 부상 시 골든타임 행동 요령 (SOS)</span>
+                </span>
+                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+              </button>
+              <div class="accordion-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/60 pt-4">
+                <div class="space-y-3">
+                  <p><strong>1. 국립공원 산악위치표지판 번호 확인:</strong> 등산로 500m 간격으로 설치된 '다-01-02' 형태의 번호를 구조대(119)에 전달하면 오차 5m 이내로 수색 가능.</p>
+                  <p><strong>2. 계곡 대신 능선 방향 유지:</strong> 길을 잃었을 때 계곡으로 내려가면 폭포나 절벽에 가로막혀 조난 확률이 극대화됩니다. 반드시 원래 알던 능선 길로 되돌아가십시오.</p>
+                  <p><strong>3. 방한 비부액(비상 보온 시트) 전개:</strong> 구조대가 도착할 때까지 체온이 떨어지지 않도록 은박 보온 시트를 두르고 바람을 피할 수 있는 바위 뒤편에 대기합니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 4. Gallery & Trail Log (산행 기록 및 벤토 그리드) ==================== -->
+    <section id="gallery" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- 섹션 헤더 -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+        <div>
+          <div class="inline-flex items-center gap-2 text-forest-800 dark:text-alpine-mint font-mono text-xs font-semibold uppercase tracking-wider mb-2">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+            <span>Visual Trail Archive</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            산악 아카이브 & 트레일 로그
+          </h2>
+          <p class="text-slate-600 dark:text-slate-400 mt-2 text-base">
+            사계절의 빛과 능선의 운해, 등반가들의 시선이 머문 순간들을 고해상도 라이트박스로 감상하세요.
+          </p>
+        </div>
+      </div>
+
+      <!-- Bento Grid (비정형 그리드 레이아웃) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[240px]" id="bento-gallery">
+        <!-- 갤러리 아이템 1 (2x2 대형) : 지리산 (위키백과 실제 이미지) -->
+        <div class="gallery-item group relative rounded-3xl overflow-hidden cursor-pointer sm:col-span-2 sm:row-span-2 shadow-sm border border-slate-200/60 dark:border-slate-800/80"
+             data-img="https://upload.wikimedia.org/wikipedia/commons/8/85/Korea-Mountain-Jirisan-15.jpg"
+             data-title="지리산 주능선과 운해 파노라마" data-loc="지리산 국립공원" data-alt="1,915.4m">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Korea-Mountain-Jirisan-15.jpg/1280px-Korea-Mountain-Jirisan-15.jpg" 
+               alt="지리산 주능선" referrerpolicy="no-referrer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+          <div class="absolute bottom-6 left-6 right-6 text-white">
+            <span class="inline-block px-2.5 py-1 rounded-md bg-forest-800/80 text-emerald-300 font-mono text-xs mb-2 backdrop-blur-sm">Wikipedia Featured</span>
+            <h3 class="text-xl sm:text-2xl font-bold tracking-tight">지리산 주능선과 운해 파노라마</h3>
+            <p class="text-xs text-slate-300 font-mono mt-1 flex items-center gap-2">
+              <span>지리산 국립공원</span> · <span>해발 1,915.4m</span>
+            </p>
+          </div>
+          <div class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 2 : 설악산 (위키백과 실제 이미지) -->
+        <div class="gallery-item group relative rounded-3xl overflow-hidden cursor-pointer sm:col-span-1 sm:row-span-1 shadow-sm border border-slate-200/60 dark:border-slate-800/80"
+             data-img="https://upload.wikimedia.org/wikipedia/commons/3/32/Korea_Seoraksan.jpg"
+             data-title="설악산 기암괴석과 암봉" data-loc="설악산 국립공원" data-alt="1,708.1m">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Korea_Seoraksan.jpg/1280px-Korea_Seoraksan.jpg" 
+               alt="설악산" referrerpolicy="no-referrer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-4 left-4 text-white">
+            <h4 class="text-sm font-bold">설악산 기암과 공룡능선</h4>
+            <span class="text-[11px] text-slate-300 font-mono">1,708.1m</span>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 3 : 덕유산 향적봉 (위키백과 실제 이미지) -->
+        <div class="gallery-item group relative rounded-3xl overflow-hidden cursor-pointer sm:col-span-1 sm:row-span-2 shadow-sm border border-slate-200/60 dark:border-slate-800/80"
+             data-img="https://upload.wikimedia.org/wikipedia/commons/a/a1/Deogyusan_from_Hyangjeok_Peak.jpg"
+             data-title="덕유산 향적봉 조망과 능선" data-loc="덕유산 향적봉" data-alt="1,614.2m">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Deogyusan_from_Hyangjeok_Peak.jpg/1280px-Deogyusan_from_Hyangjeok_Peak.jpg" 
+               alt="덕유산 향적봉" referrerpolicy="no-referrer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+          <div class="absolute bottom-6 left-6 text-white">
+            <span class="text-[10px] uppercase font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">Alpine Ridge</span>
+            <h4 class="text-base font-bold mt-1.5">덕유산 향적봉 능선 조망</h4>
+            <span class="text-xs text-slate-300 font-mono">덕유산 향적봉 · 1,614.2m</span>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 4 : 북한산 인수봉 (위키백과 실제 이미지) -->
+        <div class="gallery-item group relative rounded-3xl overflow-hidden cursor-pointer sm:col-span-1 sm:row-span-1 shadow-sm border border-slate-200/60 dark:border-slate-800/80"
+             data-img="https://upload.wikimedia.org/wikipedia/commons/6/60/Insoo_peak.jpg"
+             data-title="북한산 인수봉 화강암 거벽" data-loc="북한산 국립공원" data-alt="835.6m">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Insoo_peak.jpg/1280px-Insoo_peak.jpg" 
+               alt="북한산 인수봉" referrerpolicy="no-referrer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-4 left-4 text-white">
+            <h4 class="text-sm font-bold">북한산 인수봉 거벽</h4>
+            <span class="text-[11px] text-slate-300 font-mono">835.6m</span>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 5 : 한라산 백록담 (위키백과 실제 이미지) -->
+        <div class="gallery-item group relative rounded-3xl overflow-hidden cursor-pointer sm:col-span-2 sm:row-span-1 shadow-sm border border-slate-200/60 dark:border-slate-800/80"
+             data-img="https://upload.wikimedia.org/wikipedia/commons/e/eb/KOCIS_Halla_Mountain_in_Jeju-do_%286387785543%29.jpg"
+             data-title="태고의 분화구와 한라산 설경" data-loc="한라산 정상" data-alt="1,947.3m">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/KOCIS_Halla_Mountain_in_Jeju-do_%286387785543%29.jpg/1280px-KOCIS_Halla_Mountain_in_Jeju-do_%286387785543%29.jpg" 
+               alt="한라산 백록담" referrerpolicy="no-referrer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 text-white">
+            <h4 class="text-base font-bold">태고의 화산 지형과 한라산 백록담</h4>
+            <span class="text-xs text-slate-300 font-mono">한라산 정상 화구벽 · 1,947.3m</span>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 6 : 대둔산 칠성봉·마천대 (위키백과 실제 이미지) -->
+        <div class="gallery-item group relative rounded-3xl overflow-hidden cursor-pointer sm:col-span-2 sm:row-span-1 shadow-sm border border-slate-200/60 dark:border-slate-800/80"
+             data-img="https://upload.wikimedia.org/wikipedia/commons/a/a8/Chilseongbong_at_Daedunsan.jpg"
+             data-title="호남의 금강 대둔산 기암절벽" data-loc="대둔산 마천대·칠성봉" data-alt="879.1m">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Chilseongbong_at_Daedunsan.jpg/1280px-Chilseongbong_at_Daedunsan.jpg" 
+               alt="대둔산 칠성봉" referrerpolicy="no-referrer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 text-white">
+            <h4 class="text-base font-bold">호남의 금강 대둔산 칠성봉과 마천대</h4>
+            <span class="text-xs text-slate-300 font-mono">대둔산 마천대 · 879.1m</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==================== 산 상세 정보 모달 / 드로어 (Course & Elevation Modal) ==================== -->
+  <div id="mountain-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-all duration-300">
+    <!-- 백드롭 -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- 모달 컨테이너 -->
+    <div class="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col z-10 transform scale-95 transition-transform duration-300">
+      
+      <!-- 상단 헤더 & 닫기 버튼 -->
+      <div class="relative h-56 sm:h-64 shrink-0 overflow-hidden">
+        <img id="modal-img" src="" alt="산 이미지" referrerpolicy="no-referrer" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        
+        <!-- 닫기 버튼 -->
+        <button id="modal-close-btn" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/60 text-white flex items-center justify-center backdrop-blur-md hover:bg-slate-900 transition-colors focus:outline-none">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <!-- 산 기본 타이틀 -->
+        <div class="absolute bottom-6 left-6 right-6 text-white flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span id="modal-badge-diff" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold"></span>
+              <span id="modal-region" class="text-xs font-mono text-slate-300"></span>
+            </div>
+            <h2 id="modal-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight"></h2>
+          </div>
+          <div class="flex gap-4 font-mono text-right">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Elevation</span>
+              <span id="modal-alt" class="text-xl font-bold text-alpine-mint"></span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Duration</span>
+              <span id="modal-dur" class="text-xl font-bold text-amber-300"></span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Distance</span>
+              <span id="modal-dist" class="text-xl font-bold text-white"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모달 스크롤 본문 -->
+      <div class="p-6 sm:p-8 overflow-y-auto space-y-8 flex-1">
+        
+        <!-- 코스 개요 설명 -->
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="info" class="w-4 h-4 text-forest-800 dark:text-alpine-mint"></i>
+              <span>산림청 공식 산악 개요 및 지형 특성</span>
+            </h4>
+            <span id="modal-location" class="text-xs font-mono text-slate-500 dark:text-slate-400"></span>
+          </div>
+          <p id="modal-desc" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- 동적 SVG 고도 프로필 (Elevation Profile) 그래프 -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-4 h-4 text-sunset-orange"></i>
+              <span>등산 구간별 고도 프로필 (Elevation Profile)</span>
+            </h4>
+            <span class="text-xs font-mono text-slate-400">마우스 호버 시 경유지 고도 확인</span>
+          </div>
+
+          <!-- SVG 차트 영역 -->
+          <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 relative">
+            <div id="elevation-tooltip" class="absolute hidden px-2.5 py-1 rounded-lg bg-slate-900 text-white text-[11px] font-mono pointer-events-none shadow-lg z-20"></div>
+            <svg id="modal-elevation-svg" viewBox="0 0 700 200" class="w-full h-44 overflow-visible">
+              <!-- JS에서 동적 렌더링 -->
+            </svg>
+          </div>
+        </div>
+
+        <!-- 구간별 경유지 타임라인 -->
+        <div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+            <i data-lucide="milestone" class="w-4 h-4 text-emerald-500"></i>
+            <span>웨이포인트(Waypoint) 상세 경로</span>
+          </h4>
+          <div id="modal-waypoints" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 인터랙티브 준비물 체크리스트 -->
+        <div class="p-5 rounded-2xl bg-forest-50 dark:bg-forest-950/40 border border-forest-100 dark:border-forest-900">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold text-forest-900 dark:text-emerald-300 flex items-center gap-2">
+              <i data-lucide="check-square" class="w-4 h-4"></i>
+              <span>추천 장비 체크리스트</span>
+            </h4>
+            <span id="checklist-progress" class="text-xs font-mono font-bold text-forest-800 dark:text-alpine-mint">0 / 0 완료</span>
+          </div>
+          <div id="modal-checklist" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <!-- JS 동적 체크리스트 -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 모달 푸터 버튼 -->
+      <div class="p-4 px-6 sm:px-8 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-between">
+        <span class="text-xs text-slate-500 font-mono flex items-center gap-1.5">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>GPS 트랙 파일 (.GPX) 지원</span>
+        </span>
+        <button id="modal-action-btn" class="px-5 py-2.5 rounded-xl bg-forest-800 dark:bg-alpine-mint hover:bg-forest-900 dark:hover:bg-emerald-400 text-white dark:text-forest-950 font-semibold text-xs transition-colors flex items-center gap-2">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          <span>내 등산 버킷리스트 저장</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== 라이트박스 뷰어 (Lightbox Modal) ==================== -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-md">
+    <button id="lightbox-close" class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="max-w-5xl max-h-[85vh] flex flex-col items-center">
+      <img id="lightbox-img" src="" alt="확대 뷰" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl">
+      <div class="mt-4 text-center text-white">
+        <h4 id="lightbox-title" class="text-lg font-bold"></h4>
+        <p id="lightbox-desc" class="text-xs text-slate-400 font-mono mt-1"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 푸터 (Footer) ==================== -->
+  <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 py-16 text-slate-600 dark:text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-2 font-display font-extrabold text-lg text-forest-900 dark:text-white mb-3">
+            <i data-lucide="mountain" class="w-5 h-5 text-alpine-mint"></i>
+            <span>VERTEX</span>
+          </div>
+          <p class="leading-relaxed">
+            자연에 대한 존중과 안전을 최우선으로 하는 모던 알파인 트레일 플랫폼입니다. 정밀 지형 데이터와 기상 물리학 시뮬레이션을 제공합니다.
+          </p>
+        </div>
+        <div>
+          <h5 class="font-bold text-slate-800 dark:text-slate-200 mb-3 text-sm">연계 유관기관</h5>
+          <ul class="space-y-2">
+            <li><a href="https://www.knps.or.kr" target="_blank" rel="noopener noreferrer" class="hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">국립공원공단 탐방알리미</a></li>
+            <li><a href="https://www.forest.go.kr/kfsweb/kfi/kfs/foreston/main/contents/FmmntSrch/selectFmmntSrchList.do?mn=AR02_02_05_01" target="_blank" rel="noopener noreferrer" class="hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">산림청 100대 명산 공식 정보</a></li>
+            <li><a href="https://www.kma.go.kr" target="_blank" rel="noopener noreferrer" class="hover:text-forest-800 dark:hover:text-alpine-mint transition-colors">기상청 산악기상정보시스템</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-bold text-slate-800 dark:text-slate-200 mb-3 text-sm">산악 안전 응급 신고</h5>
+          <ul class="space-y-2 font-mono">
+            <li>산악사고 구조신고: <strong class="text-sunset-orange">119</strong></li>
+            <li>국립공원 조난구조: <strong class="text-forest-800 dark:text-alpine-mint">1670-9119</strong></li>
+            <li>산불 발생 신고: <strong class="text-rose-500">1688-3119</strong></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-bold text-slate-800 dark:text-slate-200 mb-3 text-sm">LNT (Leave No Trace) 운동</h5>
+          <p class="leading-relaxed text-[11px]">
+            머문 자리는 흔적 없이, 지정된 탐방로만 이용하기, 야생동물 존중하기, 자연물 훼손 금지 원칙을 준수합니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-slate-100 dark:border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px]">
+        <div>© 2026 VERTEX Alpine Intelligence. All rights reserved.</div>
+        <div class="flex items-center gap-4">
+          <span>Designed with High-End Precision UI</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

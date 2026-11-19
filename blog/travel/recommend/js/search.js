@@ -1,7 +1,71 @@
 /**
  * JowonPlace Travel Blog - Search Engine & Dynamic Generator
- * 사용자 입력 기반 여행지 검색, 위키피디아/공개 API 연동 및 5대 명소 실감형 블로그 생성기
+ * 사용자 입력 기반 여행지 검색, 위키피디아/위키미디어 오픈 API 실시간 이미지 연동 및 5대 명소 실감형 블로그 생성기
  */
+
+// 대한민국 및 세계 주요 여행지 5대 대표 명소 사전 매핑 (정확한 명소명 매칭용)
+const KNOWN_DESTINATIONS_MAP = {
+  "서울": {
+    region: "국내",
+    spots: [
+      { name: "N서울타워 & 남산 케이블카", category: "도심 랜드마크 & 파노라마 뷰", searchTerm: "N서울타워" },
+      { name: "경복궁 & 광화문 광장", category: "조선 왕궁 & 역사 문화", searchTerm: "경복궁" },
+      { name: "북촌한옥마을 & 삼청동", category: "전통 한옥 & 갤러리 산책", searchTerm: "북촌한옥마을" },
+      { name: "익선동 한옥 카페거리 & 성수동", category: "감성 카페 & 트렌디 골목", searchTerm: "익선동" },
+      { name: "반포 한강공원 & 달빛무지개분수", category: "선셋 피크닉 & 야경 명소", searchTerm: "반포한강공원" }
+    ]
+  },
+  "여수": {
+    region: "국내",
+    spots: [
+      { name: "오동도 & 동백꽃 산책길", category: "해안 국립공원 & 자연 산책", searchTerm: "오동도" },
+      { name: "여수 해상케이블카 (자산공원-돌산공원)", category: "해상 뷰 & 다도해 절경", searchTerm: "여수해상케이블카" },
+      { name: "돌산공원 & 돌산대교 야경", category: "여수 밤바다 시그니처 야경", searchTerm: "돌산대교" },
+      { name: "고소동 천사벽화골목 & 카페거리", category: "언덕 벽화마을 & 오션뷰 카페", searchTerm: "고소동 천사벽화마을" },
+      { name: "여수 낭만포차거리 & 하멜등대", category: "밤바다 버스킹 & 해산물 미식", searchTerm: "하멜등대" }
+    ]
+  },
+  "전주": {
+    region: "국내",
+    spots: [
+      { name: "전주 한옥마을 & 경기전", category: "전통 한옥 단지 & 조선 태조 어진", searchTerm: "전주한옥마을" },
+      { name: "전동성당", category: "로마네스크 양식 성당 건축", searchTerm: "전동성당" },
+      { name: "오목대 & 이목대", category: "한옥마을 파노라마 조망 쉼터", searchTerm: "오목대" },
+      { name: "자만벽화마을 & 달빛 언덕", category: "아기자기한 벽화 & 감성 카페", searchTerm: "자만벽화마을" },
+      { name: "전주 남부시장 & 청년몰", category: "야시장 미식 투어 & 로컬 푸드", searchTerm: "전주남부시장" }
+    ]
+  },
+  "속초": {
+    region: "국내",
+    spots: [
+      { name: "속초아이 대관람차 & 속초해수욕장", category: "오션뷰 랜드마크 & 에메랄드 해변", searchTerm: "속초해수욕장" },
+      { name: "설악산 권금성 & 케이블카", category: "압도적 기암괴석 & 명산 절경", searchTerm: "설악산 권금성" },
+      { name: "아바이마을 & 갯배 체험", category: "실향민 역사 & 오징어순대 미식", searchTerm: "아바이마을" },
+      { name: "영금정 & 속초등대 전망대", category: "동해 바위 누각 & 일출 명소", searchTerm: "영금정" },
+      { name: "속초 관광수산시장 (중앙시장)", category: "닭강정과 활어회 전통시장", searchTerm: "속초관광수산시장" }
+    ]
+  },
+  "파리": {
+    region: "유럽",
+    spots: [
+      { name: "에펠탑 (Tour Eiffel)", category: "세계적 시그니처 랜드마크", searchTerm: "에펠탑" },
+      { name: "루브르 박물관 & 유리 피라미드", category: "세계 최대 미술관 & 예술 감상", searchTerm: "루브르 박물관" },
+      { name: "몽마르트르 언덕 & 사크레쾨르 대성당", category: "예술가의 거리 & 파리 전경", searchTerm: "사크레쾨르 대성당" },
+      { name: "샹젤리제 거리 & 개선문", category: "쇼핑 명소 & 나폴레옹 기념 건축", searchTerm: "에투알 개선문" },
+      { name: "센강 바토무슈 유람선 & 에펠탑 야경", category: "낭만 크루즈 & 황금빛 파리 밤", searchTerm: "센강" }
+    ]
+  },
+  "도쿄": {
+    region: "아시아",
+    spots: [
+      { name: "도쿄 타워 & 시바 공원", category: "레트로 붉은 타워 랜드마크", searchTerm: "도쿄 타워" },
+      { name: "센소지 & 아사쿠사 나카미세", category: "에도 전통 사찰 & 길거리 간식", searchTerm: "센소지" },
+      { name: "시부야 스크램블 교차로 & 시부야 스카이", category: "최첨단 도심 & 360도 루프탑 전망", searchTerm: "시부야 스크램블 교차로" },
+      { name: "메이지 신궁 & 하라주쿠 다케시타", category: "도심 속 거대 숲 & 트렌드 거리", searchTerm: "메이지 신궁" },
+      { name: "오다이바 해변공원 & 레인보우 브리지", category: "도쿄만 야경 & 미래형 수변 도시", searchTerm: "레인보우 브리지" }
+    ]
+  }
+};
 
 class TravelSearchEngine {
   constructor() {
@@ -16,7 +80,6 @@ class TravelSearchEngine {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          // 중복 방지 병합
           parsed.forEach(custom => {
             if (!this.cachedDestinations.some(d => d.id === custom.id)) {
               this.cachedDestinations.push(custom);
@@ -65,7 +128,7 @@ class TravelSearchEngine {
       };
     }
 
-    // 2. 새로운 여행지일 경우: 위키피디아 & 실시간 검색 및 스마트 블로그 생성기 가동
+    // 2. 새로운 여행지일 경우: 위키피디아/위키미디어 실시간 검색 및 스마트 블로그 생성기 가동
     const generated = await this.generateDynamicDestination(cleanQuery);
     if (generated) {
       this.cachedDestinations.unshift(generated);
@@ -80,17 +143,21 @@ class TravelSearchEngine {
     return null;
   }
 
-  // 위키피디아 실시간 오픈 API 검색
+  // 위키피디아 실시간 오픈 API 검색 (도시/지역 기본 정보 및 대표 썸네일)
   async fetchWikiInfo(query) {
     try {
-      const endpoint = `https://ko.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro=1&explaintext=1&titles=${encodeURIComponent(query)}&pithumbsize=1000&format=json&origin=*`;
+      const endpoint = `https://ko.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro=1&explaintext=1&titles=${encodeURIComponent(query)}&pithumbsize=1200&format=json&origin=*`;
       const response = await fetch(endpoint);
+      if (!response.ok) return null;
       const data = await response.json();
       const pages = data.query?.pages;
       if (!pages) return null;
 
       const pageId = Object.keys(pages)[0];
-      if (pageId === "-1") return null;
+      if (pageId === "-1") {
+        // 검색 폴백
+        return await this.searchWikiByGenerator(query);
+      }
 
       const page = pages[pageId];
       return {
@@ -104,177 +171,426 @@ class TravelSearchEngine {
     }
   }
 
+  // 위키피디아 검색어 제너레이터 기반 검색 (키워드가 정확한 표제어가 아닐 때)
+  async searchWikiByGenerator(query) {
+    try {
+      const url = `https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=1&prop=extracts|pageimages&exintro=1&explaintext=1&pithumbsize=1200&format=json&origin=*`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const pages = data.query?.pages;
+      if (!pages) return null;
+      const page = Object.values(pages)[0];
+      if (!page) return null;
+      return {
+        title: page.title,
+        extract: page.extract || "",
+        thumbnail: page.thumbnail?.source || null
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // 해당 명소의 실제 사진을 위키피디아 및 위키미디어 커먼즈에서 실시간 검색하는 핵심 엔진
+  async fetchSpotImage(searchTerm, fallbackCategory = "landscape") {
+    if (!searchTerm) return this.getCategoryFallbackPhoto(fallbackCategory);
+
+    // 1단계: 한국어 위키피디아에서 검색하여 고해상도 썸네일 획득
+    try {
+      const wikiUrl = `https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchTerm)}&gsrlimit=1&prop=pageimages&pithumbsize=1000&format=json&origin=*`;
+      const wikiRes = await fetch(wikiUrl);
+      if (wikiRes.ok) {
+        const data = await wikiRes.json();
+        const pages = data.query?.pages;
+        if (pages) {
+          const first = Object.values(pages)[0];
+          if (first && first.thumbnail?.source) {
+            return first.thumbnail.source;
+          }
+        }
+      }
+    } catch (e) {
+      // 위키피디아 검색 실패 시 위키미디어 커먼즈로 fallback
+    }
+
+    // 2단계: 위키미디어 커먼즈(Commons)에서 자유 라이선스 실사 사진 검색
+    try {
+      const commonsUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(searchTerm)}&gsrlimit=1&prop=imageinfo&iiprop=url&iiurlwidth=1000&format=json&origin=*`;
+      const commonsRes = await fetch(commonsUrl);
+      if (commonsRes.ok) {
+        const cdata = await commonsRes.json();
+        const cpages = cdata.query?.pages;
+        if (cpages) {
+          const first = Object.values(cpages)[0];
+          const info = first?.imageinfo?.[0];
+          if (info && (info.thumburl || info.url)) {
+            return info.thumburl || info.url;
+          }
+        }
+      }
+    } catch (e) {
+      // 커먼즈 검색 실패 시 안전한 테마별 카테고리 고품질 사진 반환
+    }
+
+    // 3단계: 특정 장소 사진을 찾을 수 없는 경우 해당 명소 성격(자연, 카페, 야경, 전통 등)에 맞는 안전한 테마 사진 제공
+    return this.getCategoryFallbackPhoto(fallbackCategory);
+  }
+
+  // 특정 명소에 대한 복수 웹 실사 이미지 검색 함수 (후보 4~6개 반환)
+  async searchMultipleSpotImages(query, limit = 4) {
+    const results = [];
+    if (!query) return results;
+
+    // 1. 위키미디어 커먼즈 API 검색 (실제 현장 사진 복수 획득)
+    try {
+      const commonsUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${limit}&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
+      const res = await fetch(commonsUrl);
+      if (res.ok) {
+        const data = await res.json();
+        const pages = data.query?.pages;
+        if (pages) {
+          for (const pid of Object.keys(pages)) {
+            const page = pages[pid];
+            const info = page.imageinfo?.[0];
+            const url = info?.thumburl || info?.url;
+            if (url && !results.includes(url)) {
+              results.push(url);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("위키미디어 이미지 복수 검색 실패:", e);
+    }
+
+    // 2. 한국어 위키피디아 검색 API
+    if (results.length < limit) {
+      try {
+        const wikiUrl = `https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=3&prop=pageimages&pithumbsize=800&format=json&origin=*`;
+        const res = await fetch(wikiUrl);
+        if (res.ok) {
+          const data = await res.json();
+          const pages = data.query?.pages;
+          if (pages) {
+            for (const pid of Object.keys(pages)) {
+              const page = pages[pid];
+              const url = page.thumbnail?.source;
+              if (url && !results.includes(url)) {
+                results.push(url);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("위키피디아 이미지 복수 검색 실패:", e);
+      }
+    }
+
+    return results;
+  }
+
+  // 사용자가 입력한 웹 URL에 접속하여 사진들을 파싱/추출하는 함수
+  async extractImagesFromWebUrl(targetUrl) {
+    const images = [];
+    let cleanUrl = targetUrl.trim();
+    if (cleanUrl.startsWith("www.")) {
+      cleanUrl = "https://" + cleanUrl;
+    }
+
+    // 1. 직접 이미지 파일 링크인 경우 (.jpg, .png, .webp, unsplash, wikimedia 등)
+    const isDirectImage = /\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i.test(cleanUrl) ||
+      cleanUrl.includes("images.unsplash.com") ||
+      cleanUrl.includes("wikimedia.org") ||
+      cleanUrl.includes("pds.joins.com") ||
+      cleanUrl.includes("pstatic.net");
+
+    if (isDirectImage) {
+      images.push(cleanUrl);
+      try {
+        const u = new URL(cleanUrl);
+        if (/\.(jpg|jpeg|png|webp)(\?.*)?$/i.test(u.pathname)) {
+          return images;
+        }
+      } catch (e) {}
+    }
+
+    // 2. 위키피디아 웹 문서 URL인 경우 (공식 API로 문서 내 실제 고화질 사진 일괄 파싱)
+    const wikiMatch = cleanUrl.match(/([a-z]{2})\.wikipedia\.org\/wiki\/([^#?]+)/i);
+    if (wikiMatch) {
+      const lang = wikiMatch[1];
+      const title = decodeURIComponent(wikiMatch[2]);
+      try {
+        const apiUrl = `https://${lang}.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&generator=images&gimlimit=12&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const data = await res.json();
+          const pages = data.query?.pages;
+          if (pages) {
+            for (const pid of Object.keys(pages)) {
+              const info = pages[pid].imageinfo?.[0];
+              const imgUrl = info?.thumburl || info?.url;
+              if (imgUrl && !imgUrl.endsWith(".svg") && !images.includes(imgUrl)) {
+                images.push(imgUrl);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("위키피디아 URL 이미지 추출 실패:", e);
+      }
+      if (images.length > 0) return images;
+    }
+
+    // 3. 일반 웹페이지 URL인 경우: HTML 가져오기 (직접 fetch 및 CORS 프록시 활용)
+    let htmlContent = "";
+
+    // 3-1. 직접 fetch 시도
+    try {
+      const directRes = await fetch(cleanUrl, { mode: "cors" });
+      if (directRes.ok) {
+        htmlContent = await directRes.text();
+      }
+    } catch (e) {
+      // CORS 제한 시 프록시 fallback
+    }
+
+    // 3-2. CORS 프록시 (allorigins) 시도
+    if (!htmlContent) {
+      try {
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(cleanUrl)}`;
+        const pRes = await fetch(proxyUrl);
+        if (pRes.ok) {
+          const pData = await pRes.json();
+          htmlContent = pData.contents || "";
+        }
+      } catch (e) {
+        console.warn("CORS 프록시 1 실패:", e);
+      }
+    }
+
+    // 3-3. 2차 CORS 프록시 (corsproxy.io) 시도
+    if (!htmlContent) {
+      try {
+        const proxyUrl2 = `https://corsproxy.io/?url=${encodeURIComponent(cleanUrl)}`;
+        const pRes2 = await fetch(proxyUrl2);
+        if (pRes2.ok) {
+          htmlContent = await pRes2.text();
+        }
+      } catch (e) {
+        console.warn("CORS 프록시 2 실패:", e);
+      }
+    }
+
+    // 4. HTML 파싱 및 이미지 태그 추출
+    if (htmlContent) {
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, "text/html");
+
+        // 4-1. 대표 메타 태그 (og:image, twitter:image) 추출 (최우선 순위)
+        const ogTags = [
+          doc.querySelector('meta[property="og:image"]')?.getAttribute("content"),
+          doc.querySelector('meta[property="og:image:secure_url"]')?.getAttribute("content"),
+          doc.querySelector('meta[name="twitter:image"]')?.getAttribute("content"),
+          doc.querySelector('meta[name="twitter:image:src"]')?.getAttribute("content")
+        ];
+
+        ogTags.forEach(rawOg => {
+          if (rawOg) {
+            const absOg = this.resolveUrl(rawOg, cleanUrl);
+            if (this.isValidPhotoUrl(absOg) && !images.includes(absOg)) {
+              images.push(absOg);
+            }
+          }
+        });
+
+        // 4-2. <img> 태그 파싱
+        const imgTags = doc.querySelectorAll("img");
+        imgTags.forEach(img => {
+          const rawSrc = img.getAttribute("src") ||
+                         img.getAttribute("data-src") ||
+                         img.getAttribute("data-original") ||
+                         img.getAttribute("data-lazy-src") ||
+                         img.getAttribute("srcset");
+
+          if (rawSrc) {
+            const candidate = rawSrc.split(",")[0].trim().split(" ")[0];
+            const resolved = this.resolveUrl(candidate, cleanUrl);
+            if (this.isValidPhotoUrl(resolved) && !images.includes(resolved)) {
+              images.push(resolved);
+            }
+          }
+        });
+      } catch (err) {
+        console.warn("HTML 이미지 파싱 오류:", err);
+      }
+    }
+
+    return images;
+  }
+
+  // 상대 경로 URL을 기준 웹 URL의 절대 경로로 변환
+  resolveUrl(relativeOrAbsolute, baseUrl) {
+    if (!relativeOrAbsolute) return "";
+    try {
+      return new URL(relativeOrAbsolute, baseUrl).href;
+    } catch (e) {
+      if (relativeOrAbsolute.startsWith("//")) {
+        return "https:" + relativeOrAbsolute;
+      }
+      return relativeOrAbsolute;
+    }
+  }
+
+  // 유효한 사진 URL인지 필터링 (트래커, 1픽셀, 불필요한 아이콘 제외)
+  isValidPhotoUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    if (url.startsWith("data:image/svg") || url.endsWith(".svg")) return false;
+    if (url.includes("tracking") || url.includes("pixel") || url.includes("1x1") || url.includes("beacon")) return false;
+    if (url.includes("spacer") || url.includes("blank.gif") || url.includes("spinner")) return false;
+    return url.startsWith("http://") || url.startsWith("https://");
+  }
+
+  // 테마별(카테고리별) 안전 폴백 고화질 사진 (지명이 드러나지 않는 범용 고품질 사진)
+  getCategoryFallbackPhoto(category = "landscape") {
+    const photoMap = {
+      landmark: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80", // 모던 랜드마크
+      nature: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=80",   // 싱그러운 숲길
+      cafe: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=80",     // 감성 카페
+      culture: "https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?auto=format&fit=crop&w=1000&q=80",  // 전통 골목길
+      sunset: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",   // 황금빛 노을
+      beach: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",    // 맑은 바다
+      night: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1000&q=80",    // 도심 야경
+      market: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1000&q=80"   // 로컬 마켓
+    };
+    return photoMap[category] || photoMap.landmark;
+  }
+
   // 스마트 5대 명소 실감형 블로그 자동 생성기
   async generateDynamicDestination(query) {
-    const wiki = await this.fetchWikiInfo(query);
-    const destName = query;
+    const destName = query.trim();
+    const wiki = await this.fetchWikiInfo(destName);
 
     // 여행지 기본 소개글 생성
     let intro = "";
     if (wiki && wiki.extract && wiki.extract.length > 50) {
-      const summarySnippet = wiki.extract.slice(0, 150).replace(/\n/g, " ");
+      const summarySnippet = wiki.extract.slice(0, 160).replace(/\n/g, " ");
       intro = `오랫동안 마음속 버킷리스트에 담아두었던 '${destName}'(으)로 훌쩍 떠났습니다. ${summarySnippet}... 인터넷과 SNS에서 수많은 여행자들의 찬사를 받는 5대 핫플레이스를 직접 둘러보며 작성한 실감 나는 1박 2일 여행기를 지금부터 공유합니다!`;
     } else {
       intro = `도시의 번잡함을 뒤로하고 푸른 하늘과 낭만이 가득한 '${destName}'(으)로 기분 좋은 여행을 다녀왔습니다. 대중적으로 가장 많은 사랑을 받고 있는 핵심 명소 5곳을 엄선해 마치 함께 걸어보는 듯한 생생한 코스로 블로그에 담아보았습니다.`;
     }
 
-    // Unsplash 고품질 큐레이션 이미지 프리셋 풀
-    const travelPhotos = [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1000&q=80"
-    ];
+    // 사전 정의된 대표 명소 목록이 있는지 확인
+    const matchedCityKey = Object.keys(KNOWN_DESTINATIONS_MAP).find(k => destName.includes(k) || k.includes(destName));
+    const knownData = matchedCityKey ? KNOWN_DESTINATIONS_MAP[matchedCityKey] : null;
 
-    // 대중적인 5가지 테마별 5대 명소 구성
-    const spotTemplates = [
+    // 명소 기본 정보 템플릿 구성
+    const spotBases = knownData ? knownData.spots.map((s, idx) => ({
+      order: idx + 1,
+      name: s.name,
+      category: s.category,
+      searchTerm: s.searchTerm,
+      shortDesc: `${destName}에서 가장 사랑받는 핵심 ${s.category.split('&')[0].trim()} 명소`,
+      story: `여행의 감동을 더해준 ${s.name}입니다. 현지인과 여행자 모두에게 인기 있는 이유를 직접 발로 디디며 실감할 수 있었어요. 탁 트인 시야와 특유의 감성이 어우러져 카메라 셔터를 멈출 수 없었습니다.`,
+      photoTip: `명소 중앙 프레임에 푸른 하늘이나 노을빛을 3분의 2 배치하여 광각으로 담아보세요.`,
+      travelerTip: `주말에는 방문객이 많으므로 오전 일찍 또는 일몰 시간대에 방문하시는 것을 추천합니다.`,
+      timeRequired: "1시간 30분",
+      location: `${destName} 주요 중심지`,
+      fallbackCat: idx === 0 ? "landmark" : (idx === 1 ? "nature" : (idx === 2 ? "culture" : (idx === 3 ? "cafe" : "sunset")))
+    })) : [
       {
         order: 1,
-        titleSuffix: "중앙 랜드마크 & 대표 광장",
+        name: `${destName} 대표 랜드마크 & 중심 광장`,
         category: "도시 랜드마크",
+        searchTerm: `${destName} 랜드마크`,
         shortDesc: `${destName} 여행의 출발점이자 가장 상징적인 중심 명소`,
-        story: `여행지에 도착하자마자 가장 먼저 찾은 ${destName}의 랜드마크입니다. 활기찬 여행자들의 미소와 이국적인 풍경이 어우러져 "내가 진짜 여행을 왔구나!" 하는 실감이 온몸으로 전해졌어요. 탁 트인 광장에서 마시는 시원한 음료 한 잔과 함께 여행의 첫 설렘을 시작하기에 더없이 완벽했습니다.`,
-        photoTip: "광장 중앙 분수나 랜드마크 조형물을 배경으로 푸른 하늘을 3분의 2 배치해 시원한 구도를 잡아보세요.",
-        travelerTip: "오전 10시경에 방문하면 햇살도 좋고 단체 관광객이 적어 여유롭게 둘러볼 수 있습니다.",
+        story: `여행지에 도착하자마자 가장 먼저 찾은 ${destName}의 상징적 랜드마크입니다. 활기찬 여행자들의 미소와 이국적인 풍경이 어우러져 "내가 진짜 여행을 왔구나!" 하는 실감이 온몸으로 전해졌어요.`,
+        photoTip: "광장 중앙 조형물을 배경으로 푸른 하늘을 시원하게 배치해 보세요.",
+        travelerTip: "오전 10시경에 방문하면 채광도 좋고 여유롭게 둘러볼 수 있습니다.",
         timeRequired: "1시간 30분",
-        location: `${destName} 중심가 인근`
+        location: `${destName} 중심가 일대`,
+        fallbackCat: "landmark"
       },
       {
         order: 2,
-        titleSuffix: "자연 힐링 숲 & 호수 공원",
+        name: `${destName} 자연 힐링 숲 & 호수 공원`,
         category: "자연 & 산책",
+        searchTerm: `${destName} 공원`,
         shortDesc: "도심 속에서 맑은 공기와 새소리를 만끽하는 힐링 휴식처",
-        story: `바쁜 걸음을 잠시 멈추고 현지인들이 가장 아끼는 산책길을 걸었습니다. 바람에 살랑이는 나뭇잎 소리와 잔잔한 물결을 바라보며 걷다 보니, 마음속 복잡했던 고민들이 말끔히 씻겨 내려가는 평온함을 경험했어요. 벤치에 앉아 가만히 멍 때리는 것만으로도 최고의 힐링이었습니다.`,
+        story: `바쁜 걸음을 잠시 멈추고 현지인들이 가장 아끼는 산책길을 걸었습니다. 바람에 살랑이는 나뭇잎 소리와 잔잔한 물결을 바라보며 걷다 보니, 마음속 복잡했던 고민들이 말끔히 씻겨 내려갔습니다.`,
         photoTip: "나무 그늘 사이로 부서지는 햇살(빛내림)을 역광으로 담아 감성적인 분위기를 연출하세요.",
-        travelerTip: "산책로 입구에 테이크아웃 카페가 있으니 따뜻한 차나 커피를 챙겨 걸으시면 좋습니다.",
+        travelerTip: "산책로 입구에 테이크아웃 카페가 있으니 따뜻한 음료를 챙겨 걸으시면 좋습니다.",
         timeRequired: "1시간 20분",
-        location: `${destName} 자연생태공원 일대`
+        location: `${destName} 자연생태공원 일대`,
+        fallbackCat: "nature"
       },
       {
         order: 3,
-        titleSuffix: "감성 카페거리 & 로컬 베이커리",
+        name: `${destName} 감성 카페거리 & 로컬 베이커리`,
         category: "미식 & 디저트 투어",
+        searchTerm: `${destName} 카페`,
         shortDesc: "골목골목 숨겨진 개성 있는 카페와 향긋한 커피, 달콤한 디저트",
-        story: `SNS에서 핫한 ${destName}의 감성 골목으로 향했습니다. 오래된 주택과 현대적인 인테리어가 조화를 이룬 카페들이 빼곡했는데요, 갓 구워낸 시그니처 빵의 고소한 냄새가 골목을 가득 채우고 있었습니다. 통창으로 따사로운 햇살을 맞으며 즐긴 브런치는 이번 여행의 미식 정점이었습니다!`,
-        photoTip: "감각적인 원목 테이블 위에 시그니처 음료와 디저트를 사선 각도로 배치해 항공샷으로 담아보세요.",
-        travelerTip: "인기 있는 베이커리 메뉴는 오후 2시 이전에 품절될 수 있으니 점심 직후 서둘러 방문하세요.",
+        story: `SNS에서 핫한 ${destName}의 감성 골목으로 향했습니다. 개성 있는 인테리어의 카페들과 갓 구워낸 시그니처 빵의 고소한 냄새가 골목을 가득 채우고 있었습니다.`,
+        photoTip: "감각적인 원목 테이블 위에 시그니처 음료와 디저트를 사선 각도로 배치해 보세요.",
+        travelerTip: "인기 있는 베이커리 메뉴는 오후에 조기 품절될 수 있으니 점심 직후 방문을 권장합니다.",
         timeRequired: "2시간",
-        location: `${destName} 청년 문화거리`
+        location: `${destName} 문화거리`,
+        fallbackCat: "cafe"
       },
       {
         order: 4,
-        titleSuffix: "역사 문화마을 & 전통 시장",
+        name: `${destName} 역사 문화마을 & 전통 시장`,
         category: "문화 체험 & 로컬 마켓",
+        searchTerm: `${destName} 전통시장`,
         shortDesc: "지역 고유의 삶과 따뜻한 인심, 맛있는 먹거리가 살아 숨 쉬는 곳",
-        story: `그 지역의 진짜 색깔을 알려면 시장과 옛 골목을 가봐야 한다고 하죠. 상인분들의 정겨운 사투리와 맛있는 주전부리가 가득한 골목을 구경하며 현지 분위기를 듬뿍 느꼈습니다. 갓 부쳐낸 전과 지역 전통 특산물을 맛보며 사람 냄새 나는 따뜻한 온기를 선물 받았습니다.`,
+        story: `그 지역의 진짜 색깔을 알려면 시장과 옛 골목을 가봐야 하죠. 상인분들의 정겨운 인심과 맛있는 주전부리가 가득한 골목을 구경하며 따뜻한 온기를 선물 받았습니다.`,
         photoTip: "북적이는 시장 골목의 생동감 넘치는 간판들과 맛있는 음식 조리 장면을 클로즈업해보세요.",
         travelerTip: "일부 전통 시장 상점은 현금이나 계좌이체가 편리할 수 있으니 소액의 현금을 준비하세요.",
         timeRequired: "1시간 40분",
-        location: `${destName} 전통시장 일원`
+        location: `${destName} 전통시장 일원`,
+        fallbackCat: "market"
       },
       {
         order: 5,
-        titleSuffix: "선셋 전망대 & 황금빛 야경 스팟",
+        name: `${destName} 선셋 전망대 & 파노라마 야경`,
         category: "일몰 & 야경 뷰포인트",
+        searchTerm: `${destName} 야경`,
         shortDesc: "하늘이 붉게 타오르며 시작되는 환상적인 파노라마 야경",
-        story: `하루의 일정을 마무리하기 위해 가장 높은 전망대에 올랐습니다. 서쪽 하늘이 핑크빛과 주황빛으로 물들어가더니, 어둠과 함께 도시의 불빛들이 보석처럼 반짝이기 시작했습니다. 숨 가쁘게 달려온 하루를 위로해 주는 듯한 야경을 바라보며 이번 여행을 오래도록 기억하리라 다짐했습니다.`,
-        photoTip: "해가 지평선 아래로 넘어간 직후 15~20분간의 '매직아워'에 푸른 하늘과 도시 조명을 한 프레임에 담으세요.",
+        story: `하루의 일정을 마무리하기 위해 가장 높은 전망대에 올랐습니다. 서쪽 하늘이 붉게 물들어가더니, 어둠과 함께 도시의 불빛들이 보석처럼 반짝이기 시작했습니다.`,
+        photoTip: "해가 지평선 아래로 넘어간 직후 15~20분간의 '매직아워'에 조명과 하늘빛을 함께 담으세요.",
         travelerTip: "일몰 30분 전에 도착해야 좋은 벤치나 사진 명당자리를 선점할 수 있습니다.",
         timeRequired: "1시간 30분",
-        location: `${destName} 해넘이 전망대`
+        location: `${destName} 해넘이 전망대`,
+        fallbackCat: "sunset"
       }
     ];
 
-    const extraSpotTemplates = [
-      {
-        order: 1,
-        titleSuffix: "숨은 비경 & 해안/호반 둘레길",
-        category: "히든 스팟 & 트레킹",
-        shortDesc: "아직 덜 알려진 고즈넉한 풍경과 잔잔한 물결이 빚어내는 비밀 힐링길",
-        story: `현지 주민분이 강력 추천해주셔서 찾아간 비밀 둘레길입니다. 붐비는 인파 없이 오직 바람 소리와 파도 소리만 들려와 마치 나만을 위해 준비된 여행지 같았어요.`,
-        photoTip: "오솔길 끝 수평선이 맞닿는 프레임을 중앙에 두고 자연스러운 걸음걸이를 담아보세요.",
-        travelerTip: "안내 표지판이 작으므로 내비게이션 좌표를 미리 확인하고 방문하세요.",
-        timeRequired: "1시간 30분",
-        location: `${destName} 해안/호반 생태길`
-      },
-      {
-        order: 2,
-        titleSuffix: "아트 갤러리 & 감성 복합문화공간",
-        category: "예술 문화 & 디자인 쉼터",
-        shortDesc: "폐공장이나 고택을 개조해 독창적인 전시와 음악을 즐기는 핫플레이스",
-        story: `예술가들의 숨결이 살아있는 복합문화공간으로 발걸음을 옮겼습니다. 감각적인 조명 아래 펼쳐진 설치 미술과 LP에서 흘러나오는 잔잔한 음악이 여행의 감성을 최고조로 끌어올려 주었습니다.`,
-        photoTip: "감각적인 조각상이나 콘크리트 벽면의 타이포그래피 앞에서 전신 샷을 연출해 보세요.",
-        travelerTip: "시즌별 기획 전시가 자주 변경되므로 인스타그램 공식 계정을 사전 확인하는 것이 좋습니다.",
-        timeRequired: "2시간",
-        location: `${destName} 문화예술단지`
-      },
-      {
-        order: 3,
-        titleSuffix: "로컬 미식 골목 & 숨은 맛집 거리",
-        category: "골목 미식 & 수제 베이커리",
-        shortDesc: "골목 안쪽에 숨어있는 현지인들의 줄 서는 시그니처 맛집",
-        story: `관광객 위주가 아닌 진짜 로컬 단골들이 찾는 식당을 방문했습니다. 수십 년 내공이 담긴 깊은 육수 맛과 푸짐한 반찬에 여행의 피로가 눈 녹듯 사라졌습니다.`,
-        photoTip: "김이 모락모락 피어오르는 정갈한 한 상 차림을 45도 탑뷰로 포착해 보세요.",
-        travelerTip: "재료 소진 시 조기 마감될 수 있으니 점심 피크 이전이나 브레이크 타임 직후를 노리세요.",
-        timeRequired: "1시간 20분",
-        location: `${destName} 골목 미식길`
-      },
-      {
-        order: 4,
-        titleSuffix: "숲속 비밀 쉼터 & 야생화 온실",
-        category: "자연 치유 & 보태니컬 가든",
-        shortDesc: "사계절 푸른 이끼와 희귀 야생화가 반기는 숲속 유리온실 카페",
-        story: `숲 한가운데 자리 잡은 유리온실에 들어서자 싱그러운 풀내음이 온몸을 감쌌습니다. 따스한 햇살 아래 허브티 한 잔을 마시며 초록빛 식물들을 바라보는 동안 온전한 휴식을 누렸습니다.`,
-        photoTip: "온실 유리창으로 투과되는 자연광을 역광으로 활용해 식물의 잎맥과 함께 인물을 담아보세요.",
-        travelerTip: "실내 온도가 온화하여 가벼운 옷차림이 좋으며, 야외 정원 산책도 꼭 챙겨보세요.",
-        timeRequired: "1시간 30분",
-        location: `${destName} 숲속식물원 일대`
-      },
-      {
-        order: 5,
-        titleSuffix: "스카이라인 루프탑 & 달빛 야경 뷰포인트",
-        category: "도심 야경 & 로맨틱 바",
-        shortDesc: "도시의 화려한 조명과 밤하늘의 달빛을 한눈에 내려다보는 로맨틱 뷰",
-        story: `여행의 마지막 밤을 기념하기 위해 찾은 루프탑 테라스. 시원한 밤바람을 맞으며 바라본 도시의 스카이라인은 마치 은하수를 내려다보는 듯 화려하고 로맨틱했습니다.`,
-        photoTip: "도시 불빛이 만드는 은은한 보케(Bokeh)를 배경으로 와인잔이나 칵테일 잔을 든 손을 클로즈업해 보세요.",
-        travelerTip: "주말 저녁 테라스 석은 웨이팅이 있을 수 있으니 일몰 30분 전 자리를 잡으세요.",
-        timeRequired: "1시간 40분",
-        location: `${destName} 도심 루프탑 파크`
-      }
-    ];
+    // 각 명소별 실제 사진을 위키피디아/위키미디어에서 비동기 검색하여 매핑
+    const spotPromises = spotBases.map(async (item) => {
+      // 검색어: 명소 자체의 검색어 또는 도시이름 + 명소이름
+      const queryTerm = item.searchTerm || `${destName} ${item.name}`;
+      const realImage = await this.fetchSpotImage(queryTerm, item.fallbackCat);
 
-    const spots = spotTemplates.map((item, idx) => ({
-      order: item.order,
-      name: `${destName} ${item.titleSuffix}`,
-      category: item.category,
-      rating: (4.7 + Math.random() * 0.28).toFixed(1),
-      image: travelPhotos[idx % travelPhotos.length],
-      shortDesc: item.shortDesc,
-      story: item.story,
-      photoTip: item.photoTip,
-      travelerTip: item.travelerTip,
-      timeRequired: item.timeRequired,
-      location: item.location
-    }));
+      return {
+        order: item.order,
+        name: item.name,
+        category: item.category,
+        rating: (4.7 + Math.random() * 0.28).toFixed(1),
+        image: realImage,
+        shortDesc: item.shortDesc,
+        story: item.story,
+        photoTip: item.photoTip,
+        travelerTip: item.travelerTip,
+        timeRequired: item.timeRequired,
+        location: item.location
+      };
+    });
 
-    const extraSpots = extraSpotTemplates.map((item, idx) => ({
-      order: item.order,
-      name: `${destName} ${item.titleSuffix}`,
-      category: item.category,
-      rating: (4.8 + Math.random() * 0.18).toFixed(1),
-      image: travelPhotos[(idx + 2) % travelPhotos.length],
-      shortDesc: item.shortDesc,
-      story: item.story,
-      photoTip: item.photoTip,
-      travelerTip: item.travelerTip,
-      timeRequired: item.timeRequired,
-      location: item.location
-    }));
+    const spots = await Promise.all(spotPromises);
 
-    const heroImg = wiki?.thumbnail || travelPhotos[Math.floor(Math.random() * travelPhotos.length)];
+    // 대표 히어로 이미지 결정 (위키피디아 대표 썸네일 우선, 없으면 1번 명소 실제 사진)
+    const heroImg = wiki?.thumbnail || (spots[0] && spots[0].image) || this.getCategoryFallbackPhoto("landmark");
 
     return {
       id: `custom_${Date.now()}`,
@@ -282,8 +598,8 @@ class TravelSearchEngine {
       aliases: [destName],
       title: `낭만과 감동이 넘쳐나는 ${destName}, 꼭 가봐야 할 5대 인생 명소 여행기`,
       subtitle: `웹 실시간 검색 기반 대중 추천 핫플레이스와 직접 걷고 느낀 생생한 1인칭 후기`,
-      region: "추천 여행지",
-      badge: "웹 실시간 탐색",
+      region: knownData?.region || "추천 여행지",
+      badge: "실시간 정품 명소",
       likes: Math.floor(450 + Math.random() * 500),
       heroImage: heroImg,
       author: {
@@ -294,7 +610,7 @@ class TravelSearchEngine {
       },
       introStory: intro,
       spots: spots,
-      extraSpots: extraSpots,
+      extraSpots: spots,
       epilogue: `${destName} 여행은 기대 이상으로 다채로운 즐거움과 깊은 쉼을 선사해 주었습니다. 직접 발로 뛰어 확인한 이 5곳의 명소들은 누구와 함께 가더라도 절대 실패하지 않을 알짜배기 코스입니다. 여러분도 망설이지 말고 지금 바로 떠나보세요!`
     };
   }

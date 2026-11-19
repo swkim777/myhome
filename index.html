@@ -106,12 +106,21 @@
                     </button>
                 </li>
                 <li>
-                    <button onclick="router.navigate('apps', 'all')" id="nav-apps" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
-                        <span>🚀</span>
-                        <span>앱 & 도구 (Apps)</span>
+                    <button onclick="router.navigate('portfolio')" id="nav-portfolio" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <span>📂</span>
+                        <span>포트폴리오 (Portfolio)</span>
+                    </button>
+                </li>
+                <li>
+                    <button onclick="router.handleAppsClick()" id="nav-apps" class="nav-item w-full flex items-center justify-between px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
+                        <div class="flex items-center space-x-3">
+                            <span>🚀</span>
+                            <span>앱 & 도구 (Apps)</span>
+                        </div>
+                        <span id="apps-toggle-arrow" class="text-xs text-slate-400">▶</span>
                     </button>
                     <!-- 앱 & 도구 하위 카테고리 버튼 -->
-                    <div id="subnav-apps" class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                    <div id="subnav-apps" class="hidden ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
                         <button onclick="router.navigate('apps', '일반 앱')" id="subnav-apps-general" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>📱</span>
                             <span>일반앱</span>
@@ -133,12 +142,6 @@
                             <span>프롬프트</span>
                         </button>
                     </div>
-                </li>
-                <li>
-                    <button onclick="router.navigate('portfolio')" id="nav-portfolio" class="nav-item w-full flex items-center space-x-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
-                        <span>📂</span>
-                        <span>포트폴리오 (Portfolio)</span>
-                    </button>
                 </li>
                 <li>
                     <button onclick="router.handleBlogClick()" id="nav-blog" class="nav-item w-full flex items-center justify-between px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium">
@@ -166,6 +169,10 @@
                             <span>✈️</span>
                             <span>여행</span>
                         </a>
+                        <button onclick="router.navigate('blog', 'mountain')" id="subnav-blog-mountain" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>⛰️</span>
+                            <span>등산</span>
+                        </button>
                         <button onclick="router.navigate('blog', 'music')" id="subnav-blog-music" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>🎵</span>
                             <span>음악</span>
@@ -238,9 +245,13 @@
         <div id="mobileNav" class="md:hidden absolute top-16 left-0 w-full bg-white shadow-xl border-b border-slate-200 hidden z-30 transition-all">
             <ul class="py-2">
                 <li><button onclick="router.navigate('overview')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📊 대시보드</button></li>
+                <li><button onclick="router.navigate('portfolio')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📂 포트폴리오 (Portfolio)</button></li>
                 <li>
-                    <button onclick="router.navigate('apps', 'all')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium">🚀 앱 & 도구</button>
-                    <div class="ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
+                    <button onclick="router.handleAppsClick(true)" class="w-full flex items-center justify-between px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium text-left">
+                        <span>🚀 앱 & 도구</span>
+                        <span id="apps-toggle-arrow-mobile" class="text-xs text-slate-400">▶</span>
+                    </button>
+                    <div id="subnav-apps-mobile" class="hidden ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
                         <button onclick="router.navigate('apps', '일반 앱')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📱 일반앱</button>
                         <button onclick="router.navigate('apps', '업무')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💼 업무</button>
                         <button onclick="router.navigate('apps', '미디어')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 미디어</button>
@@ -248,7 +259,6 @@
                         <button onclick="router.navigate('apps', '프롬프트')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✨ 프롬프트</button>
                     </div>
                 </li>
-                <li><button onclick="router.navigate('portfolio')" class="block w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50">📂 포트폴리오 (Portfolio)</button></li>
                 <li>
                     <button onclick="router.handleBlogClick(true)" class="w-full flex items-center justify-between px-6 py-3 text-slate-600 hover:bg-slate-50 font-medium text-left">
                         <span>✍️ 블로그 (Blog)</span>
@@ -259,6 +269,7 @@
                         <button onclick="router.navigate('blog', 'IT')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💻 IT</button>
                         <button onclick="router.navigate('blog', 'novel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
                         <a href="blog/travel/index.html" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</a>
+                        <button onclick="router.navigate('blog', 'mountain')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">⛰️ 등산</button>
                         <button onclick="router.navigate('blog', 'music')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎵 음악</button>
                         <button onclick="router.navigate('blog', 'movie')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🎬 영화</button>
                         <button onclick="router.navigate('blog', 'finance')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💵 재테크</button>
@@ -502,16 +513,51 @@
             activities: [
                 { 
                     type: "Update", 
+                    title: "포트폴리오(Portfolio) 페이지 실데이터 기반 전면 개편", 
+                    link: "index.html?route=portfolio", 
+                    date: "2026.11.19 (오늘)", 
+                    desc: "9대 핵심 프로젝트(VERTEX 산악 플랫폼, JowonPlace, Slide Prompt Maker, Prompt Studio 등) 실연동 및 DaolIS·AI 강의·ETRI 경력 사항 반영" 
+                },
+                { 
+                    type: "Update", 
+                    title: "홈 대시보드 좌측 사이드바 메뉴 토글화 및 순서 개편", 
+                    link: "index.html?route=apps", 
+                    date: "2026.11.19 (오늘)", 
+                    desc: "좌측 내비게이션에서 '포트폴리오(Portfolio)' 메뉴를 상단으로 배치하고, '앱 & 도구(Apps)' 메뉴를 하위 카테고리가 접히고 펼쳐지는 토글(Toggle) 구조로 개편" 
+                },
+                { 
+                    type: "Feature", 
+                    title: "등산 & 산악 탐험 플랫폼 VERTEX (blog/mountain) 신규 구축", 
+                    link: "blog/mountain/index.html", 
+                    date: "2026.11.19 (오늘)", 
+                    desc: "산림청 공식 100대 명산 및 높은 산 TOP 20 데이터, 인터랙티브 SVG 고도 프로필, 고도·기온 감률 시뮬레이터 및 산행 안전 가이드를 탑재한 모던 산악 웹앱 추가 및 블로그 카테고리 연동" 
+                },
+                { 
+                    type: "Feature", 
+                    title: "추천 여행지(JowonPlace) 실시간 웹 사진 검색 및 사진 교체 모달 추가", 
+                    link: "blog/travel/recommend/index.html", 
+                    date: "2026.11.19 (오늘)", 
+                    desc: "5대 추천 여행 명소별로 실시간 웹 이미지 검색을 통한 사진 자동 추천·일괄 교체 및 사용자 직접 업로드 기능을 제공하는 사진 편집 모달 구현" 
+                },
+                { 
+                    type: "Update", 
+                    title: "좌측 블로그 메뉴 '여행' 카테고리 직접 링크 연결", 
+                    link: "blog/travel/index.html", 
+                    date: "2026.11.13", 
+                    desc: "사이드바 및 블로그 카테고리에서 '여행' 선택 시 여행 전용 블로그(blog/travel/index.html)로 즉시 이동하도록 직링크 연결" 
+                },
+                { 
+                    type: "Update", 
                     title: "여행 블로그(Travel) 상단 '추천 여행지' 메뉴 버튼 및 링크 연동", 
                     link: "blog/travel/index.html", 
-                    date: "2026.11.13 (오늘)", 
+                    date: "2026.11.13", 
                     desc: "여행 & 공간 탐방 블로그(blog/travel) 상단 네비게이션 및 히어로 배너에 '추천 여행지' 메뉴 버튼을 신설하여 JowonPlace 인기 명소 추천 웹앱(recommend)과 상호 연결" 
                 },
                 { 
                     type: "Feature", 
                     title: "추천 여행지 감성 블로그 프로그램(JowonPlace) 추가", 
                     link: "blog/travel/recommend/index.html", 
-                    date: "2026.11.13 (오늘)", 
+                    date: "2026.11.13", 
                     desc: "원하는 여행지를 검색하면 대중적인 인기 핫플레이스 5곳을 엄선하여 감성적인 1인칭 여행기 및 실시간 꿀팁을 제공하는 반응형 블로그 웹앱 신규 구축" 
                 },
                 { 
@@ -525,28 +571,28 @@
                     type: "Update", 
                     title: "홈 대시보드(myhome) 카테고리 네비게이션 개편", 
                     link: "index.html?route=apps", 
-                    date: "2026.09.21 (오늘)", 
+                    date: "2026.09.21", 
                     desc: "좌측 대시보드 '앱 & 도구' 아래 일반앱, 업무, 미디어, 게임 서브 버튼 추가 및 클릭 시 해당 카테고리 카드만 필터링 렌더링되도록 인터랙션 구현" 
                 },
                 { 
                     type: "Feature", 
                     title: "TodoWebApp 구글 스프레드시트(Todos) 실시간 양방향 연동", 
                     link: "TodoWebApp/index.html", 
-                    date: "2026.09.21 (오늘)", 
+                    date: "2026.09.21", 
                     desc: "앱 시작 시 구글 스프레드시트(Todos) 데이터 우선 자동 로드, 첫 화면 Save 버튼으로 기존 데이터 갱신 및 쓰기, Reload 버튼 연동 구현" 
                 },
                 { 
                     type: "Feature", 
                     title: "TodoWebApp 구글 드라이브 지정 폴더 파일 연동 & 권한 설정", 
                     link: "TodoWebApp/index.html", 
-                    date: "2026.09.21 (오늘)", 
+                    date: "2026.09.21", 
                     desc: "지정 구글 드라이브 폴더 내 todos.csv 자동 이동/저장 보장, Apps Script OAuth 권한 차단 이슈 해결 및 폴더 바로가기 링크 제공" 
                 },
                 { 
                     type: "Update", 
                     title: "제미니 타로(Tarot) API 키 캐싱 및 빌드 최적화", 
                     link: "Tarot/dist/index.html", 
-                    date: "2026.09.21 (오늘)", 
+                    date: "2026.09.21", 
                     desc: "Gemini API 키 로컬 스토리지 캐싱 적용 및 프로덕션 빌드 번들 에셋 최적화 업데이트" 
                 },
                 { 
@@ -580,7 +626,7 @@
             ],
             social: [
                 { name: "GitHub", link: "https://github.com/swkim777", icon: "💻", color: "bg-gray-800" },
-                { name: "Notion", link: "https://notion.so/swkim777", icon: "📓", color: "bg-slate-700" },
+                { name: "Notion", link: "https://app.notion.com/p/swkim-work/082fa54416e54037aff115360bd0c2be", icon: "📓", color: "bg-slate-700" },
                 { name: "Email", link: "mailto:swkim777@gmail.com", icon: "📧", color: "bg-blue-600" }
             ],
             // 세부 카테고리 메타데이터 (각 폴더의 index.html 연결)
@@ -624,6 +670,16 @@
                     tag: 'blog/travel',
                     color: 'sky',
                     postCount: 3
+                },
+                {
+                    key: 'mountain',
+                    name: '등산 & 산악 탐험',
+                    icon: '⛰️',
+                    link: 'blog/mountain/category.html',
+                    desc: '대한민국 주요 명산 탐색, 고도·기상 시뮬레이터 및 계절별 산행 안전 가이드',
+                    tag: 'blog/mountain',
+                    color: 'emerald',
+                    postCount: 1
                 },
                 {
                     key: 'music',
@@ -978,6 +1034,7 @@
         const router = {
             currentRoute: 'overview',
             currentCategory: 'all',
+            isAppsOpen: false,
             isBlogOpen: false,
 
             init: function() {
@@ -986,7 +1043,8 @@
                 const categoryParam = urlParams.get('category');
                 const initialRoute = routeParam || 'overview';
                 
-                // 블로그 경로로 진입 시 서브메뉴 열기, 아니면 닫기
+                // 해당 경로로 진입 시 서브메뉴 열기, 아니면 닫기
+                this.setAppsSubnav(initialRoute === 'apps');
                 this.setBlogSubnav(initialRoute === 'blog');
 
                 this.navigate(initialRoute, categoryParam || 'all');
@@ -996,6 +1054,47 @@
                 if (!cat || cat === 'all' || cat === '전체보기') return 'all';
                 if (cat === '일반앱' || cat === '일반 앱') return '일반 앱';
                 return cat;
+            },
+            // 앱 & 도구 버튼 클릭 시 토글링 수행
+            handleAppsClick: function(isMobile = false) {
+                if (this.currentRoute === 'apps') {
+                    // 이미 앱 & 도구 화면일 때 다시 누르면 서브메뉴 토글
+                    this.setAppsSubnav(!this.isAppsOpen);
+                } else {
+                    // 다른 화면에서 앱 & 도구 버튼을 누르면 서브메뉴를 열고 전체 목록으로 이동
+                    this.setAppsSubnav(true);
+                    this.navigate('apps', 'all');
+                }
+            },
+            // 앱 & 도구 서브메뉴 열림/닫힘 UI 제어
+            setAppsSubnav: function(open) {
+                this.isAppsOpen = open;
+                const subnav = document.getElementById('subnav-apps');
+                const arrow = document.getElementById('apps-toggle-arrow');
+                const subnavMobile = document.getElementById('subnav-apps-mobile');
+                const arrowMobile = document.getElementById('apps-toggle-arrow-mobile');
+
+                if (subnav) {
+                    if (open) {
+                        subnav.classList.remove('hidden');
+                    } else {
+                        subnav.classList.add('hidden');
+                    }
+                }
+                if (arrow) {
+                    arrow.textContent = open ? '▼' : '▶';
+                }
+
+                if (subnavMobile) {
+                    if (open) {
+                        subnavMobile.classList.remove('hidden');
+                    } else {
+                        subnavMobile.classList.add('hidden');
+                    }
+                }
+                if (arrowMobile) {
+                    arrowMobile.textContent = open ? '▼' : '▶';
+                }
             },
             // 블로그 버튼 클릭 시 토글링 수행
             handleBlogClick: function(isMobile = false) {
@@ -1050,6 +1149,7 @@
                     'IT': 'subnav-blog-IT',
                     'novel': 'subnav-blog-novel',
                     'travel': 'subnav-blog-travel',
+                    'mountain': 'subnav-blog-mountain',
                     'music': 'subnav-blog-music',
                     'movie': 'subnav-blog-movie',
                     'finance': 'subnav-blog-finance',
@@ -1073,13 +1173,9 @@
                 this.currentRoute = route;
                 this.currentCategory = this.normalizeCategory(category);
                 
-                // 블로그 화면으로 이동 시(서브메뉴 클릭 등) 서브메뉴 열림 유지
-                if (route === 'blog') {
-                    this.setBlogSubnav(true);
-                } else {
-                    // 다른 화면(대시보드, 앱, 활동, 포트폴리오, 연락처)으로 이동 시 블로그 서브메뉴 자동 접기
-                    this.setBlogSubnav(false);
-                }
+                // 앱 & 도구 및 블로그 화면 이동에 따른 서브메뉴 열림/닫힘 제어
+                this.setAppsSubnav(route === 'apps');
+                this.setBlogSubnav(route === 'blog');
 
                 // Update Nav UI
                 document.querySelectorAll('.nav-item').forEach(el => {
@@ -1396,7 +1492,7 @@
                                     <p class="text-sm text-slate-500 leading-relaxed mb-6">${cat.desc}</p>
                                 </div>
                                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                                    <span class="text-xs text-slate-400 font-medium">📄 3개 포스팅</span>
+                                    <span class="text-xs text-slate-400 font-medium">📄 ${cat.postCount}개 포스팅</span>
                                     <span class="inline-flex items-center gap-1.5 text-xs font-bold ${c.link} group-hover:translate-x-1 transition-transform">
                                         <span>카테고리 홈 열기</span>
                                         <span>&rarr;</span>

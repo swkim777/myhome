@@ -53,14 +53,17 @@ function renderProfile() {
 
   const socialContainer = document.getElementById('social-links');
   socialContainer.innerHTML = `
-    <a href="${p.socials.github}" target="_blank" rel="noreferrer" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="GitHub">
+    <a href="${p.socials.github}" target="_blank" rel="noreferrer" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" title="GitHub">
       <i data-lucide="github" class="w-5 h-5"></i>
     </a>
-    <a href="${p.socials.linkedin}" target="_blank" rel="noreferrer" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="LinkedIn">
-      <i data-lucide="linkedin" class="w-5 h-5"></i>
+    <a href="${p.socials.notion}" target="_blank" rel="noreferrer" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" title="Notion">
+      <i data-lucide="notebook-pen" class="w-5 h-5"></i>
     </a>
-    <a href="${p.socials.blog}" target="_blank" rel="noreferrer" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="Tech Blog">
-      <i data-lucide="book-open" class="w-5 h-5"></i>
+    <a href="${p.socials.home}" target="_blank" rel="noreferrer" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" title="Jowon Home">
+      <i data-lucide="home" class="w-5 h-5"></i>
+    </a>
+    <a href="${p.socials.email}" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" title="Email">
+      <i data-lucide="mail" class="w-5 h-5"></i>
     </a>
   `;
 }

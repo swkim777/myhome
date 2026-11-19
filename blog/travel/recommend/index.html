@@ -131,6 +131,37 @@
     </div>
   </div>
 
+  <!-- Photo Edit & Web Search Modal -->
+  <div class="photo-modal-overlay" id="photo-modal-overlay">
+    <div class="photo-modal-container">
+      <div class="photo-modal-header">
+        <div class="photo-modal-title-wrap">
+          <span class="photo-modal-badge">📸 실시간 웹 사진 검색 & 업로드</span>
+          <h2 id="photo-modal-title">여행 명소 사진 수정</h2>
+          <p id="photo-modal-subtitle">웹 검색을 통해 각 명소에 알맞은 실제 사진을 찾아 교체하거나 직접 업로드할 수 있습니다.</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-photo-modal" aria-label="닫기">&times;</button>
+      </div>
+
+      <div class="photo-modal-toolbar">
+        <button class="btn-auto-all-photos" id="btn-auto-search-all">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+          </svg>
+          <span>5대 명소 전체 사진 실시간 웹 검색 자동 추천 & 일괄 교체</span>
+        </button>
+      </div>
+
+      <div class="photo-modal-body" id="photo-modal-list">
+        <!-- JS로 각 명소별(대표 히어로 및 스팟 1~5) 카드 동적 생성 -->
+      </div>
+
+      <div class="photo-modal-footer">
+        <button class="btn-modal-done" id="btn-done-photo-modal">완료 및 블로그 보기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Site Footer -->
   <footer class="site-footer">
     <div class="container">
