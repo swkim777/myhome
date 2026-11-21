@@ -7,7 +7,7 @@ const portfolioData = {
     name: "조원 (Jowon)",
     title: "AI & Cloud Architector",
     tagline: "AI 기술로 더 좋은 세상이 열리길 바랍니다. 에이전트와 클라우드 기술로 일상의 워크플로를 혁신합니다.",
-    bio: "클라우드 네이티브 아키텍처와 생성형 AI·프롬프트 엔지니어링 기반의 웹 애플리케이션을 설계·개발하고, 실무 중심의 AI 교육을 진행합니다. 35개 이상의 인터랙티브 앱·유틸리티와 9개 전문 도메인 블로그를 아우르는 디지털 허브(Jowon Home)를 운영하고 있습니다.",
+    bio: "클라우드 네이티브 아키텍처와 생성형 AI·프롬프트 엔지니어링 기반의 웹 애플리케이션을 설계·개발하고, 실무 중심의 AI 교육을 진행합니다. 37개 이상의 인터랙티브 앱·유틸리티와 9개 전문 도메인 블로그를 아우르는 디지털 허브(Jowon Home)를 운영하고 있습니다.",
     status: "🚀 AI 아키텍처 자문 · 강의 · 프로젝트 협업 가능",
     location: "South Korea",
     email: "swkim777@gmail.com",
@@ -42,6 +42,28 @@ const portfolioData = {
   projects: [
     {
       id: 1,
+      title: "LineArt (SVG 인터랙티브 라인아트 애니메이션)",
+      category: "web",
+      period: "2026.11",
+      description: "손으로 그린 듯한 잉크 질감의 선화(Line-art)와 물리 엔진을 결합하여 보행(Walker), 마을(Village), 마당(Backyard) 3개 인터랙티브 씬을 실시간 SVG로 렌더링하고 낮/밤 전환 및 GIF 녹화를 지원하는 컴포넌트 라이브러리입니다.",
+      tags: ["TypeScript", "Vite", "SVG Animation", "Physics Engine", "GIF Recording"],
+      demoUrl: "../../ImageTools/line-art-animation/dist/index.html",
+      githubUrl: "https://github.com/swkim777/myhome/tree/main/ImageTools/line-art-animation",
+      badge: "NEW"
+    },
+    {
+      id: 2,
+      title: "전국 대리점 페인트 영업 분석 상황판 (페인트웹앱)",
+      category: "productivity",
+      period: "2026.11",
+      description: "전국 대리점별 페인트 매입 목표 대비 실적, 달성률, 전년 대비 성장률을 실시간 분석하고 직관적인 KPI 카드와 인터랙티브 시각화로 제공하는 영업 대시보드 웹앱입니다. Vercel 클라우드에 최적화 배포되었습니다.",
+      tags: ["React", "KPI Dashboard", "Sales Analytics", "Vercel 배포", "Data Visualization"],
+      demoUrl: "https://paintcorp-sales-dashboard.vercel.app",
+      githubUrl: "https://github.com/swkim777/myhome",
+      badge: "NEW"
+    },
+    {
+      id: 3,
       title: "VERTEX 모던 산악 & 등산 익스플로러",
       category: "web",
       period: "2026.11",
@@ -49,10 +71,10 @@ const portfolioData = {
       tags: ["Vanilla JS", "Tailwind CSS", "SVG Chart", "ISA Physics", "100대 명산"],
       demoUrl: "../../blog/mountain/index.html",
       githubUrl: "https://github.com/swkim777/myhome/tree/main/blog/mountain",
-      badge: "NEW"
+      badge: "Featured"
     },
     {
-      id: 2,
+      id: 4,
       title: "JowonPlace 추천 여행지 감성 블로그",
       category: "web",
       period: "2026.11",
@@ -63,7 +85,7 @@ const portfolioData = {
       badge: "Featured"
     },
     {
-      id: 3,
+      id: 5,
       title: "Slide Prompt Maker (슬라이드 프롬프트 생성기)",
       category: "ai",
       period: "2026.11",
@@ -74,7 +96,7 @@ const portfolioData = {
       badge: "Featured"
     },
     {
-      id: 4,
+      id: 6,
       title: "Prompt Studio (7단계 대화형 프롬프트 생성기)",
       category: "ai",
       period: "2026.11",
@@ -85,7 +107,7 @@ const portfolioData = {
       badge: "AI Tool"
     },
     {
-      id: 5,
+      id: 7,
       title: "Jowon Multi-Topic Blog Archive (9개 테마 블로그 허브)",
       category: "web",
       period: "2026.09 - 2026.11",
@@ -96,7 +118,7 @@ const portfolioData = {
       badge: "Archive"
     },
     {
-      id: 6,
+      id: 8,
       title: "TodoWebApp (구글 스프레드시트 & 드라이브 양방향 연동)",
       category: "productivity",
       period: "2026.09",
@@ -107,7 +129,7 @@ const portfolioData = {
       badge: "Popular"
     },
     {
-      id: 7,
+      id: 9,
       title: "제미니 타로 (Gemini Tarot) 운세 & 해석 서비스",
       category: "ai",
       period: "2026.09",
@@ -118,7 +140,7 @@ const portfolioData = {
       badge: null
     },
     {
-      id: 8,
+      id: 10,
       title: "이미지 생성 스튜디오 (NanoBanana) & AI 미디어 스위트",
       category: "ai",
       period: "2026.08 - 2026.09",
@@ -129,7 +151,7 @@ const portfolioData = {
       badge: null
     },
     {
-      id: 9,
+      id: 11,
       title: "실시간 금융·주식 대시보드 & 2026 한국경제 전망 리포트",
       category: "productivity",
       period: "2026.08 - 2026.09",
