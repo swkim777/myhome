@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walker · line-art-animation</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #ebe8e2; }
+  body { display: grid; place-items: center; }
+  .card { width: min(92vw, calc((100vh - 48px) * 2)); aspect-ratio: 2 / 1; border-radius: 16px; overflow: hidden; background: #fdfcf8;
+          box-shadow: 0 0 0 1px rgba(40, 34, 26, .10), 0 18px 50px -18px rgba(40, 34, 26, .35); }
+  #stage, #stage svg { display: block; width: 100%; height: 100%; }
+  #stage svg .pp { fill: var(--paper, #fdfdfc); }
+</style>
+</head>
+<body>
+  <div class="card"><div id="stage"></div></div>
+  <script type="module" src="./walker.ts"></script>
+</body>
+</html>

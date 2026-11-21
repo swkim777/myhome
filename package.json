@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "dev:lineart": "npm --prefix ImageTools/line-art-animation run dev",
+    "build:lineart": "npm --prefix ImageTools/line-art-animation run build"
   },
   "keywords": [
     "portfolio",

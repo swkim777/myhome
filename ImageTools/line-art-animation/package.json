@@ -1,0 +1,22 @@
+{
+  "name": "line-art-animation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A Claude skill and small TypeScript library for animated line-art SVG components.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json && tsc -p examples/village/tsconfig.json",
+    "capture": "node scripts/capture.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9"
+  },
+  "dependencies": {
+    "gifenc": "^1.0.3"
+  }
+}
