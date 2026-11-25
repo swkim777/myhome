@@ -161,6 +161,10 @@
                             <span>💻</span>
                             <span>IT</span>
                         </button>
+                        <button onclick="router.navigate('blog', 'webblog')" id="subnav-blog-webblog" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
+                            <span>🌐</span>
+                            <span>웹블로그</span>
+                        </button>
                         <button onclick="router.navigate('blog', 'novel')" id="subnav-blog-novel" class="subnav-item w-full flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors text-left">
                             <span>📖</span>
                             <span>소설</span>
@@ -267,6 +271,7 @@
                     <div id="subnav-blog-mobile" class="hidden ml-8 mr-4 my-1 pl-3 border-l-2 border-slate-100 space-y-1">
                         <button onclick="router.navigate('blog', 'AI')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🤖 AI</button>
                         <button onclick="router.navigate('blog', 'IT')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">💻 IT</button>
+                        <button onclick="router.navigate('blog', 'webblog')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">🌐 웹블로그</button>
                         <button onclick="router.navigate('blog', 'novel')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">📖 소설</button>
                         <a href="blog/travel/index.html" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">✈️ 여행</a>
                         <button onclick="router.navigate('blog', 'mountain')" class="block w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:text-blue-600">⛰️ 등산</button>
@@ -694,6 +699,16 @@
                     tag: 'blog/IT',
                     color: 'emerald',
                     postCount: 3
+                },
+                {
+                    key: 'webblog',
+                    name: '웹블로그',
+                    icon: '🌐',
+                    link: 'blog/web-blog/category.html',
+                    desc: 'Next.js & TypeScript 기반 개인 포트폴리오 및 기술 블로그 웹 애플리케이션',
+                    tag: 'blog/web-blog',
+                    color: 'blue',
+                    postCount: 1
                 },
                 {
                     key: 'novel',
@@ -1191,6 +1206,7 @@
                     'all': 'subnav-blog-all',
                     'AI': 'subnav-blog-AI',
                     'IT': 'subnav-blog-IT',
+                    'webblog': 'subnav-blog-webblog',
                     'novel': 'subnav-blog-novel',
                     'travel': 'subnav-blog-travel',
                     'mountain': 'subnav-blog-mountain',
@@ -1521,6 +1537,7 @@
                             
                             // 색상 매핑
                             const colorMap = {
+                                blue: { border: 'hover:border-blue-400', badge: 'bg-blue-50 text-blue-700 border-blue-100', text: 'group-hover:text-blue-600', link: 'text-blue-600' },
                                 purple: { border: 'hover:border-purple-400', badge: 'bg-purple-50 text-purple-700 border-purple-100', text: 'group-hover:text-purple-600', link: 'text-purple-600' },
                                 emerald: { border: 'hover:border-emerald-400', badge: 'bg-emerald-50 text-emerald-700 border-emerald-100', text: 'group-hover:text-emerald-600', link: 'text-emerald-600' },
                                 amber: { border: 'hover:border-amber-400', badge: 'bg-amber-50 text-amber-700 border-amber-100', text: 'group-hover:text-amber-600', link: 'text-amber-600' },
